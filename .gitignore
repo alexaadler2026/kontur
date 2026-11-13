@@ -28,3 +28,13 @@ setup-env.ps1
 *.log
 .DS_Store
 Thumbs.db
+
+# Angular / Nx local state
+.angular/
+.nx/migrate-runs/
+.nx/polygraph/
+.nx/self-healing/
+
+# Local AI tooling state
+.claude/settings.local.json
+.claude/worktrees/

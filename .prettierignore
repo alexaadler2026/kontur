@@ -1,0 +1,11 @@
+# Generated / output
+/dist
+/coverage
+/.nx/cache
+/.nx/workspace-data
+/.nx/self-healing
+.angular
+pnpm-lock.yaml
+
+# Design snapshot: read-only reference, never reformatted (see docs/design/README.md)
+/docs/design
