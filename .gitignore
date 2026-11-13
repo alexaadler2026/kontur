@@ -40,3 +40,6 @@ Thumbs.db
 .claude/worktrees/
 
 __screenshots__/
+
+# Storybook
+*storybook.log
