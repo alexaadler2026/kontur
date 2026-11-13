@@ -9,3 +9,7 @@ pnpm-lock.yaml
 
 # Design snapshot: read-only reference, never reformatted (see docs/design/README.md)
 /docs/design
+
+# Owner-maintained instruction files: kept exactly as written
+/CLAUDE.md
+/docs/journal/TEMPLATE.md

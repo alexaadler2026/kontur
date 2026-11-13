@@ -33,10 +33,10 @@ npmjs.com by the owner, so the scope belongs to the owner.
 
 Package names:
 
-| Library | Package |
-| --- | --- |
-| `libs/ui` | `@adlersoft/kontur-ui` |
-| `libs/receipt-parser` | `@adlersoft/receipt-parser` |
+| Library                 | Package                       |
+| ----------------------- | ----------------------------- |
+| `libs/ui`               | `@adlersoft/kontur-ui`        |
+| `libs/receipt-parser`   | `@adlersoft/receipt-parser`   |
 | `libs/shared/api-types` | `@adlersoft/shared-api-types` |
 
 The design-system name stays visible in the package name (`kontur-ui`).
