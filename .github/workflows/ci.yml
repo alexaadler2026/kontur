@@ -1,0 +1,51 @@
+# CI: every push to main and every pull request must pass format, lint, unit tests,
+# build and e2e (incl. axe) for all projects affected by the change.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+# A newer push to the same branch/PR cancels the run that is still going.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # full history: Nx compares against the last green commit
+
+      - uses: pnpm/action-setup@v6 # version comes from "packageManager" in package.json
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # Sets NX_BASE / NX_HEAD so "affected" knows which commits to compare.
+      - uses: nrwl/nx-set-shas@v5
+
+      - run: pnpm nx format:check --all
+      - run: pnpm nx affected -t lint test build build-storybook
+
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm nx affected -t e2e
+
+      - name: Upload Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report
+          path: dist/.playwright
+          retention-days: 7
