@@ -1,0 +1,62 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><title>Belegscan – Aufnahme</title><link rel="stylesheet" href="../../tokens.css"><link rel="stylesheet" href="../../components.css"><style>
+body{margin:0;background:#101418}
+a{color:#4fb3c4}a:hover{color:#6fc2d0}
+</style></head><body>
+<div class="k-body" data-theme="dark" style="width: 390px; height: 844px; box-sizing: border-box; position: relative; display: flex; flex-direction: column; background: #101418; color: var(--text-primary); font-family: var(--font-sans); overflow: hidden">
+
+  <header style="flex: none; display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; position: relative; z-index: 2">
+    <button class="k-icon-btn" style="width: 44px; height: 44px; color: #e6e9ed" aria-label="Schließen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+    <span class="body-strong" style="color: #e6e9ed">Beleg scannen</span>
+    <button class="k-icon-btn" style="width: 44px; height: 44px; color: #e6e9ed" aria-label="Blitz umschalten"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg></button>
+  </header>
+
+  <div class="k-toast k-toast--warning" role="status" style="position: absolute; top: 68px; left: 16px; right: 16px; width: auto; z-index: 2">
+    <svg class="k-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M1 1l22 22M9 9a7 7 0 0 0-3.2 1.9M2 6.2A12 12 0 0 1 12 4c3.8 0 7.3 1.7 9.9 4.2M5.5 12.5A7.5 7.5 0 0 1 12 10c1.4 0 2.8.4 4 1.1M8.5 15.5a4 4 0 0 1 5.6-.4M12 19h.01"/></svg>
+    <span class="k-caption" style="color: var(--text-primary)">Offline — der Beleg wird verarbeitet, sobald Verbindung besteht.</span>
+  </div>
+
+  <main style="flex: 1; min-height: 0; position: relative; display: flex; align-items: center; justify-content: center" aria-label="Sucher der Kamera">
+    <div style="position: relative; width: 250px; height: 420px; rotate: -2deg">
+      <div style="position: absolute; inset: 10px 14px; background: #f3f0e9; border-radius: 3px; box-shadow: 0 12px 32px rgba(0,0,0,0.55); padding: 20px 16px; box-sizing: border-box">
+        <div style="height: 8px; width: 70%; margin: 0 auto 12px; background: #c9c4b8; border-radius: 2px"></div>
+        <div style="height: 5px; width: 50%; margin: 0 auto 16px; background: #d9d4c8; border-radius: 2px"></div>
+        <div style="height: 4px; background: #d9d4c8; border-radius: 2px; margin-bottom: 7px"></div>
+        <div style="height: 4px; background: #d9d4c8; border-radius: 2px; margin-bottom: 7px"></div>
+        <div style="height: 4px; width: 84%; background: #d9d4c8; border-radius: 2px; margin-bottom: 7px"></div>
+        <div style="height: 4px; background: #d9d4c8; border-radius: 2px; margin-bottom: 18px"></div>
+        <div style="height: 6px; width: 60%; background: #c9c4b8; border-radius: 2px; margin-bottom: 18px"></div>
+        <div style="height: 4px; width: 72%; background: #d9d4c8; border-radius: 2px; margin-bottom: 7px"></div>
+        <div style="height: 4px; width: 64%; background: #d9d4c8; border-radius: 2px"></div>
+        <div style="position: absolute; left: 14px; right: 14px; bottom: 26px; display: flex; justify-content: center"><div style="width: 92px; height: 92px; border: 2px solid #c9c4b8; border-radius: 4px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; padding: 8px; box-sizing: border-box">
+          <span style="background:#c9c4b8"></span><span></span><span style="background:#c9c4b8"></span><span style="background:#c9c4b8"></span><span></span>
+          <span></span><span style="background:#c9c4b8"></span><span></span><span style="background:#c9c4b8"></span><span style="background:#c9c4b8"></span>
+          <span style="background:#c9c4b8"></span><span></span><span style="background:#c9c4b8"></span><span></span><span style="background:#c9c4b8"></span>
+          <span style="background:#c9c4b8"></span><span style="background:#c9c4b8"></span><span></span><span style="background:#c9c4b8"></span><span></span>
+          <span></span><span style="background:#c9c4b8"></span><span style="background:#c9c4b8"></span><span></span><span style="background:#c9c4b8"></span>
+        </div></div>
+      </div>
+      <svg viewBox="0 0 250 420" width="250" height="420" style="position: absolute; inset: 0" role="img" aria-label="Erkennungsrahmen um den Beleg">
+        <path d="M4 44 V12 a8 8 0 0 1 8-8 H44" fill="none" stroke="#4fb3c4" stroke-width="4" stroke-linecap="round"/>
+        <path d="M206 4 H238 a8 8 0 0 1 8 8 V44" fill="none" stroke="#4fb3c4" stroke-width="4" stroke-linecap="round"/>
+        <path d="M246 376 V408 a8 8 0 0 1 -8 8 H206" fill="none" stroke="#4fb3c4" stroke-width="4" stroke-linecap="round"/>
+        <path d="M44 416 H12 a8 8 0 0 1 -8-8 V376" fill="none" stroke="#4fb3c4" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <span style="position: absolute; bottom: 24px; left: 50%; translate: -50% 0; padding: 8px 16px; border-radius: var(--radius-full); background: rgba(18, 22, 28, 0.85); color: #e6e9ed; font: 400 13px/18px var(--font-sans); white-space: nowrap">Beleg vollständig ins Bild halten</span>
+  </main>
+
+  <footer style="flex: none; padding: 20px 24px 36px; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 2">
+    <button style="width: 56px; height: 56px; padding: 0; border: 1.5px solid #3a434f; border-radius: var(--radius-md); background: #1a2028; color: #e6e9ed; cursor: pointer; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px" aria-label="Aus Galerie wählen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-4.5-4.5L7 20"/></svg>
+      <span style="font: 400 10px/12px var(--font-sans)">Galerie</span>
+    </button>
+    <button style="width: 76px; height: 76px; padding: 0; border: 4px solid #e6e9ed; border-radius: var(--radius-full); background: transparent; cursor: pointer; display: inline-flex; align-items: center; justify-content: center" aria-label="Aufnehmen">
+      <span style="width: 58px; height: 58px; border-radius: var(--radius-full); background: #4fb3c4"></span>
+    </button>
+    <button style="width: 56px; height: 56px; padding: 0; border: 1.5px solid #3a434f; border-radius: var(--radius-md); background: #1a2028; color: #e6e9ed; cursor: pointer; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px" aria-label="Mehrere Belege">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><rect x="7" y="3" width="14" height="14" rx="2"/><path d="M3 7v12a2 2 0 0 0 2 2h12"/></svg>
+      <span style="font: 400 10px/12px var(--font-sans)">Stapel</span>
+    </button>
+  </footer>
+</div>
+</body></html>

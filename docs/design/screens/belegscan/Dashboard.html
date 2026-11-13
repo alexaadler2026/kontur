@@ -1,0 +1,99 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><title>Belegscan – Ausgaben-Dashboard</title><link rel="stylesheet" href="../../tokens.css"><link rel="stylesheet" href="../../components.css"><style>
+body{margin:0;background:#f7f8fa}
+a{color:#0e5a6b}a:hover{color:#0b4855}
+</style></head><body>
+<div class="k-body" style="width: 1440px; height: 900px; box-sizing: border-box; display: flex; flex-direction: column; background: var(--bg-page); color: var(--text-primary); font-family: var(--font-sans); overflow: hidden; padding: 28px 48px 32px; gap: 20px">
+
+  <div style="display: flex; align-items: center; gap: 16px">
+    <h1 class="h1" style="margin: 0">Auswertung</h1>
+    <div style="display: flex; align-items: center; gap: 4px; margin-left: 8px">
+      <button class="k-icon-btn" style="width: 32px; height: 32px" aria-label="Voriger Zeitraum">‹</button>
+      <span class="body-strong">Juni – November 2026</span>
+      <button class="k-icon-btn" style="width: 32px; height: 32px" aria-label="Nächster Zeitraum" disabled>›</button>
+    </div>
+    <span style="flex: 1"></span>
+    <button class="k-btn k-btn--secondary"><svg class="k-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M12 17V4m0 0 5 5m-5-5-5 5" transform="rotate(180 12 10.5)"/><path d="M4 20h16"/></svg>CSV</button>
+    <button class="k-btn k-btn--secondary">DATEV-Export</button>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px">
+    <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px 18px">
+      <span class="k-label" style="display: block; text-transform: uppercase">Ausgaben November</span>
+      <span class="mono" style="display: block; margin-top: 6px; font-size: 26px; line-height: 34px; font-weight: 500">487,23 €</span>
+      <span class="k-caption">Monat läuft · −18 % zu Oktober (Stand 12.11.)</span>
+    </div>
+    <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px 18px">
+      <span class="k-label" style="display: block; text-transform: uppercase">Belege im Zeitraum</span>
+      <span class="mono" style="display: block; margin-top: 6px; font-size: 26px; line-height: 34px; font-weight: 500">182</span>
+      <span class="k-caption">davon 164 vollautomatisch erkannt (90 %)</span>
+    </div>
+    <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px 18px">
+      <span class="k-label" style="display: block; text-transform: uppercase">Ø pro Beleg</span>
+      <span class="mono" style="display: block; margin-top: 6px; font-size: 26px; line-height: 34px; font-weight: 500">31,78 €</span>
+      <span class="k-caption">Median 14,20 €</span>
+    </div>
+    <div style="background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px 18px">
+      <span class="k-label" style="display: block; text-transform: uppercase">Offene Prüfung</span>
+      <span style="display: flex; align-items: baseline; gap: 8px; margin-top: 6px"><span class="mono" style="font-size: 26px; line-height: 34px; font-weight: 500">3</span><span class="k-badge k-badge--warning">Handlung nötig</span></span>
+      <span class="k-caption">1 davon offline in Warteschlange</span>
+    </div>
+  </div>
+
+  <div style="flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr); gap: 16px">
+
+    <section class="k-table-wrap" style="padding: 16px 20px; display: flex; flex-direction: column">
+      <h2 class="h3" style="margin: 0 0 4px; font-size: 16px; line-height: 24px">Ausgaben je Monat</h2>
+      <p class="k-caption" style="margin: 0 0 16px">in Euro, Juni – November 2026</p>
+      <div style="flex: 1; display: flex; align-items: flex-end; gap: 24px; padding: 0 8px" role="img" aria-label="Balkendiagramm: Juni 912, Juli 1046, August 876, September 1310, Oktober 1204, November bisher 487 Euro">
+        <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px"><span class="mono-sm" style="color: var(--text-secondary)">912</span><div style="width: 100%; height: 146px; background: var(--brand); opacity: 0.45; border-radius: 4px 4px 0 0"></div><span class="k-caption">Jun</span></div>
+        <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px"><span class="mono-sm" style="color: var(--text-secondary)">1.046</span><div style="width: 100%; height: 167px; background: var(--brand); opacity: 0.45; border-radius: 4px 4px 0 0"></div><span class="k-caption">Jul</span></div>
+        <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px"><span class="mono-sm" style="color: var(--text-secondary)">876</span><div style="width: 100%; height: 140px; background: var(--brand); opacity: 0.45; border-radius: 4px 4px 0 0"></div><span class="k-caption">Aug</span></div>
+        <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px"><span class="mono-sm" style="color: var(--text-secondary)">1.310</span><div style="width: 100%; height: 210px; background: var(--brand); opacity: 0.45; border-radius: 4px 4px 0 0"></div><span class="k-caption">Sep</span></div>
+        <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px"><span class="mono-sm" style="color: var(--text-secondary)">1.204</span><div style="width: 100%; height: 193px; background: var(--brand); opacity: 0.45; border-radius: 4px 4px 0 0"></div><span class="k-caption">Okt</span></div>
+        <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px"><span class="mono-sm" style="font-weight: 500">487</span><div style="width: 100%; height: 78px; background: var(--brand); border-radius: 4px 4px 0 0; border: 1px dashed var(--brand-hover); box-sizing: border-box"></div><span class="k-caption" style="font-weight: 500; color: var(--text-primary)">Nov*</span></div>
+      </div>
+      <p class="k-caption" style="margin: 10px 0 0">* November läuft noch (Stand 12.11.2026)</p>
+    </section>
+
+    <div style="display: flex; flex-direction: column; gap: 16px; min-height: 0">
+      <section class="k-table-wrap" style="padding: 16px 20px; flex: 1">
+        <h2 class="h3" style="margin: 0 0 12px; font-size: 16px; line-height: 24px">Nach Kategorie</h2>
+        <div style="display: flex; flex-direction: column; gap: 12px">
+          <div><div style="display: flex; justify-content: space-between; margin-bottom: 4px"><span class="k-caption" style="color: var(--text-primary)">Lebensmittel</span><span class="mono-sm">2.418 € · 42 %</span></div><div class="k-progress"><span style="width: 42%"></span></div></div>
+          <div><div style="display: flex; justify-content: space-between; margin-bottom: 4px"><span class="k-caption" style="color: var(--text-primary)">Büro &amp; Material</span><span class="mono-sm">1.512 € · 26 %</span></div><div class="k-progress"><span style="width: 26%; opacity: 0.75"></span></div></div>
+          <div><div style="display: flex; justify-content: space-between; margin-bottom: 4px"><span class="k-caption" style="color: var(--text-primary)">Fahrt &amp; Tanken</span><span class="mono-sm">986 € · 17 %</span></div><div class="k-progress"><span style="width: 17%; opacity: 0.55"></span></div></div>
+          <div><div style="display: flex; justify-content: space-between; margin-bottom: 4px"><span class="k-caption" style="color: var(--text-primary)">Bewirtung</span><span class="mono-sm">548 € · 9 %</span></div><div class="k-progress"><span style="width: 9%; opacity: 0.4"></span></div></div>
+          <div><div style="display: flex; justify-content: space-between; margin-bottom: 4px"><span class="k-caption" style="color: var(--text-primary)">Sonstiges</span><span class="mono-sm">371 € · 6 %</span></div><div class="k-progress"><span style="width: 6%; opacity: 0.3"></span></div></div>
+        </div>
+      </section>
+      <section class="k-table-wrap" style="padding: 16px 20px">
+        <h2 class="h3" style="margin: 0 0 10px; font-size: 16px; line-height: 24px">Top-Händler</h2>
+        <div style="display: flex; flex-direction: column; gap: 8px">
+          <span style="display: flex; justify-content: space-between"><span>Frischmarkt Kreuzberg</span><span class="mono-sm">1.102 €</span></span>
+          <span style="display: flex; justify-content: space-between"><span>Bürobedarf Schmidt</span><span class="mono-sm">918 €</span></span>
+          <span style="display: flex; justify-content: space-between"><span>Tankstelle am Ring</span><span class="mono-sm">684 €</span></span>
+          <span style="display: flex; justify-content: space-between"><span>Bäckerei Sonnenkorn</span><span class="mono-sm">233 €</span></span>
+        </div>
+      </section>
+    </div>
+
+    <section class="k-table-wrap" style="display: flex; flex-direction: column; min-height: 0">
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid var(--border-subtle)">
+        <h2 class="h3" style="margin: 0; font-size: 16px; line-height: 24px">Letzte Belege</h2>
+        <a class="k-link" href="Belege.dc.html" style="font: 400 12px/16px var(--font-sans)">Alle Belege</a>
+      </div>
+      <table class="k-table k-table--compact" style="flex: 1">
+        <thead><tr><th>Händler</th><th class="k-num" style="width: 92px">Datum</th><th class="k-num" style="width: 84px">Betrag</th></tr></thead>
+        <tbody>
+          <tr><td>Frischmarkt Kreuzberg</td><td class="k-num k-caption">12.11.</td><td class="k-num">15,86 €</td></tr>
+          <tr><td>Bäckerei Sonnenkorn</td><td class="k-num k-caption">11.11.</td><td class="k-num">7,40 €</td></tr>
+          <tr><td>Bürobedarf Schmidt</td><td class="k-num k-caption">10.11.</td><td class="k-num">129,90 €</td></tr>
+          <tr><td>Tankstelle am Ring</td><td class="k-num k-caption">03.11.</td><td class="k-num">68,12 €</td></tr>
+          <tr><td>Frischmarkt Kreuzberg</td><td class="k-num k-caption">29.10.</td><td class="k-num">42,17 €</td></tr>
+          <tr><td>Bürobedarf Schmidt</td><td class="k-num k-caption">27.10.</td><td class="k-num">389,00 €</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,45 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><title>Belegscan – Beleg nicht lesbar</title><link rel="stylesheet" href="../../tokens.css"><link rel="stylesheet" href="../../components.css"><style>
+body{margin:0;background:#f7f8fa}
+a{color:#0e5a6b}a:hover{color:#0b4855}
+</style></head><body>
+<div class="k-body" style="width: 390px; height: 844px; box-sizing: border-box; display: flex; flex-direction: column; background: var(--bg-page); color: var(--text-primary); font-family: var(--font-sans); overflow: hidden">
+
+  <header style="flex: none; display: flex; align-items: center; justify-content: center; padding: 18px 16px">
+    <span class="body-strong">Erkennung fehlgeschlagen</span>
+  </header>
+
+  <main style="flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; padding: 0 28px" role="alert">
+    <div style="position: relative; width: 170px; height: 230px">
+      <div style="position: absolute; inset: 0; background: #f3f0e9; border-radius: 3px; border: 1px solid var(--border-subtle); padding: 16px 14px; box-sizing: border-box; filter: blur(0.5px)">
+        <div style="height: 6px; width: 70%; margin: 0 auto 10px; background: #d9d4c8; border-radius: 3px; filter: blur(2.5px)"></div>
+        <div style="height: 5px; background: #d9d4c8; border-radius: 3px; margin-bottom: 8px; filter: blur(3px)"></div>
+        <div style="height: 5px; width: 86%; background: #d9d4c8; border-radius: 3px; margin-bottom: 8px; filter: blur(2.5px); translate: 3px 0"></div>
+        <div style="height: 5px; background: #d9d4c8; border-radius: 3px; margin-bottom: 8px; filter: blur(3.5px); translate: -2px 0"></div>
+        <div style="height: 5px; width: 74%; background: #d9d4c8; border-radius: 3px; margin-bottom: 16px; filter: blur(3px)"></div>
+        <div style="height: 6px; width: 58%; background: #d9d4c8; border-radius: 3px; filter: blur(2.5px)"></div>
+      </div>
+      <span class="k-ocr-box k-ocr-box--low" style="inset: -6px" aria-hidden="true"></span>
+      <span style="position: absolute; right: -14px; top: -14px; width: 32px; height: 32px; border-radius: var(--radius-full); background: var(--error); color: var(--text-on-brand); display: inline-flex; align-items: center; justify-content: center">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="16" height="16" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </span>
+    </div>
+    <div style="text-align: center; display: flex; flex-direction: column; gap: 8px; max-width: 300px">
+      <span class="h3" style="font-size: 18px; line-height: 26px">Beleg nicht lesbar</span>
+      <span class="k-caption">Das Foto ist zu unscharf für eine verlässliche Erkennung. Das passiert oft bei schlechtem Licht, Thermopapier mit verblasster Schrift oder zerknittertem Beleg.</span>
+      <ul class="k-caption" style="margin: 4px 0 0; padding: 0; list-style: none; text-align: left; display: flex; flex-direction: column; gap: 4px">
+        <li style="display: flex; gap: 8px"><span style="color: var(--brand)">•</span>Beleg glatt streichen und auf eine helle Fläche legen</li>
+        <li style="display: flex; gap: 8px"><span style="color: var(--brand)">•</span>Blitz einschalten oder näher ans Fenster</li>
+        <li style="display: flex; gap: 8px"><span style="color: var(--brand)">•</span>Kamera ruhig halten, bis der Rahmen grün wird</li>
+      </ul>
+    </div>
+  </main>
+
+  <footer style="flex: none; display: flex; flex-direction: column; gap: 10px; padding: 16px 16px 36px">
+    <button class="k-btn k-btn--primary k-btn--touch" style="width: 100%"><svg class="k-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7M21 3v6h-6"/></svg>Erneut aufnehmen</button>
+    <div style="display: flex; gap: 10px">
+      <button class="k-btn k-btn--secondary k-btn--touch" style="flex: 1">Aus Galerie wählen</button>
+      <button class="k-btn k-btn--ghost k-btn--touch" style="flex: 1">Manuell erfassen</button>
+    </div>
+  </footer>
+</div>
+</body></html>

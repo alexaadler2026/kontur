@@ -1,0 +1,240 @@
+/**
+ * Kontur — target public API of the libs/ui components (Angular, standalone, Signals).
+ * Documentation of contracts for implementation, not runtime types of the bundle.
+ *
+ * Conventions
+ * - `*Props`   = signal inputs  (input() / input.required() / model()).
+ * - `*Outputs` = outputs        (output()); the value type is the emitted payload.
+ * - Form controls implement ControlValueAccessor; their value is NOT an input.
+ * - Every component: standalone, ChangeDetectionStrategy.OnPush, styles from tokens only.
+ * - CSS classes of the reference stylesheet map 1:1 (Button → k-btn, …).
+ * - Texts (labels, aria-labels) are passed in already translated; components hold no copy,
+ *   except built-in a11y strings, which come from an injectable KonturIntl service (de, en).
+ */
+
+/* ───────────────────────── Actions ───────────────────────── */
+
+/** <button k-button> / <a k-button> — attribute selector on native elements (keeps native semantics). Class: k-btn */
+interface ButtonProps {
+  variant?: "primary" | "secondary" | "ghost" | "danger"; // default "secondary"
+  size?: "md" | "sm" | "touch";                             // 36 / 32 / 44 px, default "md"
+  loading?: boolean;   // hides the label, shows spinner, sets aria-busy="true", blocks clicks
+  disabled?: boolean;
+}
+/** <button k-icon-button> — icon-only button. Class: k-icon-btn */
+interface IconButtonProps {
+  ariaLabel: string;   // REQUIRED: icon-only buttons must have an accessible name
+  size?: "md" | "sm";
+}
+
+/* ───────────────────────── Forms ───────────────────────── */
+
+/** <k-form-field> wrapping <input k-input> / <textarea k-input>. Classes: k-form-item, k-field.
+ *  Generates ids, links label (for) and hint/error (aria-describedby), sets aria-invalid. */
+interface FormFieldProps {
+  label: string;
+  hint?: string;
+  error?: string | null;   // non-empty → .is-invalid, error text with icon, aria-invalid="true"
+  required?: boolean;      // adds visual marker + aria-required
+}
+/** <input k-input> — directive on the native input. */
+interface InputProps {
+  numeric?: boolean;       // k-num: IBM Plex Mono + tabular figures (IBAN, amounts, numbers)
+  size?: "md" | "touch";
+}
+
+/** <k-select> — ControlValueAccessor. Classes: k-select + k-menu.
+ *  ARIA combobox + listbox pattern, CDK Overlay + ActiveDescendantKeyManager. */
+interface SelectProps<T> {
+  label: string;
+  options: ReadonlyArray<{ value: T; label: string; disabled?: boolean }>;
+  placeholder?: string;
+  searchable?: boolean;            // shows search field, highlights match, shows "N von M"
+  compareWith?: (a: T, b: T) => boolean;
+  error?: string | null;
+  size?: "md" | "sm" | "touch";
+}
+interface SelectOutputs<T> { opened: void; closed: void; searchChange: string; }
+
+/** <k-date-picker> — ControlValueAccessor, value is an ISO date string "YYYY-MM-DD" (no Date objects).
+ *  Input accepts typed DD.MM.YYYY (de) / DD/MM/YYYY (en). Calendar in CDK Overlay, arrow-key navigation. */
+interface DatePickerProps {
+  label: string;
+  min?: string;   // ISO date; days before are disabled
+  max?: string;   // ISO date
+  error?: string | null;
+}
+
+/** <k-checkbox> — ControlValueAccessor (boolean). Class: k-check */
+interface CheckboxProps { label: string; indeterminate?: boolean; error?: boolean; }
+/** <k-radio-group> + <k-radio> — ControlValueAccessor on the group. Class: k-radio.
+ *  Renders <fieldset> + <legend>; arrow keys move selection (native radio behaviour). */
+interface RadioGroupProps { legend: string; name: string; }
+interface RadioProps<T> { value: T; label: string; disabled?: boolean; }
+/** <k-switch> — ControlValueAccessor (boolean), role="switch". Class: k-switch.
+ *  Use only for settings applied immediately; in forms with a Save button use Checkbox. */
+interface SwitchProps { label: string; }
+
+/* ───────────────────────── Data ───────────────────────── */
+
+/** <k-table> — Class: k-table-wrap. Sorting, row selection, pagination; CDK virtual scroll for > 100 rows.
+ *  Cell content via <ng-template kCell="columnKey" let-row>. Toolbar via <ng-content select="[kTableToolbar]">. */
+interface TableColumn<Row> {
+  key: keyof Row & string;
+  header: string;
+  sortable?: boolean;
+  numeric?: boolean;          // right-aligned, k-num
+  width?: string;             // CSS length; omit for flexible columns (long German words)
+}
+interface TableProps<Row> {
+  columns: ReadonlyArray<TableColumn<Row>>;
+  rows: ReadonlyArray<Row>;
+  trackBy: (row: Row) => string | number;   // REQUIRED, used in @for track
+  selectable?: boolean;
+  selected?: ReadonlySet<string | number>;  // model() — two-way selection
+  sort?: { key: string; direction: "asc" | "desc" } | null;  // model()
+  compact?: boolean;           // k-table--compact, row height control-sm
+  state?: "ready" | "loading" | "empty" | "error";
+  emptyText?: string;
+  caption: string;             // REQUIRED: visually hidden <caption> for screen readers
+}
+interface TableOutputs<Row> { rowClick: Row; }
+/** <k-pagination> — Class: k-pagination */
+interface PaginationProps { page: number; pageSize: number; total: number; itemLabel: string; } // page is model()
+
+/** <k-badge> — Class: k-badge. Status is text + dot shape, never color only:
+ *  success = circle, warning = diamond, error = square, info = ring, neutral = circle (grey). */
+interface BadgeProps { tone?: "neutral" | "success" | "warning" | "error" | "info"; }
+
+/** <k-tag> — Class: k-tag. Category / active filter chip. */
+interface TagProps {
+  removable?: boolean;
+  removeLabel?: string;        // aria-label of the remove button; default from KonturIntl ("Entfernen")
+}
+interface TagOutputs { removed: void; }
+
+/** <k-avatar> — Class: k-avatar. Initials only, no photos (privacy, simpler). */
+interface AvatarProps {
+  name: string;                // full name; initials computed (first letters of first and last word)
+  size?: "md" | "sm";          // 28 / 22 px
+}
+/** <k-avatar-stack> — Class: k-avatar-stack. Shows max `max` avatars + "+N". */
+interface AvatarStackProps {
+  names: ReadonlyArray<string>;
+  max?: number;                // default 3
+  ariaLabel: string;           // e.g. "Unterzeichnende: Anna Berger, Jonas Becker und 1 weitere"
+}
+
+/* ───────────────────────── Overlays ───────────────────────── */
+
+/** KonturDialog — service on top of CDK Dialog. Class: k-dialog.
+ *  role="dialog", aria-modal, aria-labelledby on the title, focus trap, focus returns to trigger, Esc closes. */
+interface DialogConfig<D> {
+  title: string;
+  data?: D;
+  size?: "sm" | "md";          // 400 / 480 px
+  disableClose?: boolean;      // no Esc / backdrop close (for required decisions)
+}
+interface DialogRef<R> { close(result?: R): void; readonly closed: import("rxjs").Observable<R | undefined>; }
+/** Ready-made confirm dialog used by the app for destructive actions. */
+interface ConfirmDialogConfig {
+  title: string;
+  message: string;
+  confirmLabel: string;
+  cancelLabel: string;
+  tone?: "default" | "danger"; // danger → confirm button k-btn--danger
+}
+// KonturDialog.open<C, D, R>(component: Type<C>, config: DialogConfig<D>): DialogRef<R>
+// KonturDialog.confirm(config: ConfirmDialogConfig): Promise<boolean>
+
+/** KonturToast — service. Class: k-toast. Queue, max 3 visible (bottom-right desktop, top mobile).
+ *  info/success: role="status", auto-dismiss; warning/error: role="alert", stay until closed. */
+interface ToastOptions {
+  tone?: "info" | "success" | "warning" | "error";
+  title?: string;              // bold lead-in, e.g. "Signiert."
+  durationMs?: number;         // default 5000 for info/success; ignored for warning/error
+  action?: { label: string; run: () => void };
+}
+// KonturToast.show(message: string, options?: ToastOptions): void
+
+/** [kTooltip] — directive. Class: k-tooltip. Shows on hover AND focus, hides on Esc,
+ *  links via aria-describedby. Text only, max 240 px; never the only place of essential info. */
+interface TooltipProps {
+  kTooltip: string;
+  kTooltipPosition?: "above" | "below" | "left" | "right";  // default "above"
+  kTooltipDelayMs?: number;   // default 300
+}
+
+/** [kMenuTriggerFor] + <k-menu> + <button k-menu-item> — built on CDK Menu. Classes: k-menu, k-menu-item.
+ *  Arrow keys, Home/End, Esc, typeahead (CDK). */
+interface MenuItemProps {
+  danger?: boolean;            // k-menu-item is-danger, placed last after a separator
+  disabled?: boolean;
+}
+interface MenuItemOutputs { triggered: void; }
+// <hr k-menu-separator> — separator
+
+/* ───────────────────────── Navigation ───────────────────────── */
+
+/** <k-tabs> + <k-tab> — Class: k-tabs, k-tab. ARIA tabs pattern, arrow keys, automatic activation.
+ *  Content projected per tab, or used as nav-tabs with routerLink (then role="navigation", aria-current). */
+interface TabsProps {
+  ariaLabel: string;
+  selectedIndex?: number;      // model()
+}
+interface TabProps { label: string; count?: number | null; disabled?: boolean; }
+
+/** <k-stepper> — Class: k-stepper. Display of wizard progress; navigation is handled by the page. */
+interface StepperProps {
+  steps: ReadonlyArray<{ label: string; state: "done" | "current" | "todo" }>;
+  ariaLabel: string;           // current step gets aria-current="step"
+}
+
+/** <k-breadcrumbs> — Class: k-crumbs. <nav aria-label>, last item is plain text with aria-current="page". */
+interface BreadcrumbsProps {
+  items: ReadonlyArray<{ label: string; link?: string | ReadonlyArray<unknown> }>; // link = routerLink value
+  ariaLabel: string;           // e.g. "Pfad"
+}
+
+/** <k-sidenav> + <a k-sidenav-item> + <k-sidenav-group> — Classes: k-sidenav, k-sidenav-item.
+ *  Desktop: fixed 232 px column. Below 960 px: collapses into a drawer (CDK Overlay) opened by a menu button. */
+interface SidenavProps { ariaLabel: string; brandLabel: string; }
+interface SidenavItemProps {
+  icon?: string;               // lucide icon name
+  count?: number | null;       // k-count, mono
+}                              // active state from routerLinkActive → aria-current="page"
+interface SidenavGroupProps { label: string; }
+
+/* ───────────────────────── Upload & Progress ───────────────────────── */
+
+/** <k-file-drop> — Class: k-filedrop. Drag & drop + click/Enter opens file picker; validates type and size.
+ *  Does NOT upload: emits files, the page decides what to do (unzip, OCR, upload). */
+interface FileDropProps {
+  accept: string;              // e.g. "application/pdf" or ".jpg,.png,.heic,.pdf,.zip"
+  multiple?: boolean;
+  maxSizeMb?: number;
+  maxFiles?: number;
+  label: string;               // "PDF hierher ziehen oder Datei wählen"
+  hint?: string;               // "PDF, max. 25 MB"
+  error?: string | null;
+}
+interface FileDropOutputs { filesSelected: ReadonlyArray<File>; rejected: ReadonlyArray<{ file: File; reason: "type" | "size" | "count" }>; }
+
+/** <k-progress> — Class: k-progress. role="progressbar" with aria-valuenow; value null = indeterminate. */
+interface ProgressProps { value: number | null; tone?: "brand" | "success" | "error"; label: string; }
+/** <k-spinner> — Class: k-spinner. role="status" with aria-label. */
+interface SpinnerProps { label: string; size?: number; }
+/** <k-progress-ring> — Class: k-ring. Circular progress with optional centered percent. */
+interface ProgressRingProps { value: number; size?: number; label: string; showValue?: boolean; }
+
+/* ───────────────────────── Belegscan-specific (lives in apps/belegscan, not libs/ui) ───────────────────────── */
+
+/** OCR confidence frame over the receipt image. Classes: k-ocr-box, --mid, --low.
+ *  Confidence thresholds: ≥ 0.85 solid (sicher), 0.60–0.85 dashed (prüfen), < 0.60 dotted (unsicher). */
+interface OcrBoxProps {
+  box: { x: number; y: number; width: number; height: number };  // in image pixels; scaled by the viewer
+  confidence: number;          // 0..1
+  selected?: boolean;
+  fieldLabel: string;          // aria-label, e.g. "Datum, 62 % Sicherheit"
+}
+interface OcrBoxOutputs { selectedChange: void; }

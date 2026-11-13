@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="Kontur">
+  <rect x="2" y="2" width="44" height="44" rx="10" fill="#0E5A6B"/>
+  <path d="M14 25 L21 32 L34 17" fill="none" stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

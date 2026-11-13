@@ -1,0 +1,116 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><title>Belegscan – Editor, Desktop</title><link rel="stylesheet" href="../../tokens.css"><link rel="stylesheet" href="../../components.css"><style>
+body{margin:0;background:#f7f8fa}
+a{color:#0e5a6b}a:hover{color:#0b4855}
+</style></head><body>
+<div class="k-body" style="width: 1440px; height: 900px; box-sizing: border-box; display: flex; flex-direction: column; background: var(--bg-page); color: var(--text-primary); font-family: var(--font-sans); overflow: hidden">
+
+  <header style="height: 60px; flex: none; display: flex; align-items: center; gap: 16px; padding: 0 24px; background: var(--bg-surface); border-bottom: 1px solid var(--border-subtle)">
+    <svg width="22" height="22" viewBox="0 0 48 48" aria-hidden="true"><rect x="2" y="2" width="44" height="44" rx="10" fill="var(--brand)"/><path d="M16 10 H 32 V 34 L 29.4 31.8 L 26.7 34 L 24 31.8 L 21.3 34 L 18.6 31.8 L 16 34 Z" fill="#ffffff"/><path d="M20 16 H 28 M20 21 H 28 M20 26 H 25" stroke="var(--brand)" stroke-width="2" stroke-linecap="round"/></svg>
+    <span style="min-width: 0"><span class="body-strong" style="display: block">Frischmarkt Kreuzberg · <span class="mono-sm">12.11.2026</span></span><span class="k-caption">Beleg 7 von 12 in der Prüfwarteschlange</span></span>
+    <span style="flex: 1"></span>
+    <nav class="k-crumbs" aria-label="Warteschlange" style="gap: 4px">
+      <button class="k-icon-btn" style="width: 32px; height: 32px" aria-label="Voriger Beleg">‹</button>
+      <button class="k-icon-btn" style="width: 32px; height: 32px" aria-label="Nächster Beleg">›</button>
+    </nav>
+    <button class="k-btn k-btn--secondary">Verwerfen</button>
+    <button class="k-btn k-btn--primary">Speichern &amp; weiter</button>
+  </header>
+
+  <div style="flex: 1; min-height: 0; display: flex; overflow: hidden">
+
+    <main style="flex: 1; min-width: 0; display: flex; align-items: center; justify-content: center; position: relative; background: var(--bg-subtle)">
+      <div style="position: relative; width: 430px; height: 620px; background: #f3f0e9; border-radius: 3px; box-shadow: var(--shadow-overlay-sm); padding: 32px 28px; box-sizing: border-box" aria-label="Belegfoto mit erkannten Textbereichen">
+        <div style="height: 12px; width: 70%; margin: 0 auto 10px; background: #c9c4b8; border-radius: 2px"></div>
+        <div style="height: 7px; width: 48%; margin: 0 auto 24px; background: #d9d4c8; border-radius: 2px"></div>
+        <div style="height: 7px; width: 90%; background: #d9d4c8; border-radius: 2px; margin-bottom: 12px"></div>
+        <div style="height: 7px; width: 90%; background: #d9d4c8; border-radius: 2px; margin-bottom: 12px"></div>
+        <div style="height: 7px; width: 76%; background: #d9d4c8; border-radius: 2px; margin-bottom: 28px"></div>
+        <div style="height: 9px; width: 58%; background: #c9c4b8; border-radius: 2px; margin-bottom: 24px"></div>
+        <div style="height: 7px; width: 70%; background: #d9d4c8; border-radius: 2px; margin-bottom: 12px"></div>
+        <div style="height: 7px; width: 62%; background: #d9d4c8; border-radius: 2px"></div>
+
+        <span class="k-ocr-box" style="left: 70px; top: 26px; width: 290px; height: 26px" aria-hidden="true"></span>
+        <span class="k-ocr-box" style="left: 28px; top: 100px; width: 374px; height: 76px" aria-hidden="true"></span>
+        <span class="k-ocr-box k-ocr-box--mid is-selected" style="left: 28px; top: 212px; width: 240px; height: 26px" aria-hidden="true"></span>
+        <span class="k-ocr-box k-ocr-box--low" style="left: 28px; top: 284px; width: 200px; height: 24px" aria-hidden="true"></span>
+        <span style="position: absolute; left: 276px; top: 212px; padding: 2px 8px; border-radius: var(--radius-full); background: var(--warning-subtle); color: var(--warning); font: 500 11px/16px var(--font-sans)">62 %</span>
+      </div>
+
+      <div style="position: absolute; left: 24px; bottom: 24px; display: flex; gap: 4px; padding: 4px; background: var(--bg-surface-raised); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); box-shadow: var(--shadow-overlay-sm)">
+        <button class="k-icon-btn" style="width: 32px; height: 32px" aria-label="Verkleinern">−</button>
+        <span class="mono-sm" style="align-self: center; padding: 0 4px">120 %</span>
+        <button class="k-icon-btn" style="width: 32px; height: 32px" aria-label="Vergrößern">+</button>
+        <button class="k-icon-btn" style="width: 32px; height: 32px" aria-label="Drehen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="15" height="15" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7M21 3v6h-6"/></svg></button>
+      </div>
+
+      <div class="k-caption" style="position: absolute; right: 24px; bottom: 28px; display: flex; gap: 14px">
+        <span style="display: inline-flex; align-items: center; gap: 5px"><span style="width: 16px; height: 0; border-top: 2px solid var(--success)"></span>sicher</span>
+        <span style="display: inline-flex; align-items: center; gap: 5px"><span style="width: 16px; height: 0; border-top: 2px dashed var(--warning)"></span>prüfen</span>
+        <span style="display: inline-flex; align-items: center; gap: 5px"><span style="width: 16px; height: 0; border-top: 2px dotted var(--error)"></span>unsicher</span>
+      </div>
+    </main>
+
+    <aside style="width: 480px; flex: none; background: var(--bg-surface); border-left: 1px solid var(--border-subtle); display: flex; flex-direction: column; overflow: hidden" aria-label="Erkannte Daten">
+      <div style="flex: 1; min-height: 0; overflow: hidden; padding: 20px; display: flex; flex-direction: column; gap: 16px">
+
+        <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+          <div class="k-form-item" style="max-width: none; grid-column: span 2">
+            <label for="d1">Händler</label>
+            <input id="d1" class="k-field" value="Frischmarkt Kreuzberg">
+          </div>
+          <div class="k-form-item" style="max-width: none">
+            <label for="d2">Datum</label>
+            <input id="d2" class="k-field k-num is-focus" value="12.11.2026" aria-describedby="d2h">
+            <span class="k-hint" id="d2h" style="color: var(--warning)">Aus Bereich mit 62 % Sicherheit — mit Foto abgleichen</span>
+          </div>
+          <div class="k-form-item" style="max-width: none">
+            <label for="d3">Zahlart</label>
+            <div class="k-field-wrap"><select id="d3" class="k-select"><option>Girocard</option></select><svg class="k-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></div>
+          </div>
+        </div>
+
+        <section class="k-table-wrap" style="flex: 1; min-height: 0; display: flex; flex-direction: column">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; border-bottom: 1px solid var(--border-subtle)">
+            <span class="k-label" style="text-transform: uppercase">Positionen</span>
+            <button class="k-btn k-btn--ghost k-btn--sm">+ Position</button>
+          </div>
+          <table class="k-table k-table--compact">
+            <thead><tr><th>Artikel</th><th class="k-num" style="width: 56px">Menge</th><th class="k-num" style="width: 64px">MwSt</th><th class="k-num" style="width: 90px">Betrag</th></tr></thead>
+            <tbody>
+              <tr><td>Bio-Milch 3,8 %</td><td class="k-num">2</td><td class="k-num">7 %</td><td class="k-num">2,58 €</td></tr>
+              <tr style="background: var(--warning-subtle)"><td>Dinkelbrot</td><td class="k-num">1</td><td class="k-num">7 %</td><td class="k-num" style="color: var(--warning)">4,29 €</td></tr>
+              <tr><td>Kaffee Crema 500 g</td><td class="k-num">1</td><td class="k-num">19 %</td><td class="k-num">8,99 €</td></tr>
+              <tr><td>Spülmittel Citrus</td><td class="k-num">2</td><td class="k-num">19 %</td><td class="k-num">4,98 €</td></tr>
+              <tr><td>Äpfel Elstar 1 kg</td><td class="k-num">1</td><td class="k-num">7 %</td><td class="k-num">3,49 €</td></tr>
+            </tbody>
+          </table>
+          <div style="margin-top: auto; padding: 10px 12px; border-top: 1px solid var(--border-subtle); display: flex; flex-direction: column; gap: 6px">
+            <span style="display: flex; justify-content: space-between" class="k-caption"><span>MwSt 7 % (Basis 10,36 €)</span><span class="mono-sm">0,68 €</span></span>
+            <span style="display: flex; justify-content: space-between" class="k-caption"><span>MwSt 19 % (Basis 11,74 €)</span><span class="mono-sm">1,87 €</span></span>
+            <span style="display: flex; justify-content: space-between" class="k-caption"><span>Summe der Positionen</span><span class="mono-sm">24,33 €</span></span>
+            <span style="display: flex; justify-content: space-between; align-items: center; padding-top: 6px; border-top: 1px solid var(--border-subtle)">
+              <span class="body-strong">Gesamtbetrag laut Beleg</span>
+              <input class="k-field k-num is-invalid" style="width: 100px; height: 32px; text-align: right" value="25,83 €" aria-label="Gesamtbetrag" aria-invalid="true" aria-describedby="sumerr">
+            </span>
+          </div>
+        </section>
+
+        <div class="k-toast k-toast--error" role="alert" id="sumerr" style="width: auto">
+          <svg class="k-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M10.3 3.8 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.8a2 2 0 0 0-3.4 0z"/><path d="M12 9v4m0 4h.01"/></svg>
+          <span><b>Summen weichen ab:</b> Positionen 24,33 € ≠ Gesamtbetrag 25,83 €. Vermutlich fehlt eine Position (Pfand?).</span>
+          <button class="k-btn k-btn--ghost k-btn--sm" style="margin-left: auto; flex: none">Differenz als Position</button>
+        </div>
+      </div>
+
+      <div style="flex: none; display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-top: 1px solid var(--border-subtle)">
+        <span class="k-badge">TSE-QR nicht gefunden</span>
+        <span style="flex: 1"></span>
+        <div class="k-form-item" style="max-width: 180px; flex-direction: row; align-items: center; gap: 8px">
+          <label for="d4" style="text-transform: uppercase">Kategorie</label>
+          <div class="k-field-wrap" style="flex: 1"><select id="d4" class="k-select" style="height: 32px"><option>Lebensmittel</option></select><svg class="k-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+</body></html>

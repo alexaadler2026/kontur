@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Build and test output
+dist/
+tmp/
+out-tsc/
+coverage/
+storybook-static/
+test-results/
+playwright-report/
+blob-report/
+
+# Nx
+.nx/cache/
+.nx/workspace-data/
+
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+setup-env.ps1
+
+# Editors and OS
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.log
+.DS_Store
+Thumbs.db

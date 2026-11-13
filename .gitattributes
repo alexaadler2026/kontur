@@ -1,0 +1,8 @@
+# Normalize line endings: LF in the repo and in the working tree (Prettier + Linux CI).
+* text=auto eol=lf
+
+# Binary assets: never touch line endings, never diff as text.
+*.png    binary
+*.jpg    binary
+*.ico    binary
+*.woff2  binary

@@ -1,0 +1,75 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><title>Belegscan – Belegliste (dunkel)</title><link rel="stylesheet" href="../../tokens.css"><link rel="stylesheet" href="../../components.css"><style>
+body{margin:0;background:#12161c}
+a{color:#4fb3c4}a:hover{color:#6fc2d0}
+</style></head><body>
+<div class="k-body" data-theme="dark" style="width: 390px; height: 844px; box-sizing: border-box; position: relative; display: flex; flex-direction: column; background: var(--bg-page); color: var(--text-primary); font-family: var(--font-sans); overflow: hidden">
+
+  <header style="flex: none; display: flex; align-items: center; gap: 8px; padding: 16px 16px 8px">
+    <h1 class="h2" style="margin: 0; flex: 1">Belege</h1>
+    <button class="k-icon-btn" style="width: 44px; height: 44px" aria-label="Suchen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="20" height="20" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg></button>
+    <button class="k-icon-btn" style="width: 44px; height: 44px" aria-label="Filter"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><path d="M3 5h18l-7 8v5l-4 2v-7z"/></svg></button>
+  </header>
+
+  <div style="flex: 1; min-height: 0; overflow: hidden; padding: 0 16px">
+    <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 12px 4px 8px">
+      <span class="k-label" style="text-transform: uppercase">November 2026</span>
+      <span class="mono" style="font-weight: 500">487,23 €</span>
+    </div>
+    <div class="k-table-wrap">
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--border-subtle)">
+        <span style="flex: 1; min-width: 0"><span class="body-strong" style="display: block">Frischmarkt Kreuzberg</span><span class="k-caption k-num">12.11.2026 · Girocard</span></span>
+        <span class="k-badge k-badge--success">Erkannt</span>
+        <span class="mono" style="font-weight: 500">15,86 €</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--border-subtle)">
+        <span style="flex: 1; min-width: 0"><span class="body-strong" style="display: block">Bäckerei Sonnenkorn</span><span class="k-caption k-num">11.11.2026 · Bar</span></span>
+        <span class="k-badge k-badge--warning">Prüfen</span>
+        <span class="mono" style="font-weight: 500">7,40 €</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--border-subtle)">
+        <span style="flex: 1; min-width: 0"><span class="body-strong" style="display: block">Bürobedarf Schmidt</span><span class="k-caption k-num">10.11.2026 · Rechnung</span></span>
+        <span class="k-badge k-badge--info">Warteschlange</span>
+        <span class="mono" style="font-weight: 500">129,90 €</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px">
+        <span style="flex: 1; min-width: 0"><span class="body-strong" style="display: block">Tankstelle am Ring</span><span class="k-caption k-num">03.11.2026 · Kreditkarte</span></span>
+        <span class="k-badge k-badge--success">Erkannt</span>
+        <span class="mono" style="font-weight: 500">68,12 €</span>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: baseline; justify-content: space-between; padding: 16px 4px 8px">
+      <span class="k-label" style="text-transform: uppercase">Oktober 2026</span>
+      <span class="mono" style="font-weight: 500">1.204,51 €</span>
+    </div>
+    <div class="k-table-wrap">
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-bottom: 1px solid var(--border-subtle)">
+        <span style="flex: 1; min-width: 0"><span class="body-strong" style="display: block">Frischmarkt Kreuzberg</span><span class="k-caption k-num">29.10.2026 · Girocard</span></span>
+        <span class="k-badge k-badge--success">Erkannt</span>
+        <span class="mono" style="font-weight: 500">42,17 €</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 12px; padding: 12px 14px">
+        <span style="flex: 1; min-width: 0"><span class="body-strong" style="display: block">Bürobedarf Schmidt</span><span class="k-caption k-num">27.10.2026 · Rechnung</span></span>
+        <span class="k-badge k-badge--success">Erkannt</span>
+        <span class="mono" style="font-weight: 500">389,00 €</span>
+      </div>
+    </div>
+  </div>
+
+  <button class="k-btn k-btn--primary" style="position: absolute; right: 20px; bottom: 96px; width: 56px; height: 56px; padding: 0; border-radius: var(--radius-full); box-shadow: var(--shadow-overlay-md)" aria-label="Neuen Beleg scannen">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="24" height="24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+  </button>
+
+  <nav style="flex: none; display: flex; padding: 8px 8px 24px; background: var(--bg-surface); border-top: 1px solid var(--border-subtle)" aria-label="Hauptnavigation">
+    <a href="#" aria-current="page" style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 0; text-decoration: none; color: var(--brand); font: 500 11px/14px var(--font-sans)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></svg>Belege
+    </a>
+    <a href="Main.dc.html" style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 0; text-decoration: none; color: var(--text-secondary); font: 400 11px/14px var(--font-sans)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/></svg>Scannen
+    </a>
+    <a href="Dashboard.dc.html" style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 0; text-decoration: none; color: var(--text-secondary); font: 400 11px/14px var(--font-sans)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 15v3M12 10v8M17 6v12"/></svg>Auswertung
+    </a>
+  </nav>
+</div>
+</body></html>
