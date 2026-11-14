@@ -20,7 +20,11 @@
             "input": "apps/signflow/public"
           }
         ],
-        "styles": ["apps/signflow/src/styles.css"]
+        "styles": [
+          "libs/ui/src/styles/tokens.css",
+          "libs/ui/src/styles/base.css",
+          "apps/signflow/src/styles.css"
+        ]
       },
       "configurations": {
         "production": {

@@ -20,7 +20,11 @@
             "input": "apps/ui-storybook/public"
           }
         ],
-        "styles": ["apps/ui-storybook/src/styles.css"]
+        "styles": [
+          "libs/ui/src/styles/tokens.css",
+          "libs/ui/src/styles/base.css",
+          "apps/ui-storybook/src/styles.css"
+        ]
       },
       "configurations": {
         "production": {

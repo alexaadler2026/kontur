@@ -20,7 +20,11 @@
             "input": "apps/belegscan/public"
           }
         ],
-        "styles": ["apps/belegscan/src/styles.css"]
+        "styles": [
+          "libs/ui/src/styles/tokens.css",
+          "libs/ui/src/styles/base.css",
+          "apps/belegscan/src/styles.css"
+        ]
       },
       "configurations": {
         "production": {
