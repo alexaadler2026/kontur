@@ -11,6 +11,7 @@ test('every story has no WCAG 2.1 A/AA violations (axe)', async ({ page }) => {
       'components-button--variants',
       'components-textfield--states',
       'components-checkbox--dark-theme',
+      'components-radio--dark-theme',
     ]),
   );
 
