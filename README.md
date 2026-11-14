@@ -11,7 +11,7 @@ Portfolio monorepo: two German B2B products built on one Angular design system.
 
 UI languages: German (default), English, Russian. Accessibility target: WCAG 2.1 AA / BITV 2.0.
 
-> Status: task 001 — workspace foundation. The apps are empty shells; features follow task by task.
+> Status: workspace foundation (001) and Kontur design tokens + fonts (003). The apps are empty shells; features follow task by task.
 
 ## Tech stack
 
@@ -45,15 +45,16 @@ pull request by [CI](.github/workflows/ci.yml).
 
 ## Repository map
 
-| Path               | Content                                                                |
-| ------------------ | ---------------------------------------------------------------------- |
-| `apps/`            | Applications and their e2e projects                                    |
-| `libs/`            | Libraries (`ui` now; `receipt-parser`, `shared/*` later)               |
-| `docs/design/`     | Design source of truth: Kontur tokens, component specs, screen mockups |
-| `docs/adr/`        | Architecture Decision Records ([index](docs/adr/README.md))            |
-| `docs/plans/`      | Plans of larger tasks                                                  |
-| `docs/journal/`    | What was built in each task and why ([index](docs/journal/README.md))  |
-| `docs/glossary.md` | Domain terms in DE / EN / RU                                           |
+| Path               | Content                                                                                                                       |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| `apps/`            | Applications and their e2e projects                                                                                           |
+| `libs/`            | Libraries (`ui` now; `receipt-parser`, `shared/*` later)                                                                      |
+| `tools/tokens`     | Generator: `docs/design/tokens.json` → `libs/ui/src/styles/tokens.css` ([ADR-0002](docs/adr/0002-design-tokens-generator.md)) |
+| `docs/design/`     | Design source of truth: Kontur tokens, component specs, screen mockups                                                        |
+| `docs/adr/`        | Architecture Decision Records ([index](docs/adr/README.md))                                                                   |
+| `docs/plans/`      | Plans of larger tasks                                                                                                         |
+| `docs/journal/`    | What was built in each task and why ([index](docs/journal/README.md))                                                         |
+| `docs/glossary.md` | Domain terms in DE / EN / RU                                                                                                  |
 
 ## Architecture rules
 
