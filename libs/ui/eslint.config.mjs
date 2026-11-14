@@ -33,7 +33,8 @@ export default [
       '@angular-eslint/component-selector': [
         'error',
         {
-          type: 'element',
+          // element (<k-tabs>) and attribute on native elements (<button k-button>), see api-contracts.d.ts
+          type: ['element', 'attribute'],
           prefix: 'k',
           style: 'kebab-case',
         },
