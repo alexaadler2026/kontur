@@ -1,11 +1,17 @@
-# CI: every push to main and every pull request must pass format, lint, unit tests,
-# build and e2e (incl. axe) for all projects affected by the change.
+# CI: format, lint, unit tests, build, Storybook build and e2e (incl. axe).
+# - pull request: only projects affected by the PR (compared with main)
+# - push to main / manual run: ALL projects — main is always fully verified, so a
+#   docs-only commit can never produce a green run that checked nothing.
 name: CI
 
 on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch: # "Run workflow" button in the Actions tab
+
+env:
+  NX_RUN: ${{ github.event_name == 'pull_request' && 'affected' || 'run-many' }}
 
 permissions:
   contents: read
@@ -22,7 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          fetch-depth: 0 # full history: Nx compares against the last green commit
+          fetch-depth: 0 # full history: "affected" compares the PR with main
 
       - uses: pnpm/action-setup@v6 # version comes from "packageManager" in package.json
 
@@ -33,14 +39,15 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # Sets NX_BASE / NX_HEAD so "affected" knows which commits to compare.
+      # Sets NX_BASE / NX_HEAD so "affected" knows which commits to compare (PRs only).
       - uses: nrwl/nx-set-shas@v5
+        if: github.event_name == 'pull_request'
 
       - run: pnpm nx format:check --all
-      - run: pnpm nx affected -t lint test build build-storybook
+      - run: pnpm nx $NX_RUN -t lint test build build-storybook
 
       - run: pnpm exec playwright install --with-deps chromium
-      - run: pnpm nx affected -t e2e
+      - run: pnpm nx $NX_RUN -t e2e
 
       - name: Upload Playwright report on failure
         if: failure()
