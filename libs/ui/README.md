@@ -31,12 +31,17 @@ Package consumers get the same files under `src/styles/` of the npm package.
 
 ## Components
 
-| Component  | Selector                                                   | Spec                                                      |
-| ---------- | ---------------------------------------------------------- | --------------------------------------------------------- |
-| Button     | `<button k-button>`, `<a k-button>`                        | [Button.md](../../docs/design/components/Button.md)       |
-| IconButton | `<button k-icon-button ariaLabel="…">`                     | [Button.md](../../docs/design/components/Button.md)       |
-| TextField  | `<k-form-field label="…"><input k-input /></k-form-field>` | [TextField.md](../../docs/design/components/TextField.md) |
-| Checkbox   | `<k-checkbox label="…" [formControl]="…" />`               | [Checkbox.md](../../docs/design/components/Checkbox.md)   |
+| Component  | Selector                                                                                               | Spec                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------- |
+| Button     | `<button k-button>`, `<a k-button>`                                                                    | [Button.md](../../docs/design/components/Button.md)       |
+| IconButton | `<button k-icon-button ariaLabel="…">`                                                                 | [Button.md](../../docs/design/components/Button.md)       |
+| TextField  | `<k-form-field label="…"><input k-input /></k-form-field>`                                             | [TextField.md](../../docs/design/components/TextField.md) |
+| Checkbox   | `<k-checkbox label="…" [formControl]="…" />`                                                           | [Checkbox.md](../../docs/design/components/Checkbox.md)   |
+| Radio      | `<k-radio-group legend="…" name="…" [formControl]="…"><k-radio value="…" label="…" /></k-radio-group>` | [Radio.md](../../docs/design/components/Radio.md)         |
+
+**Radio `name` must be unique on the page.** Radios with the same `name` outside a `<form>`
+are one group for the browser: choosing in one `k-radio-group` would uncheck the other, and
+arrow keys would jump between them. Inside a `<form>` the scope is that form.
 
 Styles: shared rules in `src/styles/kontur-base.css`, component rules next to each
 component, ported 1:1 from `docs/design/components.css` ([ADR-0003](../../docs/adr/0003-component-styles.md)).

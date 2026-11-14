@@ -14,3 +14,4 @@ German summary with a glossary (template: [TEMPLATE.md](TEMPLATE.md)).
 | [006](006-checkbox.md)              | Checkbox: ControlValueAccessor pattern (ADR-0004), text errors, Signal Forms compatibility | 2026-11-14 |
 | [007](007-token-contrast.md)        | Token contrast test: 27 WCAG pairs in both themes, narrowest margin 4.59                   | 2026-11-14 |
 | [007a](007a-danger-tokens.md)       | Danger button hover/active by tokens (Kontur v4) instead of filter                         | 2026-11-14 |
+| [008](008-radio.md)                 | Radio: CVA on the group, native radios sharing name, touched on leaving the group          | 2026-11-14 |
