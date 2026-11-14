@@ -23,19 +23,25 @@ pnpm nx run tokens:generate   # after changing docs/design/tokens.json
 pnpm nx run tokens:check      # fails if the committed CSS is out of date (runs in CI)
 ```
 
-Apps include the styles in `project.json` → `build.options.styles` and set
+Apps include `tokens.css` and `kontur-base.css` in `project.json` → `build.options.styles` and set
 `<body class="body">` (generated text style). Themes: light by default (`:root`),
 dark via `data-theme="dark"` on `<html>`.
 
 Package consumers get the same files under `src/styles/` of the npm package.
 
-## Status
+## Components
 
-Tokens and fonts are in place; components follow. The `test` target is added together
-with the first component and its spec, because the Angular unit-test builder fails when
-a project has no spec files.
+| Component  | Selector                               | Spec                                                |
+| ---------- | -------------------------------------- | --------------------------------------------------- |
+| Button     | `<button k-button>`, `<a k-button>`    | [Button.md](../../docs/design/components/Button.md) |
+| IconButton | `<button k-icon-button ariaLabel="…">` | [Button.md](../../docs/design/components/Button.md) |
+
+Styles: shared rules in `src/styles/kontur-base.css`, component rules next to each
+component, ported 1:1 from `docs/design/components.css` ([ADR-0003](../../docs/adr/0003-component-styles.md)).
 
 ```sh
-pnpm nx build ui      # ng-packagr build into dist/libs/ui
+pnpm nx test ui                 # Angular Testing Library specs (Vitest)
+pnpm nx build ui                # ng-packagr build into dist/libs/ui
 pnpm nx lint ui
+pnpm nx e2e ui-storybook-e2e    # axe on every story + font subset loading
 ```
