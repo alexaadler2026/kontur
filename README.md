@@ -11,6 +11,9 @@ Portfolio monorepo: two German B2B products built on one Angular design system.
 
 UI languages: German (default), English, Russian. Accessibility target: WCAG 2.1 AA / BITV 2.0.
 
+> **Live Storybook (component library):** <https://alexaadler2026.github.io/kontur/> — published from `main` after green CI
+> ([ADR-0005](docs/adr/0005-storybook-on-github-pages.md)).
+
 > Status: workspace foundation (001), Kontur design tokens + fonts (003), first components in Storybook: Button/IconButton (004), TextField (005), Checkbox (006), token contrast test (007), Radio (008), Switch (009). The apps are empty shells; features follow task by task.
 
 ## Tech stack

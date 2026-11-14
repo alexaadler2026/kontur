@@ -31,6 +31,9 @@ Package consumers get the same files under `src/styles/` of the npm package.
 
 ## Components
 
+Live docs: **[Storybook](https://alexaadler2026.github.io/kontur/)** — every component, both themes, keyboard behaviour. It is
+the exact build that passed axe and the keyboard e2e in CI ([ADR-0005](../../docs/adr/0005-storybook-on-github-pages.md)).
+
 | Component  | Selector                                                                                               | Spec                                                      |
 | ---------- | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------- |
 | Button     | `<button k-button>`, `<a k-button>`                                                                    | [Button.md](../../docs/design/components/Button.md)       |
