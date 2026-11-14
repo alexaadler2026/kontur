@@ -92,7 +92,8 @@
       "options": {
         "buildTarget": "ui-storybook:build-storybook",
         "staticFilePath": "dist/storybook/ui-storybook",
-        "spa": true
+        "spa": true,
+        "port": 4402
       },
       "configurations": {
         "ci": {
