@@ -59,3 +59,5 @@ Chosen option: "<option>", because <justification against the drivers>.
 - Good: <…>
 - Bad: <…>
 ```
+
+| [0005](0005-storybook-on-github-pages.md) | Storybook on GitHub Pages: build once, deploy the tested artifact | Accepted |
