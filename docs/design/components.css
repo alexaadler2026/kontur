@@ -295,3 +295,40 @@ textarea.k-field { height: auto; padding: var(--space-2) var(--space-3); resize:
 .k-ocr-box--mid { border-color: var(--warning); border-style: dashed; }
 .k-ocr-box--low { border-color: var(--error); border-style: dotted; border-width: 2.5px; }
 .k-ocr-box.is-selected { outline: var(--focus-width) solid var(--focus-ring); outline-offset: 2px; }
+
+/* ---------- Contract completion (v2, 2026-11-14) ----------
+   Variants promised by api-contracts.d.ts that had no style before. Tokens only. */
+
+/* IconButton size sm (contract: IconButtonProps.size "md" | "sm") */
+.k-icon-btn--sm { width: var(--control-sm); height: var(--control-sm); }
+
+/* Select size sm (contract: SelectProps.size "md" | "sm" | "touch") */
+.k-select--sm { height: var(--control-sm); }
+
+/* Dialog size sm = 400px, md = 480px default (contract: DialogConfig.size) */
+.k-dialog--sm { width: min(400px, calc(100vw - 32px)); }
+
+/* FormField required marker (contract: FormFieldProps.required).
+   The asterisk is decorative (aria-hidden="true"); the input carries aria-required="true". */
+.k-required { margin-left: 2px; color: var(--error); }
+
+/* Checkbox error (contract: CheckboxProps.error) */
+.k-check.is-invalid { color: var(--error); }
+.k-check.is-invalid input { border-color: var(--error); }
+
+/* Progress indeterminate (contract: ProgressProps.value null).
+   Respects reduced motion: a static 40% bar instead of the sweep. */
+.k-progress.is-indeterminate > span { width: 40%; animation: k-indeterminate 1.2s ease-in-out infinite; }
+@keyframes k-indeterminate { 0% { transform: translateX(-100%); } 100% { transform: translateX(250%); } }
+@media (prefers-reduced-motion: reduce) {
+  .k-progress.is-indeterminate > span { animation: none; }
+  .k-btn.is-loading::after, .k-spinner { animation-duration: 2.4s; }
+}
+
+/* Tab disabled (contract: TabProps.disabled) */
+.k-tab:disabled, .k-tab.is-disabled { color: var(--text-disabled); cursor: not-allowed; }
+.k-tab:disabled:hover, .k-tab.is-disabled:hover { color: var(--text-disabled); }
+
+/* Menu item disabled (contract: MenuItemProps.disabled) */
+.k-menu-item:disabled, .k-menu-item.is-disabled { color: var(--text-disabled); cursor: not-allowed; background: none; }
+.k-menu-item:disabled .k-ico, .k-menu-item.is-disabled .k-ico { color: var(--text-disabled); }
