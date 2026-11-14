@@ -56,6 +56,7 @@ Plans for larger tasks live in docs/plans/. Domain terms in docs/glossary.md.
 - After changes run: nx affected -t lint test build. Report results honestly.
 - Run e2e locally with CI=true so Playwright starts its own fresh server; never reuse the owner's running dev server.
 - Never modify or delete a test just to make it pass. If a test seems wrong, stop and explain.
+- A test may change only when the requirement it encodes changed — in the same commit as that change, with the reason in the commit message and journal. Never change a test to make broken code pass.
 - Never run git push, never commit .env or secrets.
 - Use conventional commits (feat:, fix:, refactor:, test:, docs:, chore:).
 
