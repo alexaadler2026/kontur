@@ -1,5 +1,6 @@
 /* Kontur — FormField + Input (ADR-0003). Ported verbatim from docs/design/components.css:
-   section "Form field" + .k-required from "Contract completion (v2)".
+   section "Form field". The .k-required marker is shared with k-radio-group and lives in
+   styles/kontur-base.css.
    The section also styles .k-select (shared rules); Select will reuse this file. */
 
 /* ---------- Form field ---------- */
@@ -27,6 +28,3 @@ textarea.k-field { height: auto; padding: var(--space-2) var(--space-3); resize:
 .k-field-wrap .k-ico--lead ~ .k-field { padding-left: var(--space-8); }
 .k-field--touch, .k-select--touch { height: var(--control-touch); font-size: 16px; }
 
-/* FormField required marker (contract: FormFieldProps.required).
-   The asterisk is decorative (aria-hidden="true"); the input carries aria-required="true". */
-.k-required { margin-left: 2px; color: var(--error); }

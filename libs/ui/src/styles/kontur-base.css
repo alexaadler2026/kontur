@@ -24,6 +24,11 @@ body { margin: 0; background-color: var(--bg-page); color: var(--text-primary); 
   outline-offset: 2px;
 }
 
+/* ---------- required marker (from "Contract completion (v2)") ----------
+   Shared by k-form-field and k-radio-group. The asterisk is decorative (aria-hidden="true");
+   the control itself says "required" (aria-required on inputs, native required on radios). */
+.k-required { margin-left: 2px; color: var(--error); }
+
 /* ---------- shared keyframes (from Button, Skeleton, Progress sections) ---------- */
 @keyframes k-spin { to { transform: rotate(360deg); } }
 @keyframes k-shimmer { to { background-position: -200% 0; } }
