@@ -1,0 +1,48 @@
+{
+  "name": "tokens",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "tools/tokens/src",
+  "tags": ["scope:shared", "type:util"],
+  "namedInputs": {
+    "design": [
+      "{workspaceRoot}/docs/design/tokens.json",
+      "{workspaceRoot}/docs/design/fonts/**/*"
+    ],
+    "generated": [
+      "{workspaceRoot}/libs/ui/src/styles/tokens.css",
+      "{workspaceRoot}/libs/ui/src/styles/fonts/**/*"
+    ]
+  },
+  "targets": {
+    "generate": {
+      "command": "node tools/tokens/src/cli.mts",
+      "cache": true,
+      "inputs": ["design", "{projectRoot}/src/**/*.mts"],
+      "outputs": [
+        "{workspaceRoot}/libs/ui/src/styles/tokens.css",
+        "{workspaceRoot}/libs/ui/src/styles/fonts"
+      ]
+    },
+    "check": {
+      "command": "node tools/tokens/src/cli.mts --check",
+      "cache": true,
+      "inputs": ["design", "generated", "{projectRoot}/src/**/*.mts"]
+    },
+    "test": {
+      "command": "vitest run",
+      "options": { "cwd": "tools/tokens" },
+      "cache": true,
+      "inputs": [
+        "default",
+        "{workspaceRoot}/docs/design/tokens.json",
+        "{workspaceRoot}/docs/design/tokens.css"
+      ]
+    },
+    "typecheck": {
+      "command": "tsc -p tools/tokens/tsconfig.json",
+      "cache": true,
+      "inputs": ["default", "{workspaceRoot}/tsconfig.base.json"]
+    }
+  }
+}

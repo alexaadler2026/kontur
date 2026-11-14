@@ -1,0 +1,96 @@
+/* Kontur — GENERATED from docs/design/tokens.json by tools/tokens. Do not edit by hand.
+   Regenerate: pnpm nx run tokens:generate */
+@font-face { font-family: "IBM Plex Sans"; font-weight: 400; font-style: normal; font-display: swap; src: url("fonts/IBMPlexSans-400.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 400; font-style: normal; font-display: swap; src: url("fonts/IBMPlexSans-400-cyrillic.woff2") format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 500; font-style: normal; font-display: swap; src: url("fonts/IBMPlexSans-500.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 500; font-style: normal; font-display: swap; src: url("fonts/IBMPlexSans-500-cyrillic.woff2") format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 600; font-style: normal; font-display: swap; src: url("fonts/IBMPlexSans-600.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "IBM Plex Sans"; font-weight: 600; font-style: normal; font-display: swap; src: url("fonts/IBMPlexSans-600-cyrillic.woff2") format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 400; font-style: normal; font-display: swap; src: url("fonts/IBMPlexMono-400.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 400; font-style: normal; font-display: swap; src: url("fonts/IBMPlexMono-400-cyrillic.woff2") format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 500; font-style: normal; font-display: swap; src: url("fonts/IBMPlexMono-500.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "IBM Plex Mono"; font-weight: 500; font-style: normal; font-display: swap; src: url("fonts/IBMPlexMono-500-cyrillic.woff2") format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+:root, [data-theme="light"] {
+  --bg-page: #f7f8fa;
+  --bg-surface: #ffffff;
+  --bg-surface-raised: #ffffff;
+  --bg-subtle: #f0f2f5;
+  --border-subtle: #dde1e6;
+  --border-input: #808996;
+  --text-primary: #161b22;
+  --text-secondary: #5b6470;
+  --text-disabled: #9aa2ac;
+  --text-on-brand: #ffffff;
+  --brand: #0e5a6b;
+  --brand-hover: #0b4855;
+  --brand-active: #083a45;
+  --brand-subtle: #e3f1f3;
+  --focus-ring: var(--brand);
+  --success: #1e7b4a;
+  --success-subtle: #e4f3ea;
+  --warning: #a15c00;
+  --warning-subtle: #fbf0de;
+  --error: #b42318;
+  --error-subtle: #fbeae8;
+  --info: #1f5fad;
+  --info-subtle: #e8f0fb;
+  --overlay-scrim: rgba(13, 17, 23, 0.5);
+  --shadow-overlay-sm: 0 2px 8px rgba(13, 17, 23, 0.12), 0 0 0 1px rgba(13, 17, 23, 0.04);
+  --shadow-overlay-md: 0 8px 24px rgba(13, 17, 23, 0.16), 0 0 0 1px rgba(13, 17, 23, 0.04);
+}
+[data-theme="dark"] {
+  --bg-page: #12161c;
+  --bg-surface: #1a2028;
+  --bg-surface-raised: #222933;
+  --bg-subtle: #212831;
+  --border-subtle: #323a45;
+  --border-input: #6a7584;
+  --text-primary: #e6e9ed;
+  --text-secondary: #9ba3ae;
+  --text-disabled: #5d6671;
+  --text-on-brand: #12161c;
+  --brand: #4fb3c4;
+  --brand-hover: #6fc2d0;
+  --brand-active: #8ed0db;
+  --brand-subtle: #15313a;
+  --focus-ring: var(--brand);
+  --success: #4cc38a;
+  --success-subtle: #143326;
+  --warning: #e0a458;
+  --warning-subtle: #3a2c14;
+  --error: #f2726a;
+  --error-subtle: #3b1a17;
+  --info: #6ca8e8;
+  --info-subtle: #16263b;
+  --overlay-scrim: rgba(0, 0, 0, 0.6);
+  --shadow-overlay-sm: 0 2px 8px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --shadow-overlay-md: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-full: 9999px;
+  --control-md: 36px;
+  --control-sm: 32px;
+  --control-touch: 44px;
+  --focus-width: 2px;
+  --font-sans: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
+}
+.h1 { font: 600 32px/40px var(--font-sans); }
+.h2 { font: 600 24px/32px var(--font-sans); }
+.h3 { font: 600 20px/28px var(--font-sans); }
+.body-lg { font: 400 16px/24px var(--font-sans); }
+.body { font: 400 14px/20px var(--font-sans); }
+.body-strong { font: 500 14px/20px var(--font-sans); }
+.caption { font: 400 12px/16px var(--font-sans); }
+.label { font: 500 12px/16px var(--font-sans); letter-spacing: 0.02em; }
+.mono { font: 400 14px/20px var(--font-mono); font-variant-numeric: tabular-nums; }
+.mono-sm { font: 400 12px/16px var(--font-mono); font-variant-numeric: tabular-nums; }

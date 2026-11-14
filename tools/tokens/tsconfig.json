@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    // The CLI runs as plain `node cli.mts`: Node strips the types and executes the rest.
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "allowImportingTsExtensions": true,
+    "noEmit": true,
+    // Only syntax Node can erase: no enum, namespace or constructor parameter
+    // properties. Caught by the type checker instead of crashing at runtime.
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
+    "types": ["node"]
+  },
+  "include": ["src/**/*.mts", "vitest.config.mts"]
+}
