@@ -11,3 +11,4 @@ export {
 } from './lib/button/icon-button';
 export { FormFieldComponent } from './lib/form-field/form-field';
 export { InputDirective, type InputSize } from './lib/form-field/input';
+export { CheckboxComponent } from './lib/choice/checkbox';
