@@ -8,6 +8,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { type FormFieldContext, K_FORM_FIELD } from './form-field-context';
+import { ErrorIconComponent } from '../util/error-icon';
 import { InputDirective } from './input';
 
 let nextId = 0;
@@ -21,6 +22,7 @@ let nextId = 0;
  */
 @Component({
   selector: 'k-form-field',
+  imports: [ErrorIconComponent],
   template: `
     <label [for]="inputId()"
       >{{ label() }}
@@ -34,22 +36,7 @@ let nextId = 0;
     }
     @if (error()) {
       <span class="k-error-msg" [id]="errorId">
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          width="14"
-          height="14"
-          aria-hidden="true"
-        >
-          <path
-            d="M10.3 3.8 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.8a2 2 0 0 0-3.4 0z"
-          />
-          <path d="M12 9v4m0 4h.01" />
-        </svg>
+        <svg k-error-icon></svg>
         {{ error() }}
       </span>
     }
