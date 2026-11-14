@@ -83,7 +83,7 @@ interface RadioGroupProps {
                                // aria-describedby (hint, then error) on the fieldset — screen readers announce it when
                                // focus enters the group (GOV.UK pattern). No aria-invalid on single radios: ARIA 1.2
                                // supports it on radiogroup/checkbox, not on radio.
-  required?: boolean;          // k-required marker in the legend (aria-hidden); aria-required on the radios
+  required?: boolean;          // k-required marker in the legend (aria-hidden); native `required` on each radio input (aria-required is not supported on role radio in ARIA 1.2)
 }
 interface RadioProps<T> { value: T; label: string; disabled?: boolean; }
 /** <k-switch> — ControlValueAccessor (boolean), role="switch". Class: k-switch.

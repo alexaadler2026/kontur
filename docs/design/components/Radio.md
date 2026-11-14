@@ -5,7 +5,7 @@
 - Всегда `fieldset.k-choice-group` + `legend` (стиль `label`); порядок как в GOV.UK: legend, подсказка, ошибка, варианты в `k-choice-options`.
 - Выбранная точка — `brand` с внутренним кольцом `bg-surface`; навигация стрелками — нативная (общий `name`).
 - Ошибка (v3) — текст `k-error-msg` с иконкой, связан с fieldset через `aria-describedby`; рамки кругов — `error`. `aria-invalid` на отдельные radio не ставится (в ARIA 1.2 не поддерживается).
-- Обязательная группа — маркер `k-required` в legend (`aria-hidden`), `aria-required` на radio.
+- Обязательная группа — маркер `k-required` в legend (`aria-hidden`), нативный атрибут `required` на каждом `<input type="radio">` (браузер сам сообщает «обязательно»; `aria-required` на роли radio в ARIA 1.2 не поддерживается — он есть только у radiogroup).
 
 ---
 Group: Forms  
