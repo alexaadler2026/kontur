@@ -12,11 +12,6 @@ import type { ContrastPair } from './contrast.mts';
  * Not in the list, on purpose:
  * - Disabled states (text-disabled, disabled borders): 1.4.3 and 1.4.11 explicitly exempt
  *   inactive components.
- * - Danger button hover: `.k-btn--danger:hover { filter: brightness(0.92) }` darkens --error at
- *   runtime; there is no token to check. Computed by hand from tokens.json v3 (2026-11-14),
- *   text-on-brand on darkened error: light #ffffff 6.57 → 7.41 (darker red, white text gains);
- *   dark #12161c 6.39 → 5.46 (dark text on darker red LOSES contrast, still ≥ 4.5).
- *   Re-check by hand when --error or --text-on-brand changes.
  * - overlay-scrim (rgba): alpha — its contrast depends on the content underneath.
  */
 
@@ -108,6 +103,18 @@ export const CONTRAST_PAIRS: readonly ContrastPair[] = [
     foreground: 'text-on-brand',
     background: 'error',
     usedIn: 'danger button',
+  },
+  {
+    ...TEXT,
+    foreground: 'text-on-brand',
+    background: 'error-hover',
+    usedIn: 'danger button :hover',
+  },
+  {
+    ...TEXT,
+    foreground: 'text-on-brand',
+    background: 'error-active',
+    usedIn: 'danger button :active',
   },
   {
     ...TEXT,

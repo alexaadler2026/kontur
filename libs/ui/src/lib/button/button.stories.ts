@@ -101,6 +101,28 @@ export const States: Story = {
   }),
 };
 
+/**
+ * Hover and active frozen with the reference state classes (is-hover / is-active), in both themes.
+ * Kontur v4: primary and danger change colour by tokens only (brand-hover/-active,
+ * error-hover/-active); in the dark theme they are lighter than the base, because the text is dark.
+ */
+export const InteractionStates: Story = {
+  name: 'Hover and active',
+  render: () => ({
+    template: `
+      @for (theme of ['light', 'dark']; track theme) {
+        <div [attr.data-theme]="theme" [attr.data-testid]="'theme-' + theme"
+             style="${row}; padding: 16px; background: var(--bg-page)">
+          <button k-button variant="primary" class="is-hover">Unterschreiben (hover)</button>
+          <button k-button variant="primary" class="is-active">Unterschreiben (active)</button>
+          <button k-button variant="danger">Ablehnen</button>
+          <button k-button variant="danger" class="is-hover">Ablehnen (hover)</button>
+          <button k-button variant="danger" class="is-active">Ablehnen (active)</button>
+        </div>
+      }`,
+  }),
+};
+
 export const AsLink: Story = {
   name: 'As link',
   render: () => ({

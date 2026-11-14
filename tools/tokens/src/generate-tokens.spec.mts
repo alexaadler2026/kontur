@@ -81,7 +81,7 @@ describe('generateTokensCss — golden test against docs/design/tokens.css', () 
       (t) => `--${t.name}`,
     );
 
-    expect(names).toHaveLength(27); // tokens v3: 25 colours (+ switch-knob) + 2 shadows
+    expect(names).toHaveLength(29); // tokens v4: 27 colours (+ error-hover, error-active) + 2 shadows
     expect([...light.keys()]).toEqual(names);
     expect([...dark.keys()]).toEqual(names);
     expect(light.get('--brand')).toBe('#0e5a6b');
@@ -90,6 +90,11 @@ describe('generateTokensCss — golden test against docs/design/tokens.css', () 
     // v3 alias in both themes (dark knob contrast fix)
     expect(light.get('--switch-knob')).toBe('var(--text-on-brand)');
     expect(dark.get('--switch-knob')).toBe('var(--text-on-brand)');
+    // v4: danger hover/active are tokens; lighter than --error in the dark theme (dark text on them)
+    expect(light.get('--error-hover')).toBe('#9a1d14');
+    expect(dark.get('--error-hover')).toBe('#f58f88');
+    expect(light.get('--error-active')).toBe('#7f1810');
+    expect(dark.get('--error-active')).toBe('#f8aba5');
   });
 
   it('emits all text-style classes incl. letter-spacing and tabular figures', () => {
