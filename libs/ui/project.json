@@ -7,7 +7,7 @@
   "tags": ["scope:shared", "type:ui"],
   "targets": {
     "build": {
-      "executor": "@nx/angular:package",
+      "executor": "@angular/build:ng-packagr",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "defaultConfiguration": "production",
       "options": {
@@ -19,6 +19,13 @@
           "tsConfig": "libs/ui/tsconfig.lib.prod.json"
         },
         "development": {}
+      }
+    },
+    "test": {
+      "executor": "@angular/build:unit-test",
+      "options": {
+        "tsConfig": "libs/ui/tsconfig.spec.json",
+        "watch": false
       }
     }
   }

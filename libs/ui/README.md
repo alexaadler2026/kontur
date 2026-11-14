@@ -10,11 +10,11 @@ Belegscan and published to npm (scope decision: [ADR-0000](../../docs/adr/0000-n
 
 ## Styles
 
-| File                       | Origin                                                        |
-| -------------------------- | ------------------------------------------------------------- |
-| `src/styles/tokens.css`    | **Generated** from `docs/design/tokens.json` — do not edit    |
-| `src/styles/fonts/*.woff2` | **Copied** by the generator (IBM Plex, latin + cyrillic, OFL) |
-| `src/styles/base.css`      | Hand-written page base (`body` background/colour via tokens)  |
+| File                         | Origin                                                                     |
+| ---------------------------- | -------------------------------------------------------------------------- |
+| `src/styles/tokens.css`      | **Generated** from `docs/design/tokens.json` — do not edit                 |
+| `src/styles/fonts/*.woff2`   | **Copied** by the generator (IBM Plex, latin + cyrillic, OFL)              |
+| `src/styles/kontur-base.css` | Shared styles (ADR-0003): page base, focus ring, keyframes, reduced motion |
 
 Generator and decision: [`tools/tokens`](../../tools/tokens), [ADR-0002](../../docs/adr/0002-design-tokens-generator.md).
 

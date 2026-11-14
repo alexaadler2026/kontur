@@ -22,7 +22,7 @@
         ],
         "styles": [
           "libs/ui/src/styles/tokens.css",
-          "libs/ui/src/styles/base.css",
+          "libs/ui/src/styles/kontur-base.css",
           "apps/belegscan/src/styles.css"
         ]
       },

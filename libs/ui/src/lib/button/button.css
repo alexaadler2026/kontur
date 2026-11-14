@@ -1,0 +1,49 @@
+/* Kontur — Button and IconButton (ADR-0003). Ported verbatim from docs/design/components.css:
+   section "Button" + .k-icon-btn--sm from "Contract completion (v2)".
+   Shared rules (focus ring, @keyframes k-spin, reduced motion) are in styles/kontur-base.css. */
+
+/* ---------- Button ---------- */
+.k-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  height: var(--control-md); padding: 0 var(--space-4);
+  font: 500 14px/20px var(--font-sans); white-space: nowrap;
+  border-radius: var(--radius-sm); border: 1px solid transparent;
+  cursor: pointer; user-select: none; text-decoration: none;
+  transition: background-color 120ms, border-color 120ms, color 120ms;
+}
+.k-btn--sm { height: var(--control-sm); padding: 0 var(--space-3); }
+.k-btn--touch { height: var(--control-touch); padding: 0 var(--space-4); }
+.k-btn--primary { background: var(--brand); color: var(--text-on-brand); }
+.k-btn--primary:hover, .k-btn--primary.is-hover { background: var(--brand-hover); }
+.k-btn--primary:active, .k-btn--primary.is-active { background: var(--brand-active); }
+.k-btn--secondary { background: var(--bg-surface); color: var(--text-primary); border-color: var(--border-input); }
+.k-btn--secondary:hover, .k-btn--secondary.is-hover { background: var(--bg-subtle); }
+.k-btn--secondary:active, .k-btn--secondary.is-active { background: var(--border-subtle); }
+.k-btn--ghost { background: transparent; color: var(--brand); }
+.k-btn--ghost:hover, .k-btn--ghost.is-hover { background: var(--brand-subtle); }
+.k-btn--ghost:active, .k-btn--ghost.is-active { background: var(--brand-subtle); color: var(--brand-hover); }
+.k-btn--danger { background: var(--error); color: var(--text-on-brand); }
+.k-btn--danger:hover, .k-btn--danger.is-hover { filter: brightness(0.92); }
+.k-btn:disabled, .k-btn.is-disabled {
+  background: var(--bg-subtle); color: var(--text-disabled);
+  border-color: transparent; cursor: not-allowed; pointer-events: none;
+}
+.k-btn--ghost:disabled, .k-btn--ghost.is-disabled { background: transparent; }
+.k-btn .k-ico { width: 16px; height: 16px; flex: none; }
+.k-btn.is-loading { position: relative; color: transparent; pointer-events: none; }
+.k-btn.is-loading::after {
+  content: ""; position: absolute; width: 16px; height: 16px;
+  border: 2px solid var(--text-on-brand); border-right-color: transparent;
+  border-radius: 50%; animation: k-spin 0.7s linear infinite;
+}
+.k-btn--secondary.is-loading::after, .k-btn--ghost.is-loading::after { border-color: var(--brand); border-right-color: transparent; }
+.k-icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: var(--control-md); height: var(--control-md); padding: 0;
+  background: transparent; border: none; border-radius: var(--radius-sm);
+  color: var(--text-secondary); cursor: pointer;
+}
+.k-icon-btn:hover, .k-icon-btn.is-hover { background: var(--bg-subtle); color: var(--text-primary); }
+
+/* IconButton size sm (contract: IconButtonProps.size "md" | "sm") */
+.k-icon-btn--sm { width: var(--control-sm); height: var(--control-sm); }

@@ -1,0 +1,36 @@
+/* Kontur — shared styles of @adlersoft/kontur-ui (ADR-0003).
+   Load globally right after tokens.css. Component-specific styles live next to each
+   component (libs/ui/src/lib/<name>/<name>.css).
+   Rules below are ported verbatim from docs/design/components.css; only the page base
+   at the top is hand-written. Values only via tokens. */
+
+/* ---------- page base (hand-written) ----------
+   The font comes from the generated text style: <body class="body">. */
+body { margin: 0; background-color: var(--bg-page); color: var(--text-primary); }
+
+/* ---------- base ---------- */
+.k-root, [class^="k-"], [class^="k-"] * { box-sizing: border-box; }
+.k-body { font: 400 14px/20px var(--font-sans); color: var(--text-primary); }
+.k-num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.k-label { font: 500 12px/16px var(--font-sans); letter-spacing: 0.02em; text-transform: uppercase; color: var(--text-secondary); }
+.k-caption { font: 400 12px/16px var(--font-sans); color: var(--text-secondary); }
+.k-link { color: var(--brand); text-decoration: underline; text-underline-offset: 2px; border-radius: 2px; }
+.k-link:hover, .k-link.is-hover { color: var(--brand-hover); }
+
+:is(.k-btn, .k-field, .k-select, .k-check input, .k-radio input, .k-switch input,
+    .k-tab, .k-menu-item, .k-link, .k-icon-btn, .k-row-check, .k-filedrop):focus-visible,
+:is(.k-btn, .k-field, .k-select, .k-tab, .k-menu-item, .k-link, .k-icon-btn, .k-filedrop).is-focus {
+  outline: var(--focus-width) solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* ---------- shared keyframes (from Button, Skeleton, Progress sections) ---------- */
+@keyframes k-spin { to { transform: rotate(360deg); } }
+@keyframes k-shimmer { to { background-position: -200% 0; } }
+@keyframes k-indeterminate { 0% { transform: translateX(-100%); } 100% { transform: translateX(250%); } }
+
+/* ---------- reduced motion (from "Contract completion (v2)") ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .k-progress.is-indeterminate > span { animation: none; }
+  .k-btn.is-loading::after, .k-spinner { animation-duration: 2.4s; }
+}

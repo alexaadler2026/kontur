@@ -1,3 +1,11 @@
 // Public API of @adlersoft/kontur-ui.
-// Empty on purpose: design tokens and components are added from task 002 on.
-export {};
+// Styles: include styles/tokens.css and styles/kontur-base.css globally (see README).
+export {
+  ButtonComponent,
+  type ButtonSize,
+  type ButtonVariant,
+} from './lib/button/button';
+export {
+  IconButtonComponent,
+  type IconButtonSize,
+} from './lib/button/icon-button';

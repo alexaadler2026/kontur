@@ -1,7 +1,0 @@
-/* Kontur base page styles (hand-written; values only via tokens from tokens.css).
-   The font comes from the generated text style: <body class="body">. */
-body {
-  margin: 0;
-  background-color: var(--bg-page);
-  color: var(--text-primary);
-}
