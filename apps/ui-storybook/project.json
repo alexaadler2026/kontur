@@ -5,6 +5,7 @@
   "prefix": "k",
   "sourceRoot": "apps/ui-storybook/src",
   "tags": ["scope:shared", "type:app"],
+  "implicitDependencies": ["ui"],
   "targets": {
     "build": {
       "executor": "@angular/build:application",
