@@ -66,10 +66,25 @@ interface DatePickerProps {
 }
 
 /** <k-checkbox> — ControlValueAccessor (boolean). Class: k-check */
-interface CheckboxProps { label: string; indeterminate?: boolean; error?: boolean; }
+interface CheckboxProps {
+  label: string;
+  indeterminate?: boolean;     // model(): the browser clears it on click, the change flows back
+  hint?: string;
+  error?: string | null;       // v3: text, not boolean — an error must not be color-only (WCAG 1.4.1, 3.3.1).
+                               // Renders <div class="k-choice-item"> + .k-error-msg with icon; aria-invalid + aria-describedby (hint, then error)
+}
 /** <k-radio-group> + <k-radio> — ControlValueAccessor on the group. Class: k-radio.
  *  Renders <fieldset> + <legend>; arrow keys move selection (native radio behaviour). */
-interface RadioGroupProps { legend: string; name: string; }
+interface RadioGroupProps {
+  legend: string;
+  name: string;
+  hint?: string;
+  error?: string | null;       // v3: <fieldset class="k-choice-group is-invalid">; order: legend, hint, error, options.
+                               // aria-describedby (hint, then error) on the fieldset — screen readers announce it when
+                               // focus enters the group (GOV.UK pattern). No aria-invalid on single radios: ARIA 1.2
+                               // supports it on radiogroup/checkbox, not on radio.
+  required?: boolean;          // k-required marker in the legend (aria-hidden); aria-required on the radios
+}
 interface RadioProps<T> { value: T; label: string; disabled?: boolean; }
 /** <k-switch> — ControlValueAccessor (boolean), role="switch". Class: k-switch.
  *  Use only for settings applied immediately; in forms with a Save button use Checkbox. */

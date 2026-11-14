@@ -96,13 +96,18 @@ textarea.k-field { height: auto; padding: var(--space-2) var(--space-3); resize:
 .k-check input { border-radius: var(--radius-sm); }
 .k-radio input { border-radius: var(--radius-full); }
 .k-check input:checked, .k-radio input:checked { background: var(--brand); border-color: var(--brand); }
-.k-check input:checked {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-6' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+.k-check input:indeterminate { background: var(--brand); border-color: var(--brand); }
+/* Check marks (v3): drawn as a mask, colored by a token, so they pass contrast in both themes.
+   The SVGs below are alpha masks only: 'black' means "opaque", not a color. */
+.k-check input, .k-row-check { position: relative; }
+.k-check input:checked::after, .k-check input:indeterminate::after, .k-row-check:checked::after {
+  content: ""; position: absolute; inset: 0;
+  background-color: var(--text-on-brand);
+  -webkit-mask: var(--k-mark) center / 14px 14px no-repeat; mask: var(--k-mark) center / 14px 14px no-repeat;
 }
-[data-theme="dark"] .k-check input:checked {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-6' fill='none' stroke='%2312161c' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-}
-.k-check input:indeterminate { background: var(--brand); border-color: var(--brand); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8h8' stroke='white' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"); }
+.k-check input:checked::after, .k-row-check:checked::after { --k-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-6' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
+.k-check input:indeterminate::after { --k-mark: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8h8' stroke='black' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E"); }
+.k-check input:disabled::after, .k-row-check:disabled::after { background-color: var(--text-disabled); }
 .k-radio input:checked { box-shadow: inset 0 0 0 3px var(--bg-surface); }
 .k-check input:disabled, .k-radio input:disabled { background: var(--bg-subtle); border-color: var(--border-subtle); cursor: not-allowed; }
 .k-check.is-disabled, .k-radio.is-disabled { color: var(--text-disabled); cursor: not-allowed; }
@@ -114,7 +119,7 @@ textarea.k-field { height: auto; padding: var(--space-2) var(--space-3); resize:
 }
 .k-switch input::after {
   content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px;
-  background: #ffffff; border-radius: var(--radius-full); transition: translate 120ms;
+  background: var(--switch-knob); border-radius: var(--radius-full); transition: translate 120ms;
 }
 .k-switch input:checked { background: var(--brand); }
 .k-switch input:checked::after { translate: 16px 0; }
@@ -174,7 +179,7 @@ textarea.k-field { height: auto; padding: var(--space-2) var(--space-3); resize:
 .k-th-sort { display: inline-flex; align-items: center; gap: var(--space-1); background: none; border: none; padding: 0; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; cursor: pointer; border-radius: 2px; }
 .k-th-sort[aria-sort] { color: var(--brand); }
 .k-row-check { width: 16px; height: 16px; appearance: none; background: var(--bg-surface); border: 1px solid var(--border-input); border-radius: var(--radius-sm); cursor: pointer; vertical-align: middle; }
-.k-row-check:checked { background: var(--brand) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.5l3 3 6-6' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); border-color: var(--brand); }
+.k-row-check:checked { background: var(--brand); border-color: var(--brand); }
 .k-pagination { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-2) var(--space-4); border-top: 1px solid var(--border-subtle); font: 400 12px/16px var(--font-sans); color: var(--text-secondary); }
 .k-skeleton { display: block; height: 12px; border-radius: var(--radius-sm); background: linear-gradient(90deg, var(--bg-subtle) 25%, var(--border-subtle) 50%, var(--bg-subtle) 75%); background-size: 200% 100%; animation: k-shimmer 1.4s infinite; }
 @keyframes k-shimmer { to { background-position: -200% 0; } }
@@ -332,3 +337,31 @@ textarea.k-field { height: auto; padding: var(--space-2) var(--space-3); resize:
 /* Menu item disabled (contract: MenuItemProps.disabled) */
 .k-menu-item:disabled, .k-menu-item.is-disabled { color: var(--text-disabled); cursor: not-allowed; background: none; }
 .k-menu-item:disabled .k-ico, .k-menu-item.is-disabled .k-ico { color: var(--text-disabled); }
+
+/* ---------- Choice controls: hint and error text (v3, 2026-11-14) ----------
+   Error must not be color-only (WCAG 1.4.1, 3.3.1): a text message with icon,
+   linked via aria-describedby, the same as in k-form-item. */
+
+/* Single checkbox with hint/error. Text aligns with the label text:
+   16px box + space-2 gap. */
+.k-choice-item { display: flex; flex-direction: column; gap: var(--space-1); }
+.k-choice-item > .k-hint,
+.k-choice-item > .k-error-msg { padding-left: calc(16px + var(--space-2)); }
+
+/* Radio group: <fieldset class="k-choice-group"><legend class="k-label">.
+   Order like GOV.UK: legend, hint, error, then the options. */
+.k-choice-group { border: none; margin: 0; padding: 0; min-width: 0; }
+.k-choice-group > legend { padding: 0; margin-bottom: var(--space-2); }
+.k-choice-group > .k-hint,
+.k-choice-group > .k-error-msg { margin-bottom: var(--space-2); }
+.k-choice-group .k-choice-options { display: flex; flex-direction: column; gap: var(--space-2); }
+
+/* Shared text styles for hint/error outside k-form-item (same values as inside it). */
+.k-choice-item > .k-hint, .k-choice-group > .k-hint {
+  display: block; font: 400 12px/16px var(--font-sans); color: var(--text-secondary);
+}
+.k-choice-item > .k-error-msg, .k-choice-group > .k-error-msg {
+  display: flex; align-items: center; gap: var(--space-1);
+  font: 400 12px/16px var(--font-sans); color: var(--error);
+}
+.k-choice-group.is-invalid .k-radio input { border-color: var(--error); }

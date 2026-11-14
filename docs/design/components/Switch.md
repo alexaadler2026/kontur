@@ -6,5 +6,5 @@
 
 ---
 Group: Forms  
-Live preview: `Switch.html` (open in a browser) · screenshot: `Switch.png`  
+Live preview: `Switch.html` (open in a browser) · screenshots: `Switch.png` (light), `Switch-dark.png` (dark)  
 CSS: classes in `../components.css` · API contract: `../api-contracts.d.ts`
