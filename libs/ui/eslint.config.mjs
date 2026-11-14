@@ -27,7 +27,7 @@ export default [
         {
           type: 'attribute',
           prefix: 'k',
-          style: 'camelCase',
+          style: 'kebab-case', // <input k-input> — same spelling as components (k-button), see api-contracts.d.ts
         },
       ],
       '@angular-eslint/component-selector': [

@@ -25,7 +25,8 @@
       "executor": "@angular/build:unit-test",
       "options": {
         "tsConfig": "libs/ui/tsconfig.spec.json",
-        "watch": false
+        "watch": false,
+        "setupFiles": ["libs/ui/src/test-setup.ts"]
       }
     }
   }
