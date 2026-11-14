@@ -100,3 +100,11 @@ Der erste CI-Lauf auf GitHub war grün, aber er hat nichts geprüft: Im Log stan
 | der manuelle Auslöser  | manual trigger   | ручной запуск                    |
 | die falsche Sicherheit | false confidence | ложная уверенность               |
 | das Protokoll (Log)    | log              | лог, журнал выполнения           |
+
+---
+
+### Дополнение · Addendum · Nachtrag (2026-11-14)
+
+- **RU:** У всех шагов CI теперь понятные имена (`name:`). В имени шагов Nx видно реальный режим, например «Lint, test, build, Storybook (nx run-many)». GitHub подставляет `${{ env.NX_RUN }}` в название, а в старом названии оставалась неподставленная переменная `$NX_RUN`.
+- **EN:** All CI steps now have readable names. The Nx steps show the actual mode, e.g. "Lint, test, build, Storybook (nx run-many)", because GitHub expands `${{ env.NX_RUN }}` in step names; the old name showed the raw `$NX_RUN`.
+- **DE:** Alle CI-Schritte haben jetzt lesbare Namen. Die Nx-Schritte zeigen den echten Modus (`run-many` oder `affected`).

@@ -26,28 +26,40 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v7
+      - name: Check out code
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0 # full history: "affected" compares the PR with main
 
-      - uses: pnpm/action-setup@v6 # version comes from "packageManager" in package.json
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6 # version comes from "packageManager" in package.json
 
-      - uses: actions/setup-node@v7
+      - name: Set up Node.js (.nvmrc)
+        uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: pnpm
 
-      - run: pnpm install --frozen-lockfile
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       # Sets NX_BASE / NX_HEAD so "affected" knows which commits to compare (PRs only).
-      - uses: nrwl/nx-set-shas@v5
+      - name: Find base commit for affected
+        uses: nrwl/nx-set-shas@v5
         if: github.event_name == 'pull_request'
 
-      - run: pnpm nx format:check --all
-      - run: pnpm nx $NX_RUN -t lint test build build-storybook
+      - name: Format check
+        run: pnpm nx format:check --all
 
-      - run: pnpm exec playwright install --with-deps chromium
-      - run: pnpm nx $NX_RUN -t e2e
+      # The step name shows the real mode: "run-many" on main, "affected" in PRs.
+      - name: Lint, test, build, Storybook (nx ${{ env.NX_RUN }})
+        run: pnpm nx $NX_RUN -t lint test build build-storybook
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: E2E smoke + axe (nx ${{ env.NX_RUN }})
+        run: pnpm nx $NX_RUN -t e2e
 
       - name: Upload Playwright report on failure
         if: failure()
