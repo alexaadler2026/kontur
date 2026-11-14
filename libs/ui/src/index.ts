@@ -14,3 +14,4 @@ export { InputDirective, type InputSize } from './lib/form-field/input';
 export { CheckboxComponent } from './lib/choice/checkbox';
 export { RadioGroupComponent } from './lib/choice/radio-group';
 export { RadioComponent } from './lib/choice/radio';
+export { SwitchComponent } from './lib/choice/switch';

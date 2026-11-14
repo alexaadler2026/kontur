@@ -19,7 +19,8 @@ body { margin: 0; background-color: var(--bg-page); color: var(--text-primary); 
 
 :is(.k-btn, .k-field, .k-select, .k-check input, .k-radio input, .k-switch input,
     .k-tab, .k-menu-item, .k-link, .k-icon-btn, .k-row-check, .k-filedrop):focus-visible,
-:is(.k-btn, .k-field, .k-select, .k-tab, .k-menu-item, .k-link, .k-icon-btn, .k-filedrop).is-focus {
+:is(.k-btn, .k-field, .k-select, .k-check input, .k-radio input, .k-switch input,
+    .k-tab, .k-menu-item, .k-link, .k-icon-btn, .k-row-check, .k-filedrop).is-focus {
   outline: var(--focus-width) solid var(--focus-ring);
   outline-offset: 2px;
 }

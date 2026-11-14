@@ -27,7 +27,7 @@
 .k-check input:disabled::after, .k-row-check:disabled::after { background-color: var(--text-disabled); }
 .k-radio input:checked { box-shadow: inset 0 0 0 3px var(--bg-surface); }
 .k-check input:disabled, .k-radio input:disabled { background: var(--bg-subtle); border-color: var(--border-subtle); cursor: not-allowed; }
-.k-check.is-disabled, .k-radio.is-disabled { color: var(--text-disabled); cursor: not-allowed; }
+.k-check.is-disabled, .k-radio.is-disabled, .k-switch.is-disabled { color: var(--text-disabled); cursor: not-allowed; }
 .k-switch { display: inline-flex; align-items: center; gap: var(--space-2); cursor: pointer; font: 400 14px/20px var(--font-sans); color: var(--text-primary); }
 .k-switch input {
   appearance: none; margin: 0; width: 36px; height: 20px; flex: none;
