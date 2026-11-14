@@ -36,6 +36,7 @@ Package consumers get the same files under `src/styles/` of the npm package.
 | Button     | `<button k-button>`, `<a k-button>`                        | [Button.md](../../docs/design/components/Button.md)       |
 | IconButton | `<button k-icon-button ariaLabel="…">`                     | [Button.md](../../docs/design/components/Button.md)       |
 | TextField  | `<k-form-field label="…"><input k-input /></k-form-field>` | [TextField.md](../../docs/design/components/TextField.md) |
+| Checkbox   | `<k-checkbox label="…" [formControl]="…" />`               | [Checkbox.md](../../docs/design/components/Checkbox.md)   |
 
 Styles: shared rules in `src/styles/kontur-base.css`, component rules next to each
 component, ported 1:1 from `docs/design/components.css` ([ADR-0003](../../docs/adr/0003-component-styles.md)).

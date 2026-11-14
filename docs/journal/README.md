@@ -11,3 +11,4 @@ German summary with a glossary (template: [TEMPLATE.md](TEMPLATE.md)).
 | [003](003-design-tokens.md)         | Kontur design tokens: CSS generated from tokens.json (golden-tested)                       | 2026-11-14 |
 | [004](004-button.md)                | Button and IconButton: first Kontur component, axe per story, lazy font subsets            | 2026-11-14 |
 | [005](005-text-field.md)            | TextField: FormField + Input, hint and error for screen readers, stale Storybook cache fix | 2026-11-14 |
+| [006](006-checkbox.md)              | Checkbox: ControlValueAccessor pattern (ADR-0004), text errors, Signal Forms compatibility | 2026-11-14 |
