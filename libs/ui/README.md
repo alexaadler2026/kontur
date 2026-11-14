@@ -43,6 +43,16 @@ Package consumers get the same files under `src/styles/` of the npm package.
 are one group for the browser: choosing in one `k-radio-group` would uncheck the other, and
 arrow keys would jump between them. Inside a `<form>` the scope is that form.
 
+## For developers
+
+**Missing context (a component used outside its parent):**
+
+- If the component **does not work at all** without the context → throw a clear error
+  **always**, in every mode. Example: `k-radio` without `k-radio-group` has no `name` and no
+  form value; in production it would otherwise fail with "Cannot read properties of null".
+- If it **works, only worse** → a clear error **only in dev mode** (`isDevMode()`). Example:
+  `k-input` without `k-form-field` still works as a field, just without label and ARIA links.
+
 Styles: shared rules in `src/styles/kontur-base.css`, component rules next to each
 component, ported 1:1 from `docs/design/components.css` ([ADR-0003](../../docs/adr/0003-component-styles.md)).
 
