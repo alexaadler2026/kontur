@@ -66,6 +66,8 @@ Date: 2026-11-14 · Task: 005 (план: `docs/plans/005-text-field.md`) · PR: 
 - **Решение.** `"implicitDependencies": ["ui"]` в `apps/ui-storybook/project.json` — явно сказать Nx, что эта связь есть. Проверено: после правки сборка без `--skip-nx-cache` пересобралась и содержит TextField.
 - **CI не был затронут:** там каждый раз чистая машина без кэша.
 
+**Урок: тест, который не может провалиться, ничего не проверяет.** Старый a11y-тест перебирал список story, а если story нет, цикл просто проходил ноль раз, и тест оставался зелёным. С устаревшим кэшем тест «проверил бы» Storybook без TextField и сообщил бы, что всё в порядке. Поэтому в новом тесте есть **сторож**: он сначала требует, чтобы в списке были ожидаемые story (`components-button--variants`, `components-textfield--states`), и падает, если их нет. Тот же принцип у мутаций: если намеренно сломать код, тест обязан упасть, иначе он ничего не проверяет. И у CI в задаче 002: прогон «No tasks were run» был зелёным, но ничего не проверил.
+
 **Уточнение моего теста.** `getByLabelText` сравнивает **текст** подписи, а в тексте есть `*`. Скринридер же видит **доступное имя** без `aria-hidden`-звёздочки. Поэтому тест на `required` ищет поле через `getByRole('textbox', { name })`. Так проверяется ровно то, что услышит пользователь, а проверка `toHaveAccessibleName` осталась.
 
 **Какие были альтернативы и почему отказались.**
@@ -129,6 +131,8 @@ On a paper form, sighted people see which label and which red note belong to whi
 
 - **Cause.** `.storybook/main.ts` loads libs/ui stories by glob, not by import, so the graph had no edge `ui-storybook → ui`, and story changes did not change the `build-storybook` hash.
 - **Fix.** `"implicitDependencies": ["ui"]`. Verified that a cached run now rebuilds. CI was unaffected (fresh runner).
+
+**Lesson: a test that cannot fail checks nothing.** The old a11y test looped over a list of stories. With no stories, the loop ran zero times and the test stayed green, so with the stale cache it would have "checked" a Storybook without TextField and reported success. The new test has a **guard**: it first requires the expected stories to be in the list and fails if they are missing. Mutation checks follow the same principle (break the code on purpose, and the test must fail), and so does the CI fix in task 002 ("No tasks were run" was a green run that verified nothing).
 
 **Test refinement.** `getByLabelText` matches the label's text, which includes `*`. The required test now uses `getByRole('textbox', { name })`, i.e. the accessible name, which is what the test is about.
 
