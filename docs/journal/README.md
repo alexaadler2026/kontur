@@ -17,3 +17,4 @@ German summary with a glossary (template: [TEMPLATE.md](TEMPLATE.md)).
 | [008](008-radio.md)                 | Radio: CVA on the group, native radios sharing name, touched on leaving the group          | 2026-11-14 |
 | [008a](008a-e2e-ports.md)           | E2E on their own ports (4300/4301/4402), never on the dev server                           | 2026-11-14 |
 | [009](009-switch.md)                | Switch: native checkbox with role="switch" for instant settings; red tests first           | 2026-11-14 |
+| [010](010-storybook-pages.md)       | Storybook on GitHub Pages: build once, deploy the tested artifact (first CD)               | 2026-11-14 |
