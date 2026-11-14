@@ -47,6 +47,11 @@ Chosen option: **1**.
 - Rule of thumb: **shared → `kontur-base.css`, component-specific → next to the component.**
   Icon rules (`.k-btn .k-ico`, `.k-menu-item .k-ico` …) are component-specific in the
   reference, so they stay with their component.
+- **One reference section = one CSS file**, used by every component that needs it.
+  Some sections style several components (the "Form field" section also styles
+  `.k-select`: `.k-field, .k-select { … }`), so they are not split: FormField owns
+  `form-field.css`, and Select will list the same file in its `styleUrls` instead of
+  copying the rules. (Amendment 2026-11-14, task 005.)
 - Size `md` is the absence of a modifier, exactly as in the reference
   (`k-btn` = 36 px, `k-btn--sm`, `k-btn--touch`); there is no `k-btn--md`.
 

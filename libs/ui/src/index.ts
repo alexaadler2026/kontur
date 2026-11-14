@@ -9,3 +9,5 @@ export {
   IconButtonComponent,
   type IconButtonSize,
 } from './lib/button/icon-button';
+export { FormFieldComponent } from './lib/form-field/form-field';
+export { InputDirective, type InputSize } from './lib/form-field/input';
