@@ -54,6 +54,7 @@ Plans for larger tasks live in docs/plans/. Domain terms in docs/glossary.md.
 - Small steps: one task = one PR, ideally under 400 changed lines.
 - Write or update a failing test first, then implement.
 - After changes run: nx affected -t lint test build. Report results honestly.
+- Run e2e locally with CI=true so Playwright starts its own fresh server; never reuse the owner's running dev server.
 - Never modify or delete a test just to make it pass. If a test seems wrong, stop and explain.
 - Never run git push, never commit .env or secrets.
 - Use conventional commits (feat:, fix:, refactor:, test:, docs:, chore:).
