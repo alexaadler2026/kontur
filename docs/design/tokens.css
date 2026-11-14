@@ -32,6 +32,8 @@
   --warning: #a15c00;
   --warning-subtle: #fbf0de;
   --error: #b42318;
+  --error-hover: #9a1d14;
+  --error-active: #7f1810;
   --error-subtle: #fbeae8;
   --info: #1f5fad;
   --info-subtle: #e8f0fb;
@@ -61,6 +63,8 @@
   --warning: #e0a458;
   --warning-subtle: #3a2c14;
   --error: #f2726a;
+  --error-hover: #f58f88;
+  --error-active: #f8aba5;
   --error-subtle: #3b1a17;
   --info: #6ca8e8;
   --info-subtle: #16263b;

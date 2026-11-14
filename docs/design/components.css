@@ -39,7 +39,8 @@
 .k-btn--ghost:hover, .k-btn--ghost.is-hover { background: var(--brand-subtle); }
 .k-btn--ghost:active, .k-btn--ghost.is-active { background: var(--brand-subtle); color: var(--brand-hover); }
 .k-btn--danger { background: var(--error); color: var(--text-on-brand); }
-.k-btn--danger:hover, .k-btn--danger.is-hover { filter: brightness(0.92); }
+.k-btn--danger:hover, .k-btn--danger.is-hover { background: var(--error-hover); }
+.k-btn--danger:active, .k-btn--danger.is-active { background: var(--error-active); }
 .k-btn:disabled, .k-btn.is-disabled {
   background: var(--bg-subtle); color: var(--text-disabled);
   border-color: transparent; cursor: not-allowed; pointer-events: none;
