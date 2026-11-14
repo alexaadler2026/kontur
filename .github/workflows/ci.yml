@@ -51,9 +51,13 @@ jobs:
       - name: Format check
         run: pnpm nx format:check --all
 
+      # Always, not "affected": tokens.json lives outside Nx projects. Cheap (cached).
+      - name: Design tokens up to date
+        run: pnpm nx run tokens:check
+
       # The step name shows the real mode: "run-many" on main, "affected" in PRs.
-      - name: Lint, test, build, Storybook (nx ${{ env.NX_RUN }})
-        run: pnpm nx $NX_RUN -t lint test build build-storybook
+      - name: Lint, test, typecheck, build, Storybook (nx ${{ env.NX_RUN }})
+        run: pnpm nx $NX_RUN -t lint test typecheck build build-storybook
 
       - name: Install Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium
