@@ -1,4 +1,6 @@
 # CI: format, lint, unit tests, build, Storybook build and e2e (incl. axe).
+# CD: on main, the Storybook build that passed e2e/axe is published to GitHub Pages
+#     (build once, deploy the tested artifact — ADR-0005).
 # - pull request: only projects affected by the PR (compared with main)
 # - push to main / manual run: ALL projects — main is always fully verified, so a
 #   docs-only commit can never produce a green run that checked nothing.
@@ -16,10 +18,11 @@ env:
 permissions:
   contents: read
 
-# A newer push to the same branch/PR cancels the run that is still going.
+# Pull requests: a newer push cancels the run that is still going.
+# main: runs queue instead, so a new push can never abort a deployment half-way.
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   main:
@@ -65,6 +68,16 @@ jobs:
       - name: E2E smoke + axe (nx ${{ env.NX_RUN }})
         run: pnpm nx $NX_RUN -t e2e
 
+      # Build once, deploy the tested artifact (ADR-0005): the folder the e2e/axe step just
+      # tested (build-storybook from the Nx cache) is handed to the deploy job unchanged.
+      # Same condition as the deploy job: pull requests never produce a Pages artifact.
+      - name: Upload tested Storybook for GitHub Pages
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist/storybook/ui-storybook
+          retention-days: 14 # fast rollback: re-run an older deploy while its artifact exists
+
       - name: Upload Playwright report on failure
         if: failure()
         uses: actions/upload-artifact@v7
@@ -72,3 +85,24 @@ jobs:
           name: playwright-report
           path: dist/.playwright
           retention-days: 7
+
+  # CD: publish the tested Storybook. Runs only after a green "main" job, only on main,
+  # never for pull requests (incl. forks). The only job with write rights.
+  deploy-storybook:
+    needs: main
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write # publish to GitHub Pages
+      id-token: write # OIDC: short-lived token for Pages instead of a stored secret
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
