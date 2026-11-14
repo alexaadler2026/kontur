@@ -81,12 +81,15 @@ describe('generateTokensCss — golden test against docs/design/tokens.css', () 
       (t) => `--${t.name}`,
     );
 
-    expect(names).toHaveLength(26); // 24 colours + 2 shadows
+    expect(names).toHaveLength(27); // tokens v3: 25 colours (+ switch-knob) + 2 shadows
     expect([...light.keys()]).toEqual(names);
     expect([...dark.keys()]).toEqual(names);
     expect(light.get('--brand')).toBe('#0e5a6b');
     expect(dark.get('--brand')).toBe('#4fb3c4');
     expect(light.get('--focus-ring')).toBe('var(--brand)'); // "{brand}" reference
+    // v3 alias in both themes (dark knob contrast fix)
+    expect(light.get('--switch-knob')).toBe('var(--text-on-brand)');
+    expect(dark.get('--switch-knob')).toBe('var(--text-on-brand)');
   });
 
   it('emits all text-style classes incl. letter-spacing and tabular figures', () => {
