@@ -13,11 +13,12 @@ ADRs are written in English and follow the [MADR](https://adr.github.io/madr/) f
 
 ## Index
 
-| ADR                                     | Title                                                          | Status   |
-| --------------------------------------- | -------------------------------------------------------------- | -------- |
-| [0000](0000-npm-scope-adlersoft.md)     | npm scope `@adlersoft` for published packages                  | Accepted |
-| [0001](0001-nx-monorepo-with-pnpm.md)   | Nx monorepo with pnpm, Vitest and Playwright                   | Accepted |
-| [0002](0002-design-tokens-generator.md) | Design tokens: CSS generated from tokens.json by an own script | Accepted |
+| ADR                                     | Title                                                                      | Status   |
+| --------------------------------------- | -------------------------------------------------------------------------- | -------- |
+| [0000](0000-npm-scope-adlersoft.md)     | npm scope `@adlersoft` for published packages                              | Accepted |
+| [0001](0001-nx-monorepo-with-pnpm.md)   | Nx monorepo with pnpm, Vitest and Playwright                               | Accepted |
+| [0002](0002-design-tokens-generator.md) | Design tokens: CSS generated from tokens.json by an own script             | Accepted |
+| [0003](0003-component-styles.md)        | Component styles: k-* classes ported 1:1, shared styles in kontur-base.css | Accepted |
 
 ## Template
 
