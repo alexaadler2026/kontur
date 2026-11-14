@@ -2,10 +2,15 @@ import { defineConfig, devices } from '@playwright/test';
 import { nxE2EPreset } from '@nx/playwright/preset';
 import { getReadyUrl, workspaceRoot } from '@nx/devkit';
 
-const isCI = !!process.env['CI'];
-// For CI, you may want to set BASE_URL to the deployed application.
-// getReadyUrl moves the address to the port the dev server task reported.
-const baseURL = process.env['BASE_URL'] || getReadyUrl('http://localhost:4201');
+/**
+ * E2E always run against the production build on their own port (4301), never on the
+ * dev-server port 4201: a running `nx serve belegscan` must never be reused by a test run.
+ * The port does not depend on CI/env, so the Nx task graph (inferred from webServer.command)
+ * is the same locally and in CI: build first (cached), then serve-static, then Playwright.
+ */
+const e2ePort = 4301;
+const baseURL =
+  process.env['BASE_URL'] || getReadyUrl(`http://localhost:${e2ePort}`);
 
 /**
  * Read environment variables from file.
@@ -32,10 +37,10 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
   webServer: {
-    command: isCI
-      ? 'pnpm exec nx run belegscan:serve-static'
-      : 'pnpm exec nx run belegscan:serve',
-    url: getReadyUrl('http://localhost:4201'),
+    command: 'pnpm exec nx run belegscan:serve-static',
+    url: baseURL,
+    // true: when run via `nx e2e`, Nx has already started serve-static on the e2e port.
+    // Nothing else listens there — the dev server uses 4201.
     reuseExistingServer: true,
     cwd: workspaceRoot,
   },

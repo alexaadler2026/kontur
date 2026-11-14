@@ -80,7 +80,7 @@
       "executor": "@nx/web:file-server",
       "options": {
         "buildTarget": "signflow:build",
-        "port": 4200,
+        "port": 4300,
         "staticFilePath": "dist/apps/signflow/browser",
         "spa": true
       }

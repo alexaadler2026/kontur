@@ -64,9 +64,14 @@ the whole package tarball, not this single file.
 ```sh
 pnpm nx run-many -t lint test build   # all projects
 pnpm nx affected -t lint test build   # only what your change touches
-pnpm nx run-many -t e2e               # Playwright: app smoke + axe, Storybook stories axe + fonts (needs: pnpm exec playwright install chromium)
+CI=true pnpm nx run-many -t e2e       # Playwright: app smoke + axe, Storybook stories axe + fonts (needs: pnpm exec playwright install chromium)
 pnpm nx format:check --all            # Prettier
 ```
+
+E2E always test production builds on their own ports — signflow 4300, belegscan 4301,
+Storybook 4402 — so they never touch a running dev server (4200, 4201, 4400). Nx builds
+first (cached), then starts the static server, then Playwright. Run them with `CI=true`
+(PowerShell: `$env:CI='true'; pnpm nx run-many -t e2e`): the same retries and workers as in CI.
 
 Every commit is checked by Husky (format check, Conventional Commits); every push and
 pull request by [CI](.github/workflows/ci.yml).

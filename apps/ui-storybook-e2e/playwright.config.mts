@@ -2,9 +2,8 @@ import { defineConfig, devices } from '@playwright/test';
 import { nxE2EPreset } from '@nx/playwright/preset';
 import { workspaceRoot } from '@nx/devkit';
 
-const isCI = !!process.env['CI'];
 // Static Storybook build (dist/storybook/ui-storybook); port 4402, so it never clashes
-// with the apps (4200 signflow, 4201 belegscan) or the Storybook dev server (4400).
+// with the app e2e servers (4300, 4301), the dev servers (4200, 4201) or Storybook dev (4400).
 const baseURL = 'http://localhost:4402';
 
 /**
@@ -20,10 +19,10 @@ export default defineConfig({
   webServer: {
     command: 'pnpm exec nx run ui-storybook:static-storybook',
     url: baseURL,
-    // locally an already running server is reused; in CI always a fresh build
-    reuseExistingServer: !isCI,
+    // true: when run via `nx e2e`, Nx has already built Storybook (build-storybook, cached) and
+    // started static-storybook on 4402. The dev Storybook (`nx storybook`) uses 4400.
+    reuseExistingServer: true,
     cwd: workspaceRoot,
-    timeout: 240_000, // includes the Storybook build
   },
   projects: [
     {
