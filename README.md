@@ -11,7 +11,7 @@ Portfolio monorepo: two German B2B products built on one Angular design system.
 
 UI languages: German (default), English, Russian. Accessibility target: WCAG 2.1 AA / BITV 2.0.
 
-> Status: workspace foundation (001), Kontur design tokens + fonts (003), first component Button/IconButton in Storybook (004). The apps are empty shells; features follow task by task.
+> Status: workspace foundation (001), Kontur design tokens + fonts (003), first components in Storybook: Button/IconButton (004), TextField (005). The apps are empty shells; features follow task by task.
 
 ## Tech stack
 
