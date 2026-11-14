@@ -10,6 +10,7 @@ test('every story has no WCAG 2.1 A/AA violations (axe)', async ({ page }) => {
     expect.arrayContaining([
       'components-button--variants',
       'components-textfield--states',
+      'components-checkbox--dark-theme',
     ]),
   );
 
