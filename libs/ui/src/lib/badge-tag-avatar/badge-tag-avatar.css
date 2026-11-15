@@ -1,0 +1,37 @@
+/* Kontur — Badge, Tag, Avatar (ADR-0003: one reference section = one file).
+   Ported verbatim from docs/design/components.css, section "Badge / Tag / Avatar"
+   (incl. .k-avatar--more from v4.2). The Tag rules are used by k-tag (task 013). */
+.k-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  height: 22px; padding: 0 var(--space-2) 0 7px;
+  font: 500 12px/16px var(--font-sans); border-radius: var(--radius-full);
+  background: var(--bg-subtle); color: var(--text-secondary);
+}
+.k-badge::before { content: ""; width: 7px; height: 7px; flex: none; border-radius: var(--radius-full); background: currentColor; }
+.k-badge--success { background: var(--success-subtle); color: var(--success); }
+.k-badge--warning { background: var(--warning-subtle); color: var(--warning); }
+.k-badge--warning::before { border-radius: 1px; rotate: 45deg; }           /* ромб, не только цвет */
+.k-badge--error { background: var(--error-subtle); color: var(--error); }
+.k-badge--error::before { border-radius: 1px; }                            /* квадрат, не только цвет */
+.k-badge--info { background: var(--info-subtle); color: var(--info); }
+.k-badge--info::before { width: 7px; height: 7px; background: transparent; border: 2px solid currentColor; }
+.k-tag {
+  display: inline-flex; align-items: center; gap: var(--space-1);
+  height: 24px; padding: 0 var(--space-2); white-space: nowrap;
+  font: 400 12px/16px var(--font-sans); border-radius: var(--radius-sm);
+  background: var(--bg-subtle); color: var(--text-primary); border: 1px solid var(--border-subtle);
+}
+.k-tag .k-tag-x { display: inline-flex; width: 14px; height: 14px; border: none; padding: 0; background: none; color: var(--text-secondary); cursor: pointer; border-radius: 2px; }
+.k-tag .k-tag-x:hover { color: var(--error); }
+.k-avatar {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; flex: none; border-radius: var(--radius-full);
+  font: 500 12px/16px var(--font-sans);
+  background: var(--brand-subtle); color: var(--brand);
+  border: 1.5px solid var(--bg-surface);
+}
+.k-avatar--sm { width: 22px; height: 22px; font-size: 10px; }
+.k-avatar--more { background: var(--bg-subtle); color: var(--text-secondary); } /* "+N" in k-avatar-stack */
+.k-avatar-stack { display: inline-flex; }
+.k-avatar-stack .k-avatar + .k-avatar { margin-left: -6px; }
+

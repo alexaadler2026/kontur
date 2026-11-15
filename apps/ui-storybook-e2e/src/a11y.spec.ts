@@ -13,6 +13,8 @@ test('every story has no WCAG 2.1 A/AA violations (axe)', async ({ page }) => {
       'components-checkbox--dark-theme',
       'components-radio--dark-theme',
       'components-switch--dark-theme',
+      'components-badge--dark-theme',
+      'components-avatar--dark-theme',
       'i18n-plural-and-date--prototype',
     ]),
   );

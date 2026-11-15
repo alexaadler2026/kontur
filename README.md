@@ -14,7 +14,7 @@ UI languages: German (default), English, Russian. Accessibility target: WCAG 2.1
 > **Live Storybook (component library):** <https://alexaadler2026.github.io/kontur/> — published from `main` after green CI
 > ([ADR-0005](docs/adr/0005-storybook-on-github-pages.md)).
 
-> Status: workspace foundation (001), Kontur design tokens + fonts (003), first components in Storybook: Button/IconButton (004), TextField (005), Checkbox (006), token contrast test (007), Radio (008), Switch (009), i18n de/en/ru with a language switcher in Storybook (011, [ADR-0006](docs/adr/0006-i18n-transloco.md)). The apps are empty shells; features follow task by task.
+> Status: workspace foundation (001), Kontur design tokens + fonts (003), first components in Storybook: Button/IconButton (004), TextField (005), Checkbox (006), token contrast test (007), Radio (008), Switch (009), Badge and Avatar (012), i18n de/en/ru with a language switcher in Storybook (011, [ADR-0006](docs/adr/0006-i18n-transloco.md)). The apps are empty shells; features follow task by task.
 
 ## Tech stack
 

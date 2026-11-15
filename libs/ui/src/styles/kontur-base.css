@@ -18,9 +18,9 @@ body { margin: 0; background-color: var(--bg-page); color: var(--text-primary); 
 .k-link:hover, .k-link.is-hover { color: var(--brand-hover); }
 
 :is(.k-btn, .k-field, .k-select, .k-check input, .k-radio input, .k-switch input,
-    .k-tab, .k-menu-item, .k-link, .k-icon-btn, .k-row-check, .k-filedrop):focus-visible,
+    .k-tab, .k-menu-item, .k-link, .k-icon-btn, .k-row-check, .k-filedrop, .k-tag-x):focus-visible,
 :is(.k-btn, .k-field, .k-select, .k-check input, .k-radio input, .k-switch input,
-    .k-tab, .k-menu-item, .k-link, .k-icon-btn, .k-row-check, .k-filedrop).is-focus {
+    .k-tab, .k-menu-item, .k-link, .k-icon-btn, .k-row-check, .k-filedrop, .k-tag-x).is-focus {
   outline: var(--focus-width) solid var(--focus-ring);
   outline-offset: 2px;
 }

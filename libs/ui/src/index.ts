@@ -15,3 +15,9 @@ export { CheckboxComponent } from './lib/choice/checkbox';
 export { RadioGroupComponent } from './lib/choice/radio-group';
 export { RadioComponent } from './lib/choice/radio';
 export { SwitchComponent } from './lib/choice/switch';
+export { BadgeComponent, type BadgeTone } from './lib/badge-tag-avatar/badge';
+export {
+  AvatarComponent,
+  type AvatarSize,
+} from './lib/badge-tag-avatar/avatar';
+export { AvatarStackComponent } from './lib/badge-tag-avatar/avatar-stack';
