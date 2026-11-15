@@ -43,3 +43,6 @@ __screenshots__/
 
 # Storybook
 *storybook.log
+
+# VS Code Local History extension
+.history/
