@@ -12,9 +12,9 @@
 .k-link:hover, .k-link.is-hover { color: var(--brand-hover); }
 
 :is(.k-btn, .k-field, .k-select, .k-check input, .k-radio input, .k-switch input,
-    .k-tab, .k-menu-item, .k-link, .k-icon-btn, .k-row-check, .k-filedrop):focus-visible,
+    .k-tab, .k-menu-item, .k-link, .k-icon-btn, .k-row-check, .k-filedrop, .k-tag-x):focus-visible,
 :is(.k-btn, .k-field, .k-select, .k-check input, .k-radio input, .k-switch input,
-    .k-tab, .k-menu-item, .k-link, .k-icon-btn, .k-row-check, .k-filedrop).is-focus {
+    .k-tab, .k-menu-item, .k-link, .k-icon-btn, .k-row-check, .k-filedrop, .k-tag-x).is-focus {
   outline: var(--focus-width) solid var(--focus-ring);
   outline-offset: 2px;
 }
@@ -158,6 +158,7 @@ textarea.k-field { height: auto; padding: var(--space-2) var(--space-3); resize:
   border: 1.5px solid var(--bg-surface);
 }
 .k-avatar--sm { width: 22px; height: 22px; font-size: 10px; }
+.k-avatar--more { background: var(--bg-subtle); color: var(--text-secondary); } /* "+N" in k-avatar-stack */
 .k-avatar-stack { display: inline-flex; }
 .k-avatar-stack .k-avatar + .k-avatar { margin-left: -6px; }
 
