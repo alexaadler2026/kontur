@@ -72,7 +72,8 @@ Chosen option: **1, Transloco with the messageformat transpiler**, in the apps o
 ### Boundary of the component library
 
 - `libs/ui` depends on **no** i18n library. Enforced by ESLint (`no-restricted-imports` for
-  `@jsverse/*` and `@ngx-translate/*` in `libs/ui`) and by `@nx/dependency-checks`.
+  `@jsverse/*`, `@ngx-translate/*` and `@angular/localize` in `libs/ui`) and by
+  `@nx/dependency-checks`.
 - Component texts (labels, hints, errors) are passed in already translated (contract).
 - Built-in accessibility strings come from **`KonturIntl`**: an abstract injectable class
   (pattern: Angular Material's `MatPaginatorIntl`) with signal-based members, e.g.

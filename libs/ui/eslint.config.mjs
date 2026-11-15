@@ -39,6 +39,25 @@ export default [
           style: 'kebab-case',
         },
       ],
+      // ADR-0006: the published library stays i18n-agnostic. Component texts come in as
+      // inputs, built-in a11y strings from KonturIntl — never from an i18n library.
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: [
+                '@jsverse/*',
+                '@ngx-translate/*',
+                '@angular/localize',
+                '@angular/localize/*',
+              ],
+              message:
+                'libs/ui must not depend on an i18n library (ADR-0006). Take texts as inputs or use KonturIntl.',
+            },
+          ],
+        },
+      ],
     },
   },
   {
