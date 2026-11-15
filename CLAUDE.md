@@ -48,6 +48,8 @@ Libs: libs/ui (component library, published to npm), libs/receipt-parser,
 libs/shared/*.
 Decisions live in docs/adr/. Read the relevant ADR before changing architecture.
 Plans for larger tasks live in docs/plans/. Domain terms in docs/glossary.md.
+Business processes and requirements: docs/business-processes.md — the source of
+truth for what the products do and by which rules. What is not there, ask.
 
 ## Workflow
 - Always propose a plan first for anything touching more than 2 files; wait for approval.
