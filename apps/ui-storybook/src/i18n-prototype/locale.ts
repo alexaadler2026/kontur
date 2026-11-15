@@ -1,19 +1,28 @@
-/** The product UI languages (ADR-0006). de is the default and the source language. */
-export const LANGS = ['de', 'en', 'ru'] as const;
-export type Lang = (typeof LANGS)[number];
+import config from '../i18n/languages.json';
 
 /**
- * Language → locale for Intl formats (ADR-0006). `en` means **en-GB** (European date order,
- * as in docs/design/README.md), not en-US.
+ * The UI languages come from ONE config, src/i18n/languages.json (ADR-0006). The toolbar,
+ * Transloco and the Intl formats read it here; tools/i18n-check reads the same file.
+ * Adding a language = one line in languages.json + one <code>.json translation file.
+ *
+ * Locales: `en` means **en-GB** (European date order, as in docs/design/README.md).
  */
-export const LOCALES: Record<Lang, string> = {
-  de: 'de-DE',
-  en: 'en-GB',
-  ru: 'ru-RU',
-};
+export type Lang = string;
+
+export const SOURCE_LANG: Lang = config.source;
+export const LANGUAGES = config.languages;
+export const LANGS: Lang[] = LANGUAGES.map((language) => language.code);
+
+const LOCALES = new Map(
+  LANGUAGES.map((language) => [language.code, language.locale]),
+);
 
 export function isLang(value: unknown): value is Lang {
-  return LANGS.includes(value as Lang);
+  return typeof value === 'string' && LOCALES.has(value);
+}
+
+function localeOf(lang: Lang): string {
+  return LOCALES.get(lang) ?? (LOCALES.get(SOURCE_LANG) as string);
 }
 
 /**
@@ -22,7 +31,7 @@ export function isLang(value: unknown): value is Lang {
  * de 12.11.2026 · en 12/11/2026 · ru 12.11.2026
  */
 export function formatDate(date: Date, lang: Lang): string {
-  return new Intl.DateTimeFormat(LOCALES[lang], {
+  return new Intl.DateTimeFormat(localeOf(lang), {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
@@ -39,7 +48,7 @@ export function formatCurrency(
   lang: Lang,
   currency = 'EUR',
 ): string {
-  return new Intl.NumberFormat(LOCALES[lang], {
+  return new Intl.NumberFormat(localeOf(lang), {
     style: 'currency',
     currency,
   }).format(amount);

@@ -4,6 +4,7 @@ import {
   moduleMetadata,
   type Preview,
 } from '@storybook/angular';
+import { LANGUAGES, SOURCE_LANG } from '../src/i18n-prototype/locale';
 import { StoryLocaleComponent } from '../src/i18n-prototype/story-locale';
 import { provideStoryI18n } from '../src/i18n-prototype/transloco';
 
@@ -14,23 +15,23 @@ import { provideStoryI18n } from '../src/i18n-prototype/transloco';
 (globalThis as { ngServerMode?: boolean }).ngServerMode = false;
 
 const preview: Preview = {
-  // Language switcher in the Storybook toolbar (ADR-0006): de (default), en, ru.
+  // Language switcher in the Storybook toolbar (ADR-0006), languages from languages.json.
   globalTypes: {
     locale: {
       description: 'UI language',
       toolbar: {
         title: 'Language',
         icon: 'globe',
-        items: [
-          { value: 'de', title: 'Deutsch' },
-          { value: 'en', title: 'English (en-GB)' },
-          { value: 'ru', title: 'Русский' },
-        ],
+        // from src/i18n/languages.json — a new language appears here without code changes
+        items: LANGUAGES.map(({ code, name }) => ({
+          value: code,
+          title: name,
+        })),
         dynamicTitle: true,
       },
     },
   },
-  initialGlobals: { locale: 'de' },
+  initialGlobals: { locale: SOURCE_LANG },
   decorators: [
     applicationConfig({ providers: [provideStoryI18n()] }),
     moduleMetadata({ imports: [StoryLocaleComponent] }),

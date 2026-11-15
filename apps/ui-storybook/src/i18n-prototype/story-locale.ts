@@ -7,7 +7,7 @@ import {
   input,
 } from '@angular/core';
 import { TranslocoService } from '@jsverse/transloco';
-import { isLang, type Lang } from './locale';
+import { isLang, type Lang, SOURCE_LANG } from './locale';
 
 /**
  * Wraps every story (global decorator in .storybook/preview.ts) and applies the language
@@ -21,8 +21,8 @@ import { isLang, type Lang } from './locale';
   host: { style: 'display: contents' }, // no extra box around the story
 })
 export class StoryLocaleComponent {
-  readonly lang = input<Lang, unknown>('de', {
-    transform: (value: unknown): Lang => (isLang(value) ? value : 'de'),
+  readonly lang = input<Lang, unknown>(SOURCE_LANG, {
+    transform: (value: unknown): Lang => (isLang(value) ? value : SOURCE_LANG),
   });
 
   private readonly transloco = inject(TranslocoService);

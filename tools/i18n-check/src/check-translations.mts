@@ -3,12 +3,19 @@ import { parse, type Token } from '@messageformat/parser';
 /** One language file as parsed JSON: nested objects whose leaves are ICU message strings. */
 export type Translations = Record<string, unknown>;
 
-/** The product UI languages (ADR-0006) and the locale whose CLDR plural rules apply. */
-const LOCALES: Record<string, string> = {
-  de: 'de-DE',
-  en: 'en-GB',
-  ru: 'ru-RU',
-};
+/** The language config of a translation folder; the app reads the same file (ADR-0006). */
+export const CONFIG_FILE = 'languages.json';
+
+/**
+ * Contents of languages.json. Adding a language = one line here + one <code>.json file;
+ * nothing in this tool or in the app code changes.
+ */
+export interface LanguageConfig {
+  /** The language every other file is compared with (de). */
+  source: string;
+  /** code = file name and Transloco language; locale = Intl locale and CLDR plural rules. */
+  languages: { code: string; locale: string; name: string }[];
+}
 
 /** Nested JSON → dotted keys: { list: { title: "…" } } → "list.title". */
 export function flattenKeys(
@@ -30,7 +37,8 @@ export function flattenKeys(
 
 /**
  * All problems of one translation folder, as readable lines; empty array = everything fine.
- * - every language of LOCALES has a file;
+ * - the config is valid: the source is a configured language, every locale is a BCP 47 tag;
+ * - every configured language has a file, and every file is a configured language;
  * - en and ru have exactly the keys of the source (de): nothing missing, nothing extra;
  * - every message parses as ICU (the same parser Transloco's messageformat uses at runtime);
  * - every plural has all CLDR categories of its language (ru: one, few, many, other) —
@@ -38,14 +46,35 @@ export function flattenKeys(
  */
 export function checkTranslations(
   files: Record<string, Translations>,
-  source = 'de',
+  config: LanguageConfig,
 ): string[] {
   const problems: string[] = [];
+  const { source } = config;
+  const locales = new Map<string, string>();
+  for (const { code, locale } of config.languages) {
+    try {
+      Intl.getCanonicalLocales(locale);
+      locales.set(code, locale);
+    } catch {
+      problems.push(
+        `${CONFIG_FILE}: "${code}" has an invalid locale "${locale}"`,
+      );
+    }
+  }
+  if (problems.length > 0) return problems;
+  if (!locales.has(source)) {
+    return [`${CONFIG_FILE}: source "${source}" is not in languages`];
+  }
+  for (const lang of Object.keys(files)) {
+    if (!locales.has(lang)) {
+      problems.push(`${lang}: file is not listed in ${CONFIG_FILE}`);
+    }
+  }
   const sourceFile = files[source];
-  if (!sourceFile) return [`${source}: file missing`];
+  if (!sourceFile) return [...problems, `${source}: file missing`].sort();
   const sourceKeys = flattenKeys(sourceFile);
 
-  for (const lang of Object.keys(LOCALES)) {
+  for (const [lang, locale] of locales) {
     const file = files[lang];
     if (!file) {
       problems.push(`${lang}: file missing`);
@@ -64,7 +93,7 @@ export function checkTranslations(
       }
     }
 
-    const required = new Intl.PluralRules(LOCALES[lang]).resolvedOptions()
+    const required = new Intl.PluralRules(locale).resolvedOptions()
       .pluralCategories;
     for (const [key, message] of keys) {
       let tokens: Token[];

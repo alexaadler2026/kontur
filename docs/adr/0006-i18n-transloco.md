@@ -90,15 +90,45 @@ Chosen option: **1, Transloco with the messageformat transpiler**, in the apps o
 
 - Each app owns its files: `apps/<app>/public/i18n/{de,en,ru}.json` (served as static
   files). The Storybook prototype keeps its files in `apps/ui-storybook/src/i18n/`.
-- `de.json` is the source; `en.json` and `ru.json` must have exactly the same keys.
+- `de.json` is the source; every other language file must have exactly the same keys.
+
+### The language list is configuration, not code
+
+Real use of the product is in Kyrgyzstan (`docs/business-processes.md`), so a further
+language such as Kyrgyz (`ky`) must be possible without rework. Therefore every translation
+folder has **one** config, `languages.json`:
+
+```json
+{
+  "source": "de",
+  "languages": [
+    { "code": "de", "locale": "de-DE", "name": "Deutsch" },
+    { "code": "en", "locale": "en-GB", "name": "English (en-GB)" },
+    { "code": "ru", "locale": "ru-RU", "name": "Русский" }
+  ]
+}
+```
+
+- The app reads it for the language switcher, Transloco (`availableLangs`, default and
+  fallback) and the `Intl` locale; `tools/i18n-check` reads the same file.
+- **Adding a language = one `<code>.json` file + one line in `languages.json`.** No code
+  changes. The new language is checked like the others, with its own CLDR plural rules
+  (`ky-KG`: `one`, `other`).
+- `KonturIntl` in `libs/ui` ships only de, en and ru. For another language the app provides
+  its own implementation (it replaces the provider anyway).
+- Kyrgyz itself is not added now (owner, 2026-11-15).
 
 ### Missing or broken translations
 
 - **CI:** `tools/i18n-check` (Vitest, runs with `nx run-many -t test`) checks every
   translation folder:
-  - en and ru have exactly the keys of de (no missing, no extra);
+  - `languages.json` is valid: the source is a configured language, every locale is a
+    valid BCP 47 tag;
+  - every configured language has a file, and every file is a configured language;
+  - every language has exactly the keys of the source (no missing, no extra);
   - every message parses as ICU;
-  - every Russian plural has the forms `one`, `few` and `many`.
+  - every plural has all CLDR forms of its locale, taken from `Intl.PluralRules`
+    (ru: `one`, `few`, `many`, `other`).
 - **Runtime:** in development and tests a missing key is reported as an error by Transloco's
   missing handler; in production the German text is shown as fallback.
 

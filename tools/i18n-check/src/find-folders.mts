@@ -1,11 +1,12 @@
 import { existsSync, readdirSync } from 'node:fs';
+import { CONFIG_FILE } from './check-translations.mts';
 
 const repoRoot = new URL('../../../', import.meta.url);
 
 /**
  * Every translation folder of the apps (ADR-0006), as repo-relative POSIX paths:
  * `apps/<app>/public/i18n` (apps) and `apps/<app>/src/i18n` (the Storybook prototype),
- * if it contains the source file de.json.
+ * if it contains the language config (languages.json).
  */
 export function findTranslationFolders(): string[] {
   const apps = readdirSync(new URL('apps/', repoRoot), { withFileTypes: true })
@@ -14,6 +15,8 @@ export function findTranslationFolders(): string[] {
 
   return apps
     .flatMap((app) => [`apps/${app}/public/i18n`, `apps/${app}/src/i18n`])
-    .filter((folder) => existsSync(new URL(`${folder}/de.json`, repoRoot)))
+    .filter((folder) =>
+      existsSync(new URL(`${folder}/${CONFIG_FILE}`, repoRoot)),
+    )
     .sort();
 }

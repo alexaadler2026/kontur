@@ -7,7 +7,13 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import type { Meta, StoryObj } from '@storybook/angular';
-import { formatCurrency, formatDate, isLang, type Lang } from './locale';
+import {
+  formatCurrency,
+  formatDate,
+  isLang,
+  type Lang,
+  SOURCE_LANG,
+} from './locale';
 
 /**
  * i18n prototype (ADR-0006): ICU plurals from src/i18n/<lang>.json and Intl formats that
@@ -48,11 +54,11 @@ class I18nPrototypeComponent {
 
   // The active language as a signal: RxJS stream converted at the edge (CLAUDE.md).
   private readonly lang = toSignal(inject(TranslocoService).langChanges$, {
-    initialValue: 'de',
+    initialValue: SOURCE_LANG,
   });
   private readonly activeLang = computed<Lang>(() => {
     const lang = this.lang();
-    return isLang(lang) ? lang : 'de';
+    return isLang(lang) ? lang : SOURCE_LANG;
   });
 
   // Example values from docs/design/README.md.

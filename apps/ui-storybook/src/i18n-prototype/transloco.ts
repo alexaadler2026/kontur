@@ -8,7 +8,7 @@ import {
   type TranslocoMissingHandlerData,
 } from '@jsverse/transloco';
 import { provideTranslocoMessageformat } from '@jsverse/transloco-messageformat';
-import { LANGS } from './locale';
+import { LANGS, SOURCE_LANG } from './locale';
 
 /**
  * Loads src/i18n/<lang>.json lazily: webpack turns the dynamic import into one small chunk
@@ -44,8 +44,8 @@ export function provideStoryI18n(): EnvironmentProviders[] {
     ...provideTransloco({
       config: {
         availableLangs: [...LANGS],
-        defaultLang: 'de',
-        fallbackLang: 'de',
+        defaultLang: SOURCE_LANG,
+        fallbackLang: SOURCE_LANG,
         reRenderOnLangChange: true, // switch at runtime, no reload
         prodMode: false,
         // No silent German fallback here: with useFallbackTranslation: true Transloco
