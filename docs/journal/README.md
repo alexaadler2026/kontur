@@ -18,3 +18,4 @@ German summary with a glossary (template: [TEMPLATE.md](TEMPLATE.md)).
 | [008a](008a-e2e-ports.md)           | E2E on their own ports (4300/4301/4402), never on the dev server                           | 2026-11-14 |
 | [009](009-switch.md)                | Switch: native checkbox with role="switch" for instant settings; red tests first           | 2026-11-14 |
 | [010](010-storybook-pages.md)       | Storybook on GitHub Pages: build once, deploy the tested artifact (first CD)               | 2026-11-14 |
+| [011](011-i18n.md)                  | i18n: Transloco + ICU in the apps, libs/ui i18n-agnostic, language switcher in Storybook   | 2026-11-15 |
