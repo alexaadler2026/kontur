@@ -9,7 +9,10 @@
  * - Every component: standalone, ChangeDetectionStrategy.OnPush, styles from tokens only.
  * - CSS classes of the reference stylesheet map 1:1 (Button → k-btn, …).
  * - Texts (labels, aria-labels) are passed in already translated; components hold no copy,
- *   except built-in a11y strings, which come from an injectable KonturIntl service (de, en).
+ *   except built-in a11y strings, which come from an injectable KonturIntl service.
+ *   The library ships KonturIntlDe (default), KonturIntlEn and KonturIntlRu — the product UI languages;
+ *   apps replace the provider with their own implementation on top of their i18n library.
+ *   Plurals follow CLDR categories per language (ru: one / few / many / other); numbers via Intl.
  */
 
 /* ───────────────────────── Actions ───────────────────────── */
