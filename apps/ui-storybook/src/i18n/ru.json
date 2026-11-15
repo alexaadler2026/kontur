@@ -1,0 +1,8 @@
+{
+  "prototype": {
+    "heading": "Язык и форматы",
+    "documents": "{count, plural, one {# документ} few {# документа} many {# документов} other {# документа}}",
+    "uploadedOn": "Загружено {date}",
+    "amount": "Сумма: {amount}"
+  }
+}
