@@ -55,6 +55,8 @@ truth for what the products do and by which rules. What is not there, ask.
 - Always propose a plan first for anything touching more than 2 files; wait for approval.
 - Small steps: one task = one PR, ideally under 400 changed lines.
 - Write or update a failing test first, then implement.
+- Red first is mandatory for unit tests. For e2e, either a red run or a recorded
+  mutation that makes the test fail is acceptable.
 - After changes run: nx affected -t lint test build. Report results honestly.
 - Run e2e locally with CI=true so Playwright starts its own fresh server; never reuse the owner's running dev server.
 - Never modify or delete a test just to make it pass. If a test seems wrong, stop and explain.
