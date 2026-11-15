@@ -20,3 +20,4 @@ German summary with a glossary (template: [TEMPLATE.md](TEMPLATE.md)).
 | [010](010-storybook-pages.md)       | Storybook on GitHub Pages: build once, deploy the tested artifact (first CD)                      | 2026-11-14 |
 | [011](011-i18n.md)                  | i18n: Transloco + ICU in the apps, libs/ui i18n-agnostic, language switcher in Storybook          | 2026-11-15 |
 | [011a](011a-language-config.md)     | Language list in one languages.json, read by the app and the CI check; new language = file + line | 2026-11-15 |
+| [012](012-badge-avatar.md)          | Badge (status by text + dot shape) and Avatar / AvatarStack (one image, one label)                | 2026-11-15 |
