@@ -1,8 +1,16 @@
 import { expect, type Page } from '@playwright/test';
 
-/** Opens one story without the Storybook UI and waits until the component is rendered. */
-export async function openStory(page: Page, id: string): Promise<void> {
-  await page.goto(`/iframe.html?id=${id}&viewMode=story`);
+/**
+ * Opens one story without the Storybook UI and waits until the component is rendered.
+ * `globals` sets toolbar values, e.g. `locale:ru` for the language switcher (ADR-0006).
+ */
+export async function openStory(
+  page: Page,
+  id: string,
+  globals?: string,
+): Promise<void> {
+  const query = globals ? `&globals=${globals}` : '';
+  await page.goto(`/iframe.html?id=${id}&viewMode=story${query}`);
   await expect(page.locator('#storybook-root > *').first()).toBeVisible();
 }
 
