@@ -61,3 +61,4 @@ Chosen option: "<option>", because <justification against the drivers>.
 ```
 
 | [0005](0005-storybook-on-github-pages.md) | Storybook on GitHub Pages: build once, deploy the tested artifact | Accepted |
+| [0006](0006-i18n-transloco.md) | i18n: Transloco with ICU in the apps, the library stays i18n-agnostic | Accepted |
