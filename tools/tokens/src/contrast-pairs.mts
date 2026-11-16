@@ -156,6 +156,12 @@ export const CONTRAST_PAIRS: readonly ContrastPair[] = [
   // ---- 1.4.11 non-text ≥ 3:1 ----
   {
     ...UI,
+    foreground: 'error',
+    background: 'bg-subtle',
+    usedIn: 'Tag remove icon (.k-tag-x) :hover',
+  },
+  {
+    ...UI,
     foreground: 'border-input',
     background: 'bg-surface',
     usedIn: 'field, checkbox and radio border',
