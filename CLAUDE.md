@@ -90,7 +90,9 @@ truth for what the products do and by which rules. What is not there, ask.
 
 ## Backend
 - NestJS, Prisma, PostgreSQL. DTO validation with class-validator. OpenAPI generated.
-- Shared types between front and back via libs/shared/api-types.
+- Shared API types are generated from `libs/<app>/api-contract/openapi.json`; do not
+  hand-write request or response types (ADR-0007). Server-side building blocks used by
+  both APIs (Problem Details, Money, pagination DTOs) live in `libs/shared/api-kit`.
 
 ## When unsure
 Ask. Do not invent requirements, endpoints or business rules.
