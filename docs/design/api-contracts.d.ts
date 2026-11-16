@@ -140,6 +140,7 @@ interface AvatarProps {
 interface AvatarStackProps {
   names: ReadonlyArray<string>;
   max?: number;                // default 3
+  size?: "md" | "sm";          // size of every avatar in the stack, default "md"; "sm" in table cells (DataTable)
   ariaLabel: string;           // e.g. "Unterzeichnende: Anna Berger, Jonas Becker und 1 weitere"
 }
 
