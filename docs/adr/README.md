@@ -62,3 +62,17 @@ Chosen option: "<option>", because <justification against the drivers>.
 
 | [0005](0005-storybook-on-github-pages.md) | Storybook on GitHub Pages: build once, deploy the tested artifact | Accepted |
 | [0006](0006-i18n-transloco.md) | i18n: Transloco with ICU in the apps, the library stays i18n-agnostic | Accepted |
+| [0007](0007-api-contract.md) | API contract: REST + OpenAPI 3.1, generated from NestJS code, client and mocks generated from the committed spec | Accepted |
+| [0008](0008-api-conventions-and-money.md) | API conventions: errors, lists, dates, identifiers, versioning and money | Accepted |
+| [0009](0009-environments-and-configuration.md) | Environments and configuration: one build, behaviour chosen by validated runtime settings | Accepted |
+| [0010](0010-authentication.md) | Authentication: own accounts, server-side sessions in an httpOnly cookie, invitation only | Accepted |
+| [0011](0011-authorization.md) | Authorization: deny by default, roles plus ownership checks as pure policy functions | Accepted |
+| [0012](0012-file-storage-encryption-and-upload-validation.md) | Files: storage behind an interface, envelope encryption at rest, strict upload validation | Accepted |
+| [0013](0013-pdf-processing.md) | PDF processing in SignFlow: stamping on the server, append-only (incremental) saves, hashes of every version | Accepted, library pending spike |
+| [0014](0014-production-deployment.md) | Production deployment: dedicated server, Docker Compose, Caddy, manual release of the tested image, off-site backups with restore drills | Accepted |
+| [0015](0015-email.md) | E-mail: EU transactional provider over SMTP behind a `Mailer` port, database outbox, authenticated sending domain, sending limits | Accepted, provider pending deliverability test |
+| [0016](0016-external-participant-access.md) | Access without an account: long-lived link plus a one-time e-mail code at every entry | Accepted |
+| [0017](0017-audit-trail-and-deletion.md) | Protocol and deletion: per-document hash chain with personal data kept outside it, proof-preserving deletion, retention settings | Accepted |
+| [0018](0018-data-refresh-polling.md) | Keeping screens up to date: conditional polling in v1, with a written trigger for Server-Sent Events | Accepted |
+| [0019](0019-demo-hosting-and-sandbox.md) | Demo: the real backend on a small server of its own, one temporary sandbox per visitor | Accepted |
+| [0020](0020-monitoring-logs-health.md) | Monitoring: Sentry SDKs sending scrubbed errors to a self-hosted tracker, structured logs, health checks and external heartbeats | Accepted |
