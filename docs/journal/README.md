@@ -22,3 +22,4 @@ German summary with a glossary (template: [TEMPLATE.md](TEMPLATE.md)).
 | [011a](011a-language-config.md)     | Language list in one languages.json, read by the app and the CI check; new language = file + line                   | 2026-11-15 |
 | [012](012-badge-avatar.md)          | Badge (status by text + dot shape) and Avatar / AvatarStack (one image, one label)                                  | 2026-11-15 |
 | [013](013-tag-kontur-intl.md)       | Tag (remove button named "action + text") and KonturIntl de/en/ru, Transloco adapter in Storybook; AvatarStack size | 2026-11-16 |
+| [014](014-architecture-waves.md)    | ADR waves 1–2 in the repo: how to read diagram → explanation → ADR → task plan                                      | 2026-11-16 |
