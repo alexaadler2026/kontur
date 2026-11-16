@@ -60,3 +60,20 @@ export const Names: Story = {
     </div>`,
   }),
 };
+
+/** sm stack (22 px) as in table cells of the DataTable mockup, with progress next to it. */
+export const SmallStack: Story = {
+  name: 'Stack sm (table cell)',
+  render: () => ({
+    props: { signers },
+    template: `<div style="${row}">
+      <k-avatar-stack
+        data-testid="stack-sm"
+        size="sm"
+        [names]="signers"
+        ariaLabel="Unterzeichnende: Anna Berger, Jonas Becker, Max Beispiel und 2 weitere"
+      />
+      <span class="k-caption k-num">2/3</span>
+    </div>`,
+  }),
+};

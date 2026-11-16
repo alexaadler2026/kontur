@@ -44,7 +44,7 @@ the exact build that passed axe and the keyboard e2e in CI ([ADR-0005](../../doc
 | Switch      | `<k-switch label="…" [formControl]="…" />` — instant settings only; with a Save button use Checkbox    | [Switch.md](../../docs/design/components/Switch.md)       |
 | Badge       | `<k-badge tone="success">Signiert</k-badge>` — status as text + dot shape, never colour only           | [Badge.md](../../docs/design/components/Badge.md)         |
 | Avatar      | `<k-avatar name="Anna Berger" />` — initials, role="img" named by the full name                        | [Avatar.md](../../docs/design/components/Avatar.md)       |
-| AvatarStack | `<k-avatar-stack [names]="…" ariaLabel="…" />` — max 3 + "+N", one image with one label                | [Avatar.md](../../docs/design/components/Avatar.md)       |
+| AvatarStack | `<k-avatar-stack [names]="…" size="sm" ariaLabel="…" />` — max 3 + "+N", one image with one label      | [Avatar.md](../../docs/design/components/Avatar.md)       |
 
 **Radio `name` must be unique on the page.** Radios with the same `name` outside a `<form>`
 are one group for the browser: choosing in one `k-radio-group` would uncheck the other, and

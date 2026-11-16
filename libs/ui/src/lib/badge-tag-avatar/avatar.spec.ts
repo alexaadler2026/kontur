@@ -105,4 +105,20 @@ describe('k-avatar-stack', () => {
       ),
     ).toEqual(['AB', 'JB', '+1']);
   });
+
+  it('size "sm" makes every circle small, "+N" included; md (default) adds no modifier', async () => {
+    await render(
+      `<k-avatar-stack [names]="names" size="sm" ariaLabel="Klein" />
+       <k-avatar-stack [names]="names" ariaLabel="Normal" />`,
+      { imports: [AvatarStackComponent], componentProperties: { names: five } },
+    );
+
+    const small = screen.getByRole('img', { name: 'Klein' });
+    const circles = [...small.querySelectorAll('.k-avatar')];
+    expect(circles).toHaveLength(4);
+    for (const circle of circles) expect(circle).toHaveClass('k-avatar--sm');
+
+    const normal = screen.getByRole('img', { name: 'Normal' });
+    expect(normal.querySelector('.k-avatar--sm')).toBeNull();
+  });
 });

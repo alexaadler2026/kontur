@@ -59,3 +59,17 @@ test('Avatar: sizes 28 / 22 px; the stack overlaps by 6 px and "+N" uses bg-subt
     await token(page, '--bg-subtle'),
   );
 });
+
+test('AvatarStack size sm: every circle is 22 px, "+N" included', async ({
+  page,
+}) => {
+  await openStory(page, 'components-avatar--small-stack');
+
+  const widths = await page
+    .getByTestId('stack-sm')
+    .locator('.k-avatar')
+    .evaluateAll((circles) =>
+      circles.map((circle) => circle.getBoundingClientRect().width),
+    );
+  expect(widths).toEqual([22, 22, 22, 22]);
+});
