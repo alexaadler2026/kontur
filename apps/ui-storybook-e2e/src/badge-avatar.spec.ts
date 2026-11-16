@@ -1,5 +1,5 @@
-import { expect, type Locator, type Page, test } from '@playwright/test';
-import { openStory } from './support/story';
+import { expect, type Locator, test } from '@playwright/test';
+import { colorToken, openStory } from './support/story';
 
 /** Computed style of the ::before dot of a badge. */
 const dot = (badge: Locator) =>
@@ -12,17 +12,6 @@ const dot = (badge: Locator) =>
       border: style.borderTopWidth,
     };
   });
-
-/** The browser's own value of a colour token, so the test never hard-codes a hex value. */
-const token = (page: Page, name: string) =>
-  page.evaluate((variable) => {
-    const probe = document.createElement('span');
-    probe.style.background = `var(${variable})`;
-    document.body.append(probe);
-    const value = getComputedStyle(probe).backgroundColor;
-    probe.remove();
-    return value;
-  }, name);
 
 test('Badge: status is not colour only — each tone has its own dot shape (WCAG 1.4.1)', async ({
   page,
@@ -56,7 +45,7 @@ test('Avatar: sizes 28 / 22 px; the stack overlaps by 6 px and "+N" uses bg-subt
   await expect(circles.nth(1)).toHaveCSS('margin-left', '-6px');
   await expect(circles.nth(3)).toHaveCSS(
     'background-color',
-    await token(page, '--bg-subtle'),
+    await colorToken(page, '--bg-subtle'),
   );
 });
 

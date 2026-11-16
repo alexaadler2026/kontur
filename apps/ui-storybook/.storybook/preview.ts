@@ -4,6 +4,8 @@ import {
   moduleMetadata,
   type Preview,
 } from '@storybook/angular';
+import { provideKonturIntl } from '@adlersoft/kontur-ui';
+import { TranslocoKonturIntl } from '../src/i18n-prototype/kontur-intl';
 import { LANGUAGES, SOURCE_LANG } from '../src/i18n-prototype/locale';
 import { StoryLocaleComponent } from '../src/i18n-prototype/story-locale';
 import { provideStoryI18n } from '../src/i18n-prototype/transloco';
@@ -33,7 +35,13 @@ const preview: Preview = {
   },
   initialGlobals: { locale: SOURCE_LANG },
   decorators: [
-    applicationConfig({ providers: [provideStoryI18n()] }),
+    applicationConfig({
+      providers: [
+        provideStoryI18n(),
+        // built-in strings of libs/ui follow the toolbar language, like in an app
+        provideKonturIntl(TranslocoKonturIntl),
+      ],
+    }),
     moduleMetadata({ imports: [StoryLocaleComponent] }),
     // Every story is wrapped: the toolbar value goes to Transloco and to <html lang>.
     componentWrapperDecorator(

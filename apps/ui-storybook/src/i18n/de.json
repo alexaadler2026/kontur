@@ -4,5 +4,8 @@
     "documents": "{count, plural, one {# Dokument} other {# Dokumente}}",
     "uploadedOn": "Hochgeladen am {date}",
     "amount": "Betrag: {amount}"
+  },
+  "kontur": {
+    "removeLabel": "Entfernen"
   }
 }

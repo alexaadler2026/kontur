@@ -4,5 +4,8 @@
     "documents": "{count, plural, one {# документ} few {# документа} many {# документов} other {# документа}}",
     "uploadedOn": "Загружено {date}",
     "amount": "Сумма: {amount}"
+  },
+  "kontur": {
+    "removeLabel": "Удалить"
   }
 }

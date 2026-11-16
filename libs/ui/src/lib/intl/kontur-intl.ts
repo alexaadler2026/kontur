@@ -1,0 +1,48 @@
+import {
+  Injectable,
+  type Provider,
+  type Signal,
+  signal,
+  type Type,
+} from '@angular/core';
+
+/**
+ * Built-in accessibility strings of the library (ADR-0006, contract header). Components
+ * get every visible text as input; only the few texts they own (the name of a Tag's remove
+ * button, later "1–7 von 12" in Pagination) come from here.
+ *
+ * - The library ships German (default), English and Russian — the product UI languages.
+ * - An app replaces the provider with its own implementation on top of its i18n library
+ *   (pattern: Angular Material's MatPaginatorIntl): provideKonturIntl(AppKonturIntl).
+ * - Members are signals, so components re-render when the app switches the language.
+ *
+ * libs/ui never imports an i18n library (ESLint no-restricted-imports).
+ */
+@Injectable({ providedIn: 'root', useFactory: () => new KonturIntlDe() })
+export abstract class KonturIntl {
+  /** Action of the remove button of k-tag; the tag text is added to the name. */
+  abstract readonly removeLabel: Signal<string>;
+}
+
+/** Deutsch — the default. "Entfernen" is the text of the Tag mockup. */
+@Injectable()
+export class KonturIntlDe extends KonturIntl {
+  readonly removeLabel = signal('Entfernen').asReadonly();
+}
+
+/** English (en-GB). */
+@Injectable()
+export class KonturIntlEn extends KonturIntl {
+  readonly removeLabel = signal('Remove').asReadonly();
+}
+
+/** Русский. */
+@Injectable()
+export class KonturIntlRu extends KonturIntl {
+  readonly removeLabel = signal('Удалить').asReadonly();
+}
+
+/** Replaces the built-in strings: `providers: [provideKonturIntl(KonturIntlEn)]`. */
+export function provideKonturIntl(intl: Type<KonturIntl>): Provider {
+  return { provide: KonturIntl, useClass: intl };
+}

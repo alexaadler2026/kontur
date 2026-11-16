@@ -27,3 +27,15 @@ export async function allStoryIds(page: Page): Promise<string[]> {
     .filter((entry) => entry.type === 'story')
     .map((entry) => entry.id);
 }
+
+/** The browser's own value of a colour token, so tests never hard-code a hex value. */
+export function colorToken(page: Page, name: string): Promise<string> {
+  return page.evaluate((variable) => {
+    const probe = document.createElement('span');
+    probe.style.background = `var(${variable})`;
+    document.body.append(probe);
+    const value = getComputedStyle(probe).backgroundColor;
+    probe.remove();
+    return value;
+  }, name);
+}

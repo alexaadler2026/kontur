@@ -21,3 +21,11 @@ export {
   type AvatarSize,
 } from './lib/badge-tag-avatar/avatar';
 export { AvatarStackComponent } from './lib/badge-tag-avatar/avatar-stack';
+export { TagComponent } from './lib/badge-tag-avatar/tag';
+export {
+  KonturIntl,
+  KonturIntlDe,
+  KonturIntlEn,
+  KonturIntlRu,
+  provideKonturIntl,
+} from './lib/intl/kontur-intl';
