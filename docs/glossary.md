@@ -6,7 +6,10 @@ default UI language and the language of the mockups in `docs/design/screens/`.
 - **EN marked ✓** is confirmed by the English mockup
   (`docs/design/screens/signflow/DocumentsEN.html`). Unmarked EN and all RU entries
   are working translations; the i18n task finalises them in the translation files.
-- Terms are taken from the mockups only — add a term when it first appears in code.
+- Domain terms (SignFlow, Belegscan) are taken from the mockups only — add a term when it
+  first appears in code.
+- Architecture terms (last section) come from the accepted ADR waves; columns RU | DE | EN,
+  German reviewed by the owner.
 
 ## SignFlow — document signing
 
@@ -48,3 +51,101 @@ default UI language and the language of the mockups in `docs/design/screens/`.
 | Prüfwarteschlange                       | review queue                    | очередь проверки              | Receipts waiting for a human check                                                                                 |
 | Stapel-Import                           | batch import                    | пакетный импорт               | Import of many files or a ZIP at once                                                                              |
 | Duplikat                                | duplicate                       | дубликат                      | Receipt that was already imported; skipped                                                                         |
+
+## Architecture terms (ADR waves 1–2)
+
+Technical terms of [ADR 0007–0020](adr/README.md). In this project **„Protokoll“ is the
+document audit trail**; technical server logs are called **„Logs“** in German, never
+„Protokoll“.
+
+### Wave 1 — API, environments, login, files, PDF, deployment (ADR 0007–0014)
+
+| RU                                        | DE                                          | EN                                    |
+| ----------------------------------------- | ------------------------------------------- | ------------------------------------- |
+| контракт API                              | API-Vertrag / Schnittstellenvertrag         | API contract                          |
+| спецификация OpenAPI                      | OpenAPI-Spezifikation                       | OpenAPI specification                 |
+| источник правды                           | Single Source of Truth / maßgebliche Quelle | single source of truth                |
+| генерация кода                            | Codegenerierung                             | code generation                       |
+| расхождение (дрейф)                       | Abweichung (Drift)                          | drift                                 |
+| конечная точка, эндпоинт                  | Endpunkt                                    | endpoint                              |
+| объект передачи данных                    | Datentransferobjekt (DTO)                   | data transfer object (DTO)            |
+| мок, имитация                             | Mock (Testdouble)                           | mock                                  |
+| постраничная выдача                       | Paginierung                                 | pagination                            |
+| сортировка                                | Sortierung                                  | sorting                               |
+| код ошибки                                | Fehlercode                                  | error code                            |
+| минимальная единица валюты                | kleinste Währungseinheit                    | minor currency unit                   |
+| код валюты                                | Währungscode                                | currency code                         |
+| число с плавающей точкой                  | Gleitkommazahl                              | floating-point number                 |
+| окружение                                 | Umgebung                                    | environment                           |
+| переменная окружения                      | Umgebungsvariable                           | environment variable                  |
+| рабочая версия, продакшен                 | Produktivumgebung                           | production                            |
+| аутентификация                            | Authentifizierung                           | authentication                        |
+| авторизация                               | Autorisierung                               | authorization                         |
+| сессия                                    | Sitzung                                     | session                               |
+| приглашение                               | Einladung                                   | invitation                            |
+| восстановление пароля                     | Passwort-Wiederherstellung                  | password recovery                     |
+| двухфакторная аутентификация              | Zwei-Faktor-Authentifizierung (2FA)         | two-factor authentication (2FA)       |
+| хеш пароля                                | Passwort-Hash                               | password hash                         |
+| роль                                      | Rolle                                       | role                                  |
+| право доступа                             | Berechtigung                                | permission                            |
+| владелец (документа)                      | Eigentümer / Absender                       | owner / sender                        |
+| владелец группы                           | Gruppeninhaber/in                           | group owner                           |
+| показатель валюты (число минорных знаков) | Nachkommastellen der Währung (ISO 4217)     | currency exponent (minor unit digits) |
+| участник группы                           | Gruppenmitglied                             | group member                          |
+| бухгалтер                                 | Buchhalter/in                               | accountant                            |
+| шифрование при хранении                   | Verschlüsselung ruhender Daten              | encryption at rest                    |
+| мастер-ключ                               | Master-Schlüssel (KEK)                      | master key (key-encryption key)       |
+| ключ данных                               | Datenschlüssel                              | data key (data-encryption key)        |
+| ротация ключей                            | Schlüsselrotation                           | key rotation                          |
+| загрузка файла                            | Datei-Upload                                | file upload                           |
+| отпечаток, хеш-сумма                      | Prüfsumme / Hashwert                        | checksum / hash                       |
+| простая электронная подпись               | einfache elektronische Signatur             | simple electronic signature (SES)     |
+| печать (изображение)                      | Firmenstempel / Stempel                     | stamp                                 |
+| инкрементальное сохранение                | inkrementelles Update                       | incremental update / save             |
+| обратный прокси                           | Reverse-Proxy                               | reverse proxy                         |
+| сертификат TLS                            | TLS-Zertifikat                              | TLS certificate                       |
+| миграция базы данных                      | Datenbankmigration                          | database migration                    |
+| выкат, развёртывание                      | Bereitstellung / Deployment                 | deployment                            |
+| откат                                     | Rollback / Zurücksetzen                     | rollback                              |
+| резервная копия                           | Datensicherung / Backup                     | backup                                |
+| восстановление                            | Wiederherstellung                           | restore                               |
+| учение по восстановлению                  | Wiederherstellungstest                      | restore drill                         |
+| срок хранения                             | Aufbewahrungsfrist                          | retention period                      |
+| секрет                                    | Secret (vertrauliche Zugangsdaten)          | secret                                |
+| проверка здоровья                         | Health-Check                                | health check                          |
+
+### Wave 2 — e-mail, external access, audit trail, polling, demo, monitoring (ADR 0015–0020)
+
+| RU                                    | DE                                            | EN                        |
+| ------------------------------------- | --------------------------------------------- | ------------------------- |
+| транзакционное письмо                 | Transaktions-E-Mail                           | transactional e-mail      |
+| доставляемость                        | Zustellbarkeit                                | deliverability            |
+| отказ доставки                        | Unzustellbarkeit (Bounce)                     | bounce                    |
+| исходящий ящик (паттерн)              | Outbox-Muster                                 | transactional outbox      |
+| повторная попытка                     | Wiederholungsversuch                          | retry                     |
+| домен отправителя                     | Absenderdomain                                | sending domain            |
+| одноразовый код                       | Einmalcode                                    | one-time code (OTP)       |
+| ссылка для подписания                 | Signaturlink / Link zur Unterschrift          | signing link              |
+| срок действия                         | Gültigkeitsdauer                              | validity period           |
+| перебор                               | Brute-Force-Angriff                           | brute-force attack        |
+| ограничение частоты                   | Ratenbegrenzung                               | rate limiting             |
+| блокировка доступа                    | Zugriffssperre / Kontosperre                  | lockout                   |
+| цепочка хешей                         | Hashkette                                     | hash chain                |
+| соль                                  | Salt                                          | salt                      |
+| обезличивание                         | Anonymisierung                                | anonymisation             |
+| псевдонимизация                       | Pseudonymisierung                             | pseudonymisation          |
+| удаление с сохранением доказательства | beweiserhaltende Löschung                     | proof-preserving deletion |
+| срок хранения протокола               | Aufbewahrungsfrist des Protokolls             | audit trail retention     |
+| опрос                                 | Polling (zyklische Abfrage)                   | polling                   |
+| условный запрос                       | bedingte Anfrage                              | conditional request       |
+| песочница                             | Sandbox                                       | sandbox                   |
+| демо-почта                            | Demo-Postfach                                 | demo inbox                |
+| начальные данные                      | Beispieldaten (Seed-Daten)                    | seed data                 |
+| холодный старт                        | Kaltstart                                     | cold start                |
+| поверхность атаки                     | Angriffsfläche                                | attack surface            |
+| отслеживание ошибок                   | Fehlerüberwachung (Error-Tracking)            | error tracking            |
+| очистка данных                        | Scrubbing (Entfernen personenbezogener Daten) | data scrubbing            |
+| журнал                                | Log / Logdatei                                | log                       |
+| сигнал жизни                          | Heartbeat (Lebenszeichen)                     | heartbeat                 |
+| оповещение                            | Alarmierung                                   | alerting                  |
+| инцидент                              | Störung (Incident)                            | incident                  |
