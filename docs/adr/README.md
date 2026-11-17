@@ -76,3 +76,4 @@ Chosen option: "<option>", because <justification against the drivers>.
 | [0018](0018-data-refresh-polling.md) | Keeping screens up to date: conditional polling in v1, with a written trigger for Server-Sent Events | Accepted |
 | [0019](0019-demo-hosting-and-sandbox.md) | Demo: the real backend on a small server of its own, one temporary sandbox per visitor | Accepted |
 | [0020](0020-monitoring-logs-health.md) | Monitoring: Sentry SDKs sending scrubbed errors to a self-hosted tracker, structured logs, health checks and external heartbeats | Accepted |
+| [0021](0021-forms-signal-forms.md) | Forms in the apps: Signal Forms, errors shown on leaving a field or on submit, server errors mapped from Problem Details | Accepted |

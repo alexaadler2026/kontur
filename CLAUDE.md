@@ -69,7 +69,7 @@ truth for what the products do and by which rules. What is not there, ask.
 - Signals for state: signal(), computed(), input(), output(), model(). linkedSignal/resource where they fit.
 - New control flow (@if, @for with track, @switch). No *ngIf/*ngFor.
 - ChangeDetectionStrategy.OnPush everywhere. inject() instead of constructor DI.
-- Typed reactive forms. No `any`; strict TypeScript.
+- Forms: Signal Forms (`@angular/forms/signals`, ADR-0021). No `any`; strict TypeScript.
 - RxJS only for streams/events (HTTP, websockets, debounce); convert to signals at the edge.
 - State: NgRx SignalStore per feature. No global god-store.
 - Feature folder structure: feature / data-access / ui / util; respect Nx module boundaries.
