@@ -9,7 +9,7 @@ import {
 /**
  * Built-in accessibility strings of the library (ADR-0006, contract header). Components
  * get every visible text as input; only the few texts they own (the name of a Tag's remove
- * button, later "1–7 von 12" in Pagination) come from here.
+ * button, the close button of an Alert, later "1–7 von 12" in Pagination) come from here.
  *
  * - The library ships German (default), English and Russian — the product UI languages.
  * - An app replaces the provider with its own implementation on top of its i18n library
@@ -22,24 +22,29 @@ import {
 export abstract class KonturIntl {
   /** Action of the remove button of k-tag; the tag text is added to the name. */
   abstract readonly removeLabel: Signal<string>;
+  /** Name of the close button of k-alert ("Schließen" in the Alert mockup). */
+  abstract readonly closeLabel: Signal<string>;
 }
 
 /** Deutsch — the default. "Entfernen" is the text of the Tag mockup. */
 @Injectable()
 export class KonturIntlDe extends KonturIntl {
   readonly removeLabel = signal('Entfernen').asReadonly();
+  readonly closeLabel = signal('Schließen').asReadonly();
 }
 
 /** English (en-GB). */
 @Injectable()
 export class KonturIntlEn extends KonturIntl {
   readonly removeLabel = signal('Remove').asReadonly();
+  readonly closeLabel = signal('Close').asReadonly();
 }
 
 /** Русский. */
 @Injectable()
 export class KonturIntlRu extends KonturIntl {
   readonly removeLabel = signal('Удалить').asReadonly();
+  readonly closeLabel = signal('Закрыть').asReadonly();
 }
 
 /** Replaces the built-in strings: `providers: [provideKonturIntl(KonturIntlEn)]`. */

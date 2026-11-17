@@ -1,0 +1,36 @@
+/* Ported 1:1 from docs/design/components.css, section "Alert: InlineAlert and Banner" (v4.4).
+   Shared rules (focus ring, reduced motion) are in styles/kontur-base.css. */
+
+/* ---------- Alert: InlineAlert and Banner (v4.4, 2026-11-17) ----------
+   A message that stays in the page flow (unlike Toast). Never auto-dismisses.
+   Tone = subtle background + 3px edge + icon by tone (different shape per tone,
+   not color only, WCAG 1.4.1). Text stays text-primary: 11:1+ on every subtle
+   background in both themes; icon and links 4.5:1+. */
+.k-alert {
+  display: flex; align-items: flex-start; gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border-subtle); border-left: 3px solid var(--info);
+  border-radius: var(--radius-md); background: var(--info-subtle);
+  font: 400 14px/20px var(--font-sans); color: var(--text-primary);
+}
+.k-alert > .k-ico { width: 18px; height: 18px; flex: none; margin-top: 1px; color: var(--info); }
+.k-alert-body { flex: 1; min-width: 0; }
+.k-alert-title { display: block; font-weight: 600; }
+.k-alert-actions { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2); }
+.k-alert > .k-icon-btn { flex: none; width: var(--control-sm); height: var(--control-sm); margin: -6px -8px -6px 0; }
+.k-alert > .k-icon-btn:hover, .k-alert > .k-icon-btn.is-hover { background: color-mix(in srgb, var(--text-primary) 8%, transparent); }
+.k-alert--success { background: var(--success-subtle); border-left-color: var(--success); }
+.k-alert--success > .k-ico { color: var(--success); }
+.k-alert--warning { background: var(--warning-subtle); border-left-color: var(--warning); }
+.k-alert--warning > .k-ico { color: var(--warning); }
+.k-alert--error { background: var(--error-subtle); border-left-color: var(--error); }
+.k-alert--error > .k-ico { color: var(--error); }
+/* Banner: full width at the top of the app shell or page (offline, demo sandbox).
+   No radius, no side borders; the edge moves to the bottom line. */
+.k-alert--banner {
+  align-items: center; border-radius: 0; border-width: 0 0 1px; border-left: none;
+  padding: var(--space-2) var(--space-4);
+}
+.k-alert--banner .k-alert-body { display: flex; flex-wrap: wrap; align-items: center; column-gap: var(--space-4); row-gap: var(--space-1); }
+.k-alert--banner .k-alert-title { display: inline; }
+.k-alert--banner .k-alert-actions { margin: 0 0 0 auto; }

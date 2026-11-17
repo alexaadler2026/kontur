@@ -6,7 +6,8 @@
     "amount": "Betrag: {amount}"
   },
   "kontur": {
-    "removeLabel": "Entfernen"
+    "removeLabel": "Entfernen",
+    "closeLabel": "Schließen"
   },
   "forms": {
     "signIn": {

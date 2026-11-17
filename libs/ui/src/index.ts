@@ -29,3 +29,9 @@ export {
   KonturIntlRu,
   provideKonturIntl,
 } from './lib/intl/kontur-intl';
+export {
+  AlertActionsDirective,
+  AlertComponent,
+  type AlertTone,
+  type AlertVariant,
+} from './lib/alert/alert';

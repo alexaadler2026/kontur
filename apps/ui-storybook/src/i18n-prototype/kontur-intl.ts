@@ -10,4 +10,5 @@ import { translateSignal } from '@jsverse/transloco';
 @Injectable()
 export class TranslocoKonturIntl extends KonturIntl {
   readonly removeLabel = translateSignal('kontur.removeLabel');
+  readonly closeLabel = translateSignal('kontur.closeLabel');
 }

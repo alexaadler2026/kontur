@@ -6,7 +6,8 @@
     "amount": "Amount: {amount}"
   },
   "kontur": {
-    "removeLabel": "Remove"
+    "removeLabel": "Remove",
+    "closeLabel": "Close"
   },
   "forms": {
     "signIn": {

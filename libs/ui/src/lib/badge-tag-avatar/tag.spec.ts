@@ -112,6 +112,7 @@ describe('k-tag', () => {
     @Injectable()
     class SwitchableIntl extends KonturIntl {
       readonly label = signal('Entfernen');
+      readonly closeLabel = signal('Schließen').asReadonly();
       readonly removeLabel = this.label.asReadonly();
     }
     const { fixture } = await render(`<k-tag removable>NDA</k-tag>`, {
