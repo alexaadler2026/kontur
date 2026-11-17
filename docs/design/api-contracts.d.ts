@@ -185,13 +185,19 @@ interface ToastOptions {
  *  live=true  → error/warning: role="alert"; info/success: role="status".
  *  live=false → no role: content that is present when the page loads (e.g. "Sitzung abgelaufen").
  *  Re-announcement: a repeated identical message must be announced again — the host re-creates
- *  the element (e.g. @if keyed by a submit counter), the component does not dedupe. */
+ *  the element on every failed submit, the component does not dedupe. @if is NOT enough: once the
+ *  counter is 1 the condition stays true and Angular keeps the same element. Re-create it with
+ *  @for over a one-item list keyed by the counter:
+ *    @for (n of [submitCount()]; track n) { @if (n > 0) { <k-alert tone="error" live>…</k-alert> } }
+ *  A new track key destroys the old element and inserts a new one, so the reader announces again.
+ *  Visibility is owned by the host: on close the alert moves the focus, emits `dismissed` and
+ *  does NOT hide itself; the host removes it (@if). One source of truth. */
 interface AlertProps {
   tone?: "info" | "success" | "warning" | "error";   // default "info"
   title?: string;              // bold first line, e.g. "Anmeldung fehlgeschlagen"
   variant?: "inline" | "banner"; // default "inline"; banner = full width, no radius, top of shell
   live?: boolean;              // default false
-  dismissible?: boolean;       // close button k-icon-btn; aria-label from KonturIntl, new key `close` (de "Schließen", en "Close", ru "Закрыть")
+  dismissible?: boolean;       // close button k-icon-btn; aria-label from KonturIntl, member `closeLabel` (de "Schließen", en "Close", ru "Закрыть")
 }
 interface AlertOutputs { dismissed: void; }
 // Content: message projected as default content; actions in <div kAlertActions> (k-btn --sm, ghost or secondary).
