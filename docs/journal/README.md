@@ -23,3 +23,4 @@ German summary with a glossary (template: [TEMPLATE.md](TEMPLATE.md)).
 | [012](012-badge-avatar.md)          | Badge (status by text + dot shape) and Avatar / AvatarStack (one image, one label)                                  | 2026-11-15 |
 | [013](013-tag-kontur-intl.md)       | Tag (remove button named "action + text") and KonturIntl de/en/ru, Transloco adapter in Storybook; AvatarStack size | 2026-11-16 |
 | [014](014-architecture-waves.md)    | ADR waves 1–2 in the repo: how to read diagram → explanation → ADR → task plan                                      | 2026-11-16 |
+| [015](015-forms-signal-forms.md)    | ADR-0021 (wave 1, before task 8): Signal Forms, error timing, server and form errors; sign-in prototype             | 2026-11-17 |
