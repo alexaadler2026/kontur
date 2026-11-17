@@ -68,8 +68,13 @@ path.
      tens of kilobytes; parsing even the limit takes a fraction of a second);
    - a document with a **DOCTYPE is rejected** — CII invoices have none, and without a
      DOCTYPE there are no entity definitions at all, neither external ones nor the
-     self-multiplying kind;
-   - the parser's error result (`parsererror`) is treated as "cannot be read";
+     self-multiplying kind. The check runs on the **attachment's bytes, before
+     `DOMParser` is called** (a search for `<!DOCTYPE`, ignoring case). Checking
+     `document.doctype` after parsing would be too late: entities are expanded while
+     the document is parsed;
+   - `DOMParser` **does not throw** on broken XML: it returns a document that contains a
+     `<parsererror>` element. We check for that element explicitly (in any namespace —
+     browsers place it differently) and treat it as "cannot be read";
    - the expected root element and namespace (UN/CEFACT Cross Industry Invoice, "CII").
 
    The parsed document is only read; it is never inserted into the page, so nothing in
