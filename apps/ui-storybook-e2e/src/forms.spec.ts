@@ -70,7 +70,7 @@ test.describe('Sign-in form with Signal Forms (ADR-0021)', () => {
     await expect(email).toHaveAccessibleDescription('');
   });
 
-  test('wrong credentials: one general alert above the button, no error at either field', async ({
+  test('wrong credentials: one general k-alert (error tone) above the button, no error at either field', async ({
     page,
   }) => {
     await openStory(page, STORY);
@@ -83,6 +83,9 @@ test.describe('Sign-in form with Signal Forms (ADR-0021)', () => {
 
     const alert = page.getByRole('alert');
     await expect(alert).toHaveText(CREDENTIALS);
+    // Kontur v4.4 (AnmeldenDunkel): the form error is k-alert--error with its icon
+    await expect(alert).toHaveClass(/(^| )k-alert--error( |$)/);
+    await expect(alert.locator('svg.k-ico')).toHaveCount(1);
     await expect(password).not.toHaveAttribute('aria-invalid', 'true');
     await expect(email).not.toHaveAttribute('aria-invalid', 'true');
     // above the button: the alert comes before the button in the document
@@ -97,6 +100,25 @@ test.describe('Sign-in form with Signal Forms (ADR-0021)', () => {
     expect(before).toBe(true);
   });
 
+  test('a second failed attempt re-creates the alert, so the same text is announced again', async ({
+    page,
+  }) => {
+    await openStory(page, STORY);
+    await page.getByLabel('E-Mail-Adresse').fill('max@beispiel.de');
+    await page.getByLabel('Passwort').fill('falsch');
+    const submit = page.getByRole('button', { name: 'Anmelden' });
+
+    await submit.click();
+    const alert = page.getByRole('alert');
+    await expect(alert).toHaveText(CREDENTIALS);
+    // Mark the DOM node; a re-created element will not carry the mark.
+    await alert.evaluate((node) => node.setAttribute('data-first', ''));
+
+    await submit.click();
+    await expect(alert).toHaveText(CREDENTIALS);
+    await expect(alert).not.toHaveAttribute('data-first');
+  });
+
   test('correct credentials sign in', async ({ page }) => {
     await openStory(page, STORY);
     await page.getByLabel('E-Mail-Adresse').fill('max@beispiel.de');
@@ -109,20 +131,21 @@ test.describe('Sign-in form with Signal Forms (ADR-0021)', () => {
     await expect(page.getByRole('alert')).toHaveCount(0);
   });
 
+  // Texts as in the design (Alert.md, Anmelden.md) since the k-alert switch.
   test('texts follow the language: Russian errors and alert', async ({
     page,
   }) => {
     await openStory(page, STORY, 'locale:ru');
-    const email = page.getByLabel('Электронная почта');
+    const email = page.getByLabel('E-mail');
 
     await page.getByRole('button', { name: 'Войти' }).click();
-    await expect(email).toHaveAccessibleDescription('Обязательное поле');
+    await expect(email).toHaveAccessibleDescription('Заполните это поле.');
 
     await email.fill('max@beispiel.de');
     await page.getByLabel('Пароль').fill('falsch');
     await page.getByRole('button', { name: 'Войти' }).click();
     await expect(page.getByRole('alert')).toHaveText(
-      'Неверный адрес электронной почты или пароль.',
+      'Неверный e-mail или пароль.',
     );
   });
 });

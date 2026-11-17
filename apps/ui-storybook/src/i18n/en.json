@@ -20,8 +20,8 @@
   },
   "errors": {
     "validation": {
-      "required": "Required field",
-      "email": "Enter a valid email address."
+      "required": "Please fill in this field.",
+      "email": "Please enter a valid email address."
     },
     "auth": {
       "invalid_credentials": "Email address or password is incorrect."

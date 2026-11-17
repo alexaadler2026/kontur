@@ -16,6 +16,7 @@ import {
 } from '@angular/forms/signals';
 import { TranslocoPipe } from '@jsverse/transloco';
 import {
+  AlertComponent,
   ButtonComponent,
   FormFieldComponent,
   InputDirective,
@@ -86,6 +87,7 @@ function errorDisplay(field: FieldTree<string>): {
   imports: [
     FormField,
     TranslocoPipe,
+    AlertComponent,
     ButtonComponent,
     FormFieldComponent,
     InputDirective,
@@ -133,13 +135,15 @@ function errorDisplay(field: FieldTree<string>): {
         />
       </k-form-field>
 
-      <!-- Form error: general, above the button, announced (role="alert"). -->
-      @if (formError(); as code) {
-        <div class="k-form-item">
-          <span class="k-error-msg" role="alert">{{
-            errorKey(code) | transloco
-          }}</span>
-        </div>
+      <!--
+        Form error (Kontur v4.4, AnmeldenDunkel): k-alert error, live, above the button.
+        Keyed by the submit counter, so every failed attempt inserts a NEW element and a
+        screen reader announces the same text again (Alert.md). @if alone would keep the node.
+      -->
+      @for (n of [submitCount()]; track n) {
+        @if (formError(); as code) {
+          <k-alert tone="error" live>{{ errorKey(code) | transloco }}</k-alert>
+        }
       }
 
       <button
@@ -173,11 +177,14 @@ class SignInPrototypeComponent {
   protected readonly passwordError = this.password.visible;
 
   protected readonly formError = signal<string | null>(null);
+  /** Key of the form error element: a new value re-creates k-alert (re-announcement). */
+  protected readonly submitCount = signal(0);
   protected readonly signedInAs = signal<string | null>(null);
   protected readonly errorKey = errorKey;
 
   protected async onSubmit(event: Event): Promise<void> {
     event.preventDefault();
+    this.submitCount.update((count) => count + 1);
     this.formError.set(null);
     this.signedInAs.set(null);
 
@@ -211,7 +218,7 @@ const meta: Meta<SignInPrototypeComponent> = {
         component:
           'Signal Forms prototype (ADR-0021). Errors appear on leaving a field or on submit; ' +
           'server field errors come from Problem Details errors[]; wrong credentials give one ' +
-          'general alert. Try max@beispiel.de / Passwort123, an e-mail like max@beispiel, or a ' +
+          'general k-alert, re-created on every failed attempt. Try max@beispiel.de / Passwort123, an e-mail like max@beispiel, or a ' +
           'wrong password.',
       },
     },

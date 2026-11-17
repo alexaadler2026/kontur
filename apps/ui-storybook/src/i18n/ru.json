@@ -12,7 +12,7 @@
   "forms": {
     "signIn": {
       "heading": "Вход",
-      "email": "Электронная почта",
+      "email": "E-mail",
       "password": "Пароль",
       "submit": "Войти",
       "success": "Вы вошли как {email}"
@@ -20,11 +20,11 @@
   },
   "errors": {
     "validation": {
-      "required": "Обязательное поле",
-      "email": "Введите корректный адрес электронной почты."
+      "required": "Заполните это поле.",
+      "email": "Введите корректный e-mail."
     },
     "auth": {
-      "invalid_credentials": "Неверный адрес электронной почты или пароль."
+      "invalid_credentials": "Неверный e-mail или пароль."
     }
   }
 }
