@@ -176,6 +176,26 @@ interface ToastOptions {
 }
 // KonturToast.show(message: string, options?: ToastOptions): void
 
+/** <k-alert> — InlineAlert / Banner (v4.4). Class: k-alert (+ k-alert--info|success|warning|error, k-alert--banner).
+ *  A message that stays in the page flow; never auto-dismisses; not focusable itself.
+ *  Use: form-level errors (e.g. sign-in failed), session expired, offline banner, demo sandbox banner.
+ *  Not for: field errors (FormField.error), transient confirmations (Toast).
+ *  Icon by tone, different shape per tone (lucide): info → "info", success → "circle-check",
+ *  warning → "triangle-alert", error → "circle-alert". Icon is aria-hidden; the tone is in the text.
+ *  live=true  → error/warning: role="alert"; info/success: role="status".
+ *  live=false → no role: content that is present when the page loads (e.g. "Sitzung abgelaufen").
+ *  Re-announcement: a repeated identical message must be announced again — the host re-creates
+ *  the element (e.g. @if keyed by a submit counter), the component does not dedupe. */
+interface AlertProps {
+  tone?: "info" | "success" | "warning" | "error";   // default "info"
+  title?: string;              // bold first line, e.g. "Anmeldung fehlgeschlagen"
+  variant?: "inline" | "banner"; // default "inline"; banner = full width, no radius, top of shell
+  live?: boolean;              // default false
+  dismissible?: boolean;       // close button k-icon-btn; aria-label from KonturIntl, new key `close` (de "Schließen", en "Close", ru "Закрыть")
+}
+interface AlertOutputs { dismissed: void; }
+// Content: message projected as default content; actions in <div kAlertActions> (k-btn --sm, ghost or secondary).
+
 /** [kTooltip] — directive. Class: k-tooltip. Shows on hover AND focus, hides on Esc,
  *  links via aria-describedby. Text only, max 240 px; never the only place of essential info. */
 interface TooltipProps {

@@ -41,7 +41,7 @@ in the design system first and a new snapshot replaces this folder.
    Russian has three plural forms (1 документ / 2 документа / 5 документов) —
    use ICU plural rules, never `count + " documents"`.
 
-## Components (21)
+## Components (22)
 
 | Group | Component | Purpose |
 | --- | --- | --- |
@@ -53,6 +53,7 @@ in the design system first and a new snapshot replaces this folder.
 | Data | DataTable | Toolbar, sort, row selection, pagination, skeleton, empty |
 | Data | Badge / Tag / Avatar | Status, filters, people |
 | Overlays | Dialog / Toast / Tooltip / DropdownMenu | CDK Overlay based |
+| Feedback | Alert | InlineAlert in forms and blocks, Banner at the top of the shell (v4.4) |
 | Navigation | Tabs / Stepper / Breadcrumbs / SideNav | Navigation patterns |
 | Upload & Progress | FileDrop / Progress | Upload zone, linear/ring/spinner |
 
@@ -71,6 +72,7 @@ in the design system first and a new snapshot replaces this folder.
 | `DokumenteLeer` / `DokumenteLaden` / `DokumenteFehler` | States: empty / skeleton / load error |
 | `DocumentsEN` | 02 in English (i18n check) |
 | `DetailsDunkel` | 04 in dark theme |
+| `Anmelden` / `AnmeldenMobil` / `AnmeldenDunkel` | Sign-in: empty / field errors on mobile / form error in dark theme. Behaviour and texts: `Anmelden.md` |
 
 **Belegscan** (mobile-first PWA, 390 px; desktop screens 1440 px)
 
