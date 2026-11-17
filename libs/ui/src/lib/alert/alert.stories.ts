@@ -10,18 +10,15 @@ import { AlertActionsDirective, AlertComponent } from './alert';
 const column =
   'display: flex; flex-direction: column; gap: 12px; max-width: 480px; padding: 16px;';
 
-/**
- * The inline examples of the mockup (Alert.html), same order and roles — except the
- * throttling alert: it has no title, one key errors.auth.throttled (ADR-0010, 9a7e811).
- */
+/** The inline examples of the mockup (Alert.html), same order, roles and texts. */
 const inline = `<div style="${column}">
   <k-alert tone="error" live>E-Mail-Adresse oder Passwort ist falsch.</k-alert>
   <k-alert tone="warning" live>
     Zu viele Anmeldeversuche. Bitte versuchen Sie es in 15 Minuten erneut.
   </k-alert>
   <k-alert dismissible>Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.</k-alert>
-  <k-alert tone="success" live>
-    Ihr Passwort wurde geändert. Sie können sich jetzt anmelden.
+  <k-alert tone="success" live title="Passwort geändert">
+    Sie können sich jetzt mit dem neuen Passwort anmelden.
     <div k-alert-actions>
       <button k-button variant="secondary" size="sm">Zur Anmeldung</button>
     </div>
