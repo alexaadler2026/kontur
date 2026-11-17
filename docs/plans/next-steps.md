@@ -1,6 +1,6 @@
 # Состояние работы и следующие шаги
 
-Снимок на **2026-11-17**, после перевода Forms/Sign-in на `k-alert`. Этот файл нужен, чтобы продолжить без
+Снимок на **2026-11-17**: пауза перед задачей 1a (план задачи 1 одобрен). Этот файл нужен, чтобы продолжить без
 старой переписки. Порядок задач задаёт [`roadmap.md`](roadmap.md); здесь — только где мы
 остановились.
 
@@ -46,10 +46,47 @@
 2. ~~Forms/Sign-in на `k-alert`, тексты по дизайну~~ — сделано (журнал 019). Ключи
    `forms.signIn.*` остаются до задачи 8. Блокировка входа в задаче 8: `k-alert` warning
    **без заголовка**, один ключ `errors.auth.throttled` (ICU, `minutes`).
-3. **Следующее: задача 1** — сквозной срез: `GET /api/v1/health` (Nest 12) → `openapi.json` → Orval →
-   строка на экране SignFlow → тест на MSW → e2e. Проверки из ADR-0007: Nest 12 + Prisma +
-   class-validator вместе; документ объявляет OpenAPI 3.1.0; статус `httpResource`.
-   Описание — [`architecture-wave1.md`](architecture-wave1.md), порядок — `roadmap.md`.
+3. **Следующее: задача 1** — сквозной срез. План одобрен владельцем 2026-11-17. Описание —
+   [`architecture-wave1.md`](architecture-wave1.md), порядок — `roadmap.md`. Четыре части, у
+   каждой свой PR и свой журнал; **начинать с 1a**.
+
+   **Принятые находки (записать в ADR-0007, раздел «To verify in the first task», и в журнал 1a):**
+   - `@nx/nest` 24.0.6 требует `@nestjs/* <12` → приложение создаётся генератором `@nx/node`,
+     Nest 12 (`core`, `common`, `platform-express`, `swagger` 12) ставится вручную;
+   - Prisma: тег `latest` — предрелиз `8.0.0-rc.34`; берём стабильную **`7.10.1`, версию
+     закрепить**. В задачу 1 Prisma **не ставим** — целиком в задачу 5 вместе с Testcontainers;
+   - `httpResource` в Angular 22 стабилен (`@publicApi 22.0`) — используем без оговорок.
+
+   **1a — сервер и контракт.** `apps/signflow-api` (Nest 12 на `@nx/node`),
+   `GET /api/v1/health/live` → `HealthDto { status: 'ok'; version: string }`; версия — поле
+   `version` из `apps/signflow-api/package.json` (`0.1.0`). Глобальный `ValidationPipe`,
+   CLI-плагин `@nestjs/swagger`. Таргет `signflow-api:openapi` →
+   `libs/signflow/api-contract/openapi.json` (ключи отсортированы; теги `scope:signflow`,
+   `type:contract`, `platform:neutral`). Проверки: `@IsIn(['ok'])` попадает в схему как `enum`;
+   документ объявляет `openapi: 3.1.0`; nullable по-новому (`type: [..., "null"]`) проверяется
+   на **тестовом DTO внутри теста** — временных полей в `HealthDto` не добавлять. Тесты: unit
+   контроллера (красный первым) и HTTP-уровень (`@nestjs/testing` + supertest).
+   Заодно в `roadmap.md`: перенести `/health/ready` из задачи 53 в задачу 5 (в 53 остаются
+   журналы JSON и остальное).
+
+   **1b — Transloco в SignFlow** по ADR-0006: de по умолчанию, en, ru, ICU; **без
+   переключателя языка**.
+
+   **1c — Orval-клиент, MSW, экран.** `libs/signflow/api-client`: Orval → `httpResource`-хелперы
+   и MSW-хендлеры (вывод в `.gitignore`, таргет `generate` кэшируется Nx). Строка
+   «API: ок, версия …» на экране SignFlow (загрузка и ошибка — свои тексты), тест компонента
+   на `msw/node`, dev-прокси `/api`.
+
+   **1d — e2e против настоящего API.** Собранный API на порту **4310** (добавить в список
+   портов e2e, журнал 008a: 4300 / 4301 / 4402), статика SignFlow с прокси `/api`; axe.
+
+   **Решения на потом:**
+   - `/health/ready` (база доступна, миграции применены) — в задаче 5: он нужен автооткату в
+     задаче 24;
+   - в задаче 22 сборка образа добавляет в ответ health поле `commit` (SHA), чтобы было видно,
+     какая сборка работает на сервере (ADR-0014);
+   - `api:check` в CI — задача 2.
+
 4. Перед задачей 8 владелец обещал прислать спецификацию и макет экрана входа — они уже
    пришли в v4.4 (Anmelden). «Passwort vergessen?», Datenschutz и Impressum в задаче 8 не
    выводятся (раздел «Not active yet» в `Anmelden.md`).
