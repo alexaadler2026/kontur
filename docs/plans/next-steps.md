@@ -56,10 +56,15 @@
 
 ## 4. Открытые вопросы
 
-- **Селектор строки действий Alert.** В контракте `<div kAlertActions>`, но lint `libs/ui`
-  требует kebab-case для директив (`k-input`, `k-button`), поэтому в коде `[k-alert-actions]`.
-  Нужно решение владельца: поправить контракт (`docs(design)`) или поменять правило lint.
+- **Отложено до UI-6 и UI-10 (решить до написания кода).** В контракте ещё есть директивы в
+  camelCase: `kTooltip`, `kMenuTriggerFor`, `kCell`, `kTableToolbar`. Lint `libs/ui` требует
+  kebab-case. У директив, чей вход называется так же, как селектор (`[kTooltip]="text"`),
+  Angular Material и CDK пишут camelCase (`matTooltip`, `cdkMenuTriggerFor`). Правило для них
+  выбираем, когда дойдём до UI-6 (DataTable: `kCell`, `kTableToolbar`) и UI-10 (DropdownMenu:
+  `kMenuTriggerFor`). У Tooltip отдельной задачи в roadmap пока нет.
 - Закрыты владельцем ранее:
+  - селектор строки действий Alert — `k-alert-actions`, контракт поправлен (`c6dbe35`),
+    правило lint не меняем;
   - ключи ошибок сервера — `errors.<code>` (ADR-0008), формулировки — по дизайну;
   - блокировка — один ключ `errors.auth.throttled` без заголовка;
   - клиентские правила делят ключ с сервером (`errors.validation.*`, ADR-0021);
