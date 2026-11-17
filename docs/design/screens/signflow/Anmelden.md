@@ -15,7 +15,7 @@ Screens: `Anmelden` (desktop, light, empty) · `AnmeldenMobil` (390 px, field er
 - Form-level error: `k-alert--error`, `live`, **above the submit button** (`AnmeldenDunkel`).
   No field is marked invalid — the text must not reveal which of the two was wrong.
   A second failed attempt re-creates the alert so it is announced again (see `components/Alert.md`).
-- Throttled (ADR-0010, HTTP 429): same place, `k-alert--warning` with title, minutes from the response.
+- Throttled (ADR-0010, HTTP 429): same place, `k-alert--warning` without a title — one key `errors.auth.throttled` (Alert.md), minutes from the response.
 - Redirect after expired session: `k-alert` info, not live, above the form.
 - While the request runs: submit button `loading`; fields stay editable.
 - Inputs: `type="email" autocomplete="username"`, `type="password" autocomplete="current-password"`.
