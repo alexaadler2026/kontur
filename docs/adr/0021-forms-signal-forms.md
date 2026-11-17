@@ -163,6 +163,10 @@ Signal Forms are public, stable API in our version:
   ADR-0007 (generated API client), ADR-0008 (Problem Details), ADR-0010 (generic login
   errors).
 - Prototype: Storybook story "Forms / Sign-in" with e2e (task 015).
-- Open for design: Kontur has no style for a form-level error and no sign-in mockup yet.
+- ~~Open for design: Kontur has no style for a form-level error and no sign-in mockup yet.
   The prototype reuses the field error markup (`.k-form-item .k-error-msg`) without new
-  CSS; the sign-in screen (task 8) needs a design decision first.
+  CSS; the sign-in screen (task 8) needs a design decision first.~~
+  **Resolved 2026-11-17:** Kontur v4.4 defines the form error as `k-alert` (tone error,
+  `live`, above the submit button; mockup `AnmeldenDunkel`), built in UI-17. The prototype
+  uses it and re-creates it on every failed attempt (`@for (n of [submitCount()]; track n)`),
+  so the same text is announced again. The decision of this ADR is unchanged.
