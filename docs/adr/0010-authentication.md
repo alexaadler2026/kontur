@@ -77,8 +77,8 @@ Second factor in v1: **no (prepared)** / TOTP for everyone / TOTP for admins.
     happened and offering a password-reset link, which also lifts the lock.
 - A general per-IP rate limit (in memory, one instance) protects all auth endpoints.
 - **Response while throttled:** HTTP **429** with Problem Details code
-  **`auth.throttled`** (ADR-0008; translation keys `errors.auth.throttled` and its title
-  `errors.auth.throttled.title`) and the standard **`Retry-After`** header in seconds. The
+  **`auth.throttled`** (ADR-0008; one translation key `errors.auth.throttled`, no separate title, so
+  the rule `errors.<code>` has no exception) and the standard **`Retry-After`** header in seconds. The
   frontend shows the waiting time in minutes, **rounded up** (`Math.ceil(seconds / 60)`),
   through the ICU plural `{minutes}`. The response does not say which counter (pair, IP,
   account) was hit.

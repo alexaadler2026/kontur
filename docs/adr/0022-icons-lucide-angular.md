@@ -52,6 +52,9 @@ Chosen: **1, `@lucide/angular`, one standalone component per icon.**
 - **Names follow the Kontur specs** (`info`, `circle-check`, `triangle-alert`,
   `circle-alert`, `x`, …). Some of them are aliases in current Lucide (`circle-alert` →
   `circle-exclamation-point`); aliases work as selectors and component names.
+- **The shape of an icon comes from Lucide, not from the mockups.** SVG paths in
+  `docs/design` are illustrative and may be older Lucide versions (e.g. the field error
+  triangle in `TextField.html`); mockups are not redrawn when Lucide changes a glyph.
 - **Size and stroke** come from the reference: the `k-*` CSS sets the size where the
   reference has a rule; otherwise `size` is set to the mockup's value. Stroke width stays
   Lucide's default 2, colour `currentColor`.

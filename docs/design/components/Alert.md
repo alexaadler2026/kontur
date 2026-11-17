@@ -35,8 +35,7 @@
 | Ключ | de | en | ru |
 | --- | --- | --- | --- |
 | `errors.auth.invalid_credentials` | E-Mail-Adresse oder Passwort ist falsch. | Email address or password is incorrect. | Неверный e-mail или пароль. |
-| `errors.auth.throttled.title` | Anmeldung vorübergehend gesperrt | Sign-in temporarily blocked | Вход временно заблокирован |
-| `errors.auth.throttled` (ICU, `minutes`) | Bitte versuchen Sie es in {minutes, plural, one {# Minute} other {# Minuten}} erneut. | Please try again in {minutes, plural, one {# minute} other {# minutes}}. | Попробуйте снова через {minutes, plural, one {# минуту} few {# минуты} many {# минут} other {# минуты}}. |
+| `errors.auth.throttled` (ICU, `minutes`) | Zu viele Anmeldeversuche. Bitte versuchen Sie es in {minutes, plural, one {# Minute} other {# Minuten}} erneut. | Too many sign-in attempts. Please try again in {minutes, plural, one {# minute} other {# minutes}}. | Слишком много попыток входа. Попробуйте снова через {minutes, plural, one {# минуту} few {# минуты} many {# минут} other {# минуты}}. |
 | `auth.sessionExpired` | Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an. | Your session has expired. Please sign in again. | Сеанс истёк. Войдите снова. |
 | `auth.error.network` | Keine Verbindung zum Server. Bitte prüfen Sie Ihre Internetverbindung. | No connection to the server. Please check your internet connection. | Нет связи с сервером. Проверьте подключение к интернету. |
 
