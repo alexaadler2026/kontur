@@ -52,9 +52,9 @@ default UI language and the language of the mockups in `docs/design/screens/`.
 | Stapel-Import                           | batch import                    | пакетный импорт               | Import of many files or a ZIP at once                                                                              |
 | Duplikat                                | duplicate                       | дубликат                      | Receipt that was already imported; skipped                                                                         |
 
-## Architecture terms (ADR waves 1–2)
+## Architecture terms (ADR waves 1–3)
 
-Technical terms of [ADR 0007–0020](adr/README.md). In this project **„Protokoll“ is the
+Technical terms of [ADR 0007–0020 and 0023–0028](adr/README.md). In this project **„Protokoll“ is the
 document audit trail**; technical server logs are called **„Logs“** in German, never
 „Protokoll“.
 
@@ -149,3 +149,42 @@ document audit trail**; technical server logs are called **„Logs“** in Germa
 | сигнал жизни                          | Heartbeat (Lebenszeichen)                     | heartbeat                 |
 | оповещение                            | Alarmierung                                   | alerting                  |
 | инцидент                              | Störung (Incident)                            | incident                  |
+
+### Wave 3 — Belegscan: recognition, offline, batch import, tax lines, e-invoices, CSV (ADR 0023–0028)
+
+| RU                           | DE                                | EN                                  |
+| ---------------------------- | --------------------------------- | ----------------------------------- |
+| распознавание текста         | Texterkennung (OCR)               | optical character recognition (OCR) |
+| модель распознавания         | Erkennungsmodell                  | recognition model                   |
+| фоновый поток                | Web Worker (Hintergrund-Thread)   | web worker                          |
+| синтетические данные         | synthetische Daten                | synthetic data                      |
+| базовый уровень              | Vergleichsbasis (Baseline)        | baseline                            |
+| пробная задача               | Machbarkeitsprüfung (Spike)       | spike                               |
+| офлайн-режим                 | Offline-Modus                     | offline mode                        |
+| локальное хранилище          | lokaler Speicher                  | local storage (on-device store)     |
+| синхронизация                | Synchronisierung                  | synchronisation                     |
+| очередь синхронизации        | Synchronisierungswarteschlange    | sync queue                          |
+| идемпотентность              | Idempotenz                        | idempotency                         |
+| конфликт версий              | Versionskonflikt                  | version conflict                    |
+| установка приложения (PWA)   | App-Installation (PWA)            | app installation (PWA)              |
+| корзина                      | Papierkorb                        | trash                               |
+| потоковая обработка          | Stream-Verarbeitung               | streaming                           |
+| ZIP-бомба                    | ZIP-Bombe (Dekompressionsbombe)   | zip bomb                            |
+| налоговая строка             | Steuerzeile                       | tax line                            |
+| налог с продаж               | Verkaufssteuer (НсП, Kirgisistan) | sales tax (Kyrgyzstan)              |
+| ставка налога                | Steuersatz                        | tax rate                            |
+| сумма без налога / с налогом | Nettobetrag / Bruttobetrag        | net amount / gross amount           |
+| профиль страны               | Länderprofil                      | country profile                     |
+| фискальное подтверждение     | Fiskalnachweis                    | fiscal proof                        |
+| электронный счёт             | E-Rechnung                        | e-invoice                           |
+| вложение PDF                 | PDF-Anhang (eingebettete Datei)   | PDF attachment (embedded file)      |
+| источник данных чека         | Datenquelle des Belegs            | receipt data source                 |
+| автоподтверждение            | automatische Bestätigung          | auto-confirmation                   |
+| история изменений            | Änderungsverlauf                  | change history                      |
+| экспорт                      | Export                            | export                              |
+| разделитель                  | Trennzeichen                      | delimiter                           |
+| CSV-инъекция                 | CSV-Injection (Formel-Injektion)  | CSV injection                       |
+| версия схемы                 | Schemaversion                     | schema version                      |
+
+«Налог с продаж» в Кыргызстане — не то же, что немецкая Umsatzsteuer (это название НДС).
+Поэтому по-немецки — «Verkaufssteuer (НсП, Kirgisistan)», без слова Umsatzsteuer.

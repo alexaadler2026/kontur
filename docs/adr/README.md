@@ -77,3 +77,9 @@ Chosen option: "<option>", because <justification against the drivers>.
 | [0019](0019-demo-hosting-and-sandbox.md) | Demo: the real backend on a small server of its own, one temporary sandbox per visitor | Accepted |
 | [0020](0020-monitoring-logs-health.md) | Monitoring: Sentry SDKs sending scrubbed errors to a self-hosted tracker, structured logs, health checks and external heartbeats | Accepted |
 | [0021](0021-forms-signal-forms.md) | Forms in the apps: Signal Forms, errors shown on leaving a field or on submit, server errors mapped from Problem Details | Accepted |
+| [0023](0023-receipt-recognition.md) | Receipt recognition: ONNX models in a Web Worker behind an `OcrEngine` interface; the model is chosen by a spike with fixed criteria | Proposed, model pending spike |
+| [0024](0024-offline-storage-and-sync.md) | Belegscan offline: local store in IndexedDB, an operation queue with idempotent requests, version-based conflicts decided by the user | Accepted |
+| [0025](0025-batch-import-in-the-browser.md) | Batch import in the browser: one worker pipeline, ZIP read entry by entry with hard limits, HEIC and PDF converted on demand | Accepted |
+| [0026](0026-tax-lines-and-fiscal-checks.md) | Receipt data model: a list of tax lines per receipt, country profiles as code, fiscal proofs as an extensible list | Accepted |
+| [0027](0027-e-invoices-zugferd-xrechnung.md) | E-invoices: the embedded XML is read in the browser with PDF.js and a small own mapper; only that attachment is touched | Accepted |
+| [0028](0028-csv-export.md) | CSV export v1: a ZIP with three linked tables, fixed format for Excel and 1C, protected against formula injection | Accepted |
