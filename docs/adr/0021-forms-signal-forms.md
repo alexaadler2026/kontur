@@ -87,8 +87,10 @@ Signal Forms are public, stable API in our version:
   `errors.<code>`. Server code `validation.email` → `errors.validation.email`; the client
   rule `email` shares it (bare client kinds are read as `validation.<kind>`). Other codes
   (e.g. `auth.invalid_credentials`) map the same way.
-- Parameters through ICU (`{min, number}` etc.); German follows the mockups
-  ("Pflichtfeld", formal "Sie").
+- Parameters through ICU (`{min, number}` etc.); German uses the formal "Sie".
+- **Error texts are full sentences** ("Bitte füllen Sie dieses Feld aus.", not
+  "Pflichtfeld"): a screen reader reads the error as the field's description, and a
+  sentence tells the person what to do. (Owner's decision, 2026-11-17.)
 - An unknown code falls back to a generic message by HTTP status (ADR-0008).
 
 ### Server errors

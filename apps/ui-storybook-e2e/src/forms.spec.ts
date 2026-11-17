@@ -8,12 +8,12 @@ import { openStory } from './support/story';
  * dot in the domain passes the client rule but the server rejects it with 422 errors[].
  */
 const STORY = 'forms-sign-in--prototype';
-const REQUIRED = 'Pflichtfeld';
+const REQUIRED = 'Bitte füllen Sie dieses Feld aus.';
 const EMAIL = 'Bitte geben Sie eine gültige E-Mail-Adresse ein.';
 const CREDENTIALS = 'E-Mail-Adresse oder Passwort ist falsch.';
 
 test.describe('Sign-in form with Signal Forms (ADR-0021)', () => {
-  test('empty submit: both fields show "Pflichtfeld", linked to the inputs; focus on the first invalid field', async ({
+  test('empty submit: both fields show the required-field error, linked to the inputs; focus on the first invalid field', async ({
     page,
   }) => {
     await openStory(page, STORY);

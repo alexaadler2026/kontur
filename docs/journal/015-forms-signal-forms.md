@@ -34,14 +34,14 @@ Date: 2026-11-17 · Task: ADR-0021 + прототип · [ADR-0021](../adr/0021-
 2. **Когда видна ошибка** — функция `errorDisplay(field)`:
    - при уходе из поля (`blur`) и после отправки она **запоминает вид ошибки** (например, `required`);
    - показывает ошибку, только пока у поля всё ещё есть ошибка **этого вида**;
-   - поэтому, пока человек печатает, новая ошибка («неверный e-mail») не появляется, а исправленная («Pflichtfeld») исчезает сразу.
+   - поэтому, пока человек печатает, новая ошибка («неверный e-mail») не появляется, а исправленная («Bitte füllen Sie dieses Feld aus.») исчезает сразу.
 3. **Отправка:** `submit(form, { action, onInvalid })`.
    - Если поля неверны, `onInvalid` ставит фокус на первое ошибочное поле (`focusBoundControl()`).
    - Если поля верны, `action` вызывает «сервер». В прототипе это имитация; настоящий API придёт в задачах 1 и 7.
 4. **Ответ сервера** разбирает `mapProblem(problem, form)`:
    - запись `errors[]` с указателем `/email` становится ошибкой поля `form.email` — Signal Forms сами показывают её у поля;
    - ошибка без поля (неверный e-mail или пароль) становится **общей ошибкой**: один текст над кнопкой с `role="alert"`, а не у поля «пароль».
-5. **Тексты:** код ошибки превращается в ключ перевода `errors.<code>` (так в ADR-0008). Например, `errors.validation.email` и `errors.auth.invalid_credentials`. Клиентское правило `email` использует тот же ключ, что и сервер. Немецкие тексты в стиле макетов: «Pflichtfeld», обращение на «Sie».
+5. **Тексты:** код ошибки превращается в ключ перевода `errors.<code>` (так в ADR-0008). Например, `errors.validation.email` и `errors.auth.invalid_credentials`. Клиентское правило `email` использует тот же ключ, что и сервер. Немецкие тексты — на «Sie», ошибки — целыми предложениями (см. дополнение в конце).
 6. **Тесты:**
    - 6 e2e-тестов сначала были красными на пустой заглушке, потом все зелёные;
    - **мутация:** если вместо моего правила поставить простое «показывать, когда touched», падает именно тест «пока печатает, новая ошибка не появляется» — значит, тест действительно проверяет правило;
@@ -138,3 +138,9 @@ Alle Formulare in SignFlow und Belegscan benutzen Signal Forms. Ein Prototyp in 
 | die Kontoaufzählung                        | account enumeration | перебор учётных записей |
 | den Fokus setzen                           | move the focus      | перевести фокус         |
 | die Bildschirmleseanwendung (Screenreader) | screen reader       | экранная читалка        |
+
+## Дополнение · Addendum · Nachtrag (2026-11-17)
+
+- **RU.** Текст ошибки обязательного поля изменён: «Pflichtfeld» → «Bitte füllen Sie dieses Feld aus.» Причина — решение владельца на вычитке: экранная читалка произносит текст ошибки как описание поля, поэтому нужно предложение, которое говорит, что сделать. Требование изменилось, поэтому в том же коммите изменён e2e-тест (константа `REQUIRED`). Сначала тест упал на старом тексте, потом стал зелёным. В ADR-0021 добавлено правило: тексты ошибок — целые предложения.
+- **EN.** The required-field error changed from "Pflichtfeld" to "Bitte füllen Sie dieses Feld aus." (owner's review): a screen reader reads the error as the field's description, so it must be a sentence that says what to do. The requirement changed, so the e2e expectation changed in the same commit (red on the old text first). ADR-0021 now says error texts are full sentences.
+- **DE.** Die Fehlermeldung für Pflichtfelder ist jetzt ein ganzer Satz: „Bitte füllen Sie dieses Feld aus.“ Ein Screenreader liest den Text vor, deshalb soll er sagen, was zu tun ist.
