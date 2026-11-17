@@ -7,5 +7,23 @@
   },
   "kontur": {
     "removeLabel": "Remove"
+  },
+  "forms": {
+    "signIn": {
+      "heading": "Sign in",
+      "email": "Email address",
+      "password": "Password",
+      "submit": "Sign in",
+      "success": "Signed in as {email}"
+    }
+  },
+  "errors": {
+    "validation": {
+      "required": "Required field",
+      "email": "Enter a valid email address."
+    },
+    "auth": {
+      "invalid_credentials": "Email address or password is incorrect."
+    }
   }
 }

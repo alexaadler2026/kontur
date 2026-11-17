@@ -7,5 +7,23 @@
   },
   "kontur": {
     "removeLabel": "Удалить"
+  },
+  "forms": {
+    "signIn": {
+      "heading": "Вход",
+      "email": "Электронная почта",
+      "password": "Пароль",
+      "submit": "Войти",
+      "success": "Вы вошли как {email}"
+    }
+  },
+  "errors": {
+    "validation": {
+      "required": "Обязательное поле",
+      "email": "Введите корректный адрес электронной почты."
+    },
+    "auth": {
+      "invalid_credentials": "Неверный адрес электронной почты или пароль."
+    }
   }
 }

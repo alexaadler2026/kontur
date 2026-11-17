@@ -7,5 +7,23 @@
   },
   "kontur": {
     "removeLabel": "Entfernen"
+  },
+  "forms": {
+    "signIn": {
+      "heading": "Anmelden",
+      "email": "E-Mail-Adresse",
+      "password": "Passwort",
+      "submit": "Anmelden",
+      "success": "Angemeldet als {email}"
+    }
+  },
+  "errors": {
+    "validation": {
+      "required": "Pflichtfeld",
+      "email": "Bitte geben Sie eine gültige E-Mail-Adresse ein."
+    },
+    "auth": {
+      "invalid_credentials": "E-Mail-Adresse oder Passwort ist falsch."
+    }
   }
 }
