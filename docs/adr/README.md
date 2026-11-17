@@ -83,3 +83,4 @@ Chosen option: "<option>", because <justification against the drivers>.
 | [0026](0026-tax-lines-and-fiscal-checks.md) | Receipt data model: a list of tax lines per receipt, country profiles as code, fiscal proofs as an extensible list | Accepted |
 | [0027](0027-e-invoices-zugferd-xrechnung.md) | E-invoices: the embedded XML is read in the browser with PDF.js and a small own mapper; only that attachment is touched | Accepted |
 | [0028](0028-csv-export.md) | CSV export v1: a ZIP with three linked tables, fixed format for Excel and 1C, protected against formula injection | Accepted |
+| [0022](0022-icons-lucide-angular.md) | Icons: Lucide through `@lucide/angular`, one standalone component per icon | Accepted |
