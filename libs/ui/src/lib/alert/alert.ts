@@ -114,7 +114,7 @@ const TABBABLE = [
 })
 export class AlertComponent {
   readonly tone = input<AlertTone>('info');
-  /** Bold first line, e.g. "Anmeldung vorübergehend gesperrt". */
+  /** Bold first line, e.g. "Anmeldung fehlgeschlagen" (contract example). */
   readonly title = input<string>();
   readonly variant = input<AlertVariant>('inline');
   /** The message appeared in response to an action → it is announced (role alert/status). */

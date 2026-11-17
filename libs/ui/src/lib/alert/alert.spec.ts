@@ -72,13 +72,13 @@ describe('k-alert', () => {
 
   it('title: a bold first line inside the body; the host gets no native title tooltip', async () => {
     await render(
-      `<k-alert data-testid="alert" tone="warning" title="Anmeldung vorübergehend gesperrt">Zu viele Anmeldeversuche.</k-alert>`,
+      `<k-alert data-testid="alert" tone="error" title="Anmeldung fehlgeschlagen">E-Mail-Adresse oder Passwort ist falsch.</k-alert>`,
       { imports: [AlertComponent] },
     );
 
     const alert = screen.getByTestId('alert');
     const title = alert.querySelector('.k-alert-body > .k-alert-title');
-    expect(title).toHaveTextContent('Anmeldung vorübergehend gesperrt');
+    expect(title).toHaveTextContent('Anmeldung fehlgeschlagen');
     expect(alert).not.toHaveAttribute('title');
   });
 
