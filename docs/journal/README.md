@@ -25,3 +25,4 @@ German summary with a glossary (template: [TEMPLATE.md](TEMPLATE.md)).
 | [014](014-architecture-waves.md)         | ADR waves 1–2 in the repo: how to read diagram → explanation → ADR → task plan                                      | 2026-11-16 |
 | [015](015-forms-signal-forms.md)         | ADR-0021 (wave 1, before task 8): Signal Forms, error timing, server and form errors; sign-in prototype             | 2026-11-17 |
 | [016](016-architecture-wave3-roadmap.md) | Wave 3 (Belegscan) and the cross-wave roadmap in the repo; ADR-0027 XML guards clarified                            | 2026-11-17 |
+| [017](017-icons-lucide.md)               | ADR-0022: icons via @lucide/angular; libs/ui icons migrated; why a refactoring has no red test                      | 2026-11-17 |
