@@ -200,7 +200,7 @@ interface AlertProps {
   dismissible?: boolean;       // close button k-icon-btn; aria-label from KonturIntl, member `closeLabel` (de "Schließen", en "Close", ru "Закрыть")
 }
 interface AlertOutputs { dismissed: void; }
-// Content: message projected as default content; actions in <div kAlertActions> (k-btn --sm, ghost or secondary).
+// Content: message projected as default content; actions in <div k-alert-actions> (k-btn --sm, ghost or secondary).
 
 /** [kTooltip] — directive. Class: k-tooltip. Shows on hover AND focus, hides on Esc,
  *  links via aria-describedby. Text only, max 240 px; never the only place of essential info. */
