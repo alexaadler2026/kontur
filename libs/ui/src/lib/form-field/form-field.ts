@@ -8,7 +8,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { type FormFieldContext, K_FORM_FIELD } from './form-field-context';
-import { ErrorIconComponent } from '../util/error-icon';
+import { LucideTriangleAlert } from '@lucide/angular';
 import { InputDirective } from './input';
 
 let nextId = 0;
@@ -22,7 +22,7 @@ let nextId = 0;
  */
 @Component({
   selector: 'k-form-field',
-  imports: [ErrorIconComponent],
+  imports: [LucideTriangleAlert],
   template: `
     <label [for]="inputId()"
       >{{ label() }}
@@ -36,7 +36,7 @@ let nextId = 0;
     }
     @if (error()) {
       <span class="k-error-msg" [id]="errorId">
-        <svg k-error-icon></svg>
+        <svg lucideTriangleAlert size="14"></svg>
         {{ error() }}
       </span>
     }

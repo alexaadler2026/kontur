@@ -53,6 +53,21 @@ describe('k-tag', () => {
     ).toBeInTheDocument();
   });
 
+  it('remove icon: decorative SVG drawn in the SVG namespace, 12×12 and without a class, like the mockup (Tag.html)', async () => {
+    await render(`<k-tag removable>Steuer</k-tag>`, {
+      imports: [TagComponent],
+    });
+
+    const icon = screen.getByRole('button').querySelector('svg');
+    expect(icon).toHaveAttribute('aria-hidden', 'true');
+    expect(icon).toHaveAttribute('width', '12');
+    expect(icon).toHaveAttribute('height', '12');
+    expect(icon).not.toHaveClass('k-ico');
+    expect(icon?.querySelector('path')?.namespaceURI).toBe(
+      'http://www.w3.org/2000/svg',
+    );
+  });
+
   it('click, Enter and Space emit "removed" (the consumer removes the tag)', async () => {
     const removed = vi.fn();
     await render(`<k-tag removable (removed)="removed()">NDA</k-tag>`, {

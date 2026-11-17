@@ -9,7 +9,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { type ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { ErrorIconComponent } from '../util/error-icon';
+import { LucideTriangleAlert } from '@lucide/angular';
 import { K_RADIO_GROUP, type RadioGroupContext } from './radio-group-context';
 
 let nextId = 0;
@@ -22,7 +22,7 @@ let nextId = 0;
  */
 @Component({
   selector: 'k-radio-group',
-  imports: [ErrorIconComponent],
+  imports: [LucideTriangleAlert],
   template: `
     <fieldset
       class="k-choice-group"
@@ -41,7 +41,7 @@ let nextId = 0;
       }
       @if (error()) {
         <span class="k-error-msg" [id]="errorId"
-          ><svg k-error-icon></svg>{{ error() }}</span
+          ><svg lucideTriangleAlert size="14"></svg>{{ error() }}</span
         >
       }
       <div class="k-choice-options"><ng-content /></div>

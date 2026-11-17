@@ -150,6 +150,22 @@ describe('k-form-field + k-input', () => {
     );
   });
 
+  it('error icon: decorative SVG drawn in the SVG namespace, 14×14 and without a class, like the mockup (TextField.html)', async () => {
+    await render(
+      `<k-form-field label="E-Mail" error="Bitte füllen Sie dieses Feld aus."><input k-input /></k-form-field>`,
+      { imports },
+    );
+
+    const icon = document.querySelector('.k-error-msg svg');
+    expect(icon).toHaveAttribute('aria-hidden', 'true');
+    expect(icon).toHaveAttribute('width', '14');
+    expect(icon).toHaveAttribute('height', '14');
+    expect(icon).not.toHaveClass('k-ico');
+    expect(icon?.querySelector('path')?.namespaceURI).toBe(
+      'http://www.w3.org/2000/svg',
+    );
+  });
+
   it('works with typed reactive forms (value in both directions, disabled)', async () => {
     @Component({
       imports: [ReactiveFormsModule, ...imports],

@@ -9,7 +9,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { type ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { ErrorIconComponent } from '../util/error-icon';
+import { LucideTriangleAlert } from '@lucide/angular';
 
 let nextId = 0;
 
@@ -21,7 +21,7 @@ let nextId = 0;
  */
 @Component({
   selector: 'k-checkbox',
-  imports: [ErrorIconComponent],
+  imports: [LucideTriangleAlert],
   template: `
     <label
       class="k-check"
@@ -44,7 +44,7 @@ let nextId = 0;
     }
     @if (error()) {
       <span class="k-error-msg" [id]="errorId"
-        ><svg k-error-icon></svg>{{ error() }}</span
+        ><svg lucideTriangleAlert size="14"></svg>{{ error() }}</span
       >
     }
   `,

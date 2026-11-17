@@ -1,3 +1,4 @@
+import { LucideX } from '@lucide/angular';
 import {
   booleanAttribute,
   ChangeDetectionStrategy,
@@ -25,6 +26,7 @@ let nextId = 0;
  */
 @Component({
   selector: 'k-tag',
+  imports: [LucideX],
   template: `
     <span [id]="textId"><ng-content /></span>
     @if (removable()) {
@@ -36,19 +38,7 @@ let nextId = 0;
         [attr.aria-labelledby]="buttonId + ' ' + textId"
         (click)="removed.emit()"
       >
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          width="12"
-          height="12"
-          aria-hidden="true"
-        >
-          <path d="M18 6 6 18M6 6l12 12" />
-        </svg>
+        <svg lucideX size="12"></svg>
       </button>
     }
   `,
