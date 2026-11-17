@@ -94,4 +94,4 @@ in the design system first and a new snapshot replaces this folder.
   it imitates content, not UI, and is intentionally outside the tokens.
 - Charts on the dashboard are drawn with plain bars; pick a charting approach in
   an ADR when implementing it.
-- Icons are inline stroke SVG in Lucide style; use the `lucide-angular` package.
+- Icons are inline stroke SVG in Lucide style; use the `@lucide/angular` package (ADR-0022; `lucide-angular` is deprecated).

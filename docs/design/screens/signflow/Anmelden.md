@@ -40,5 +40,5 @@ Texts de/en/ru: `components/Alert.md` (alerts) and below.
 | `auth.inviteOnly` | Konten werden nur per Einladung vergeben. | Accounts are available by invitation only. | Учётные записи выдаются только по приглашению. |
 | `app.language` (aria-label) | Sprache | Language | Язык |
 | `legal.privacy` / `legal.imprint` | Datenschutz / Impressum | Privacy / Legal notice | Конфиденциальность / Выходные данные |
-| `validation.required` | Bitte füllen Sie dieses Feld aus. | Please fill in this field. | Заполните это поле. |
-| `validation.email` | Bitte geben Sie eine gültige E-Mail-Adresse ein. | Please enter a valid email address. | Введите корректный e-mail. |
+| `errors.validation.required` | Bitte füllen Sie dieses Feld aus. | Please fill in this field. | Заполните это поле. |
+| `errors.validation.email` | Bitte geben Sie eine gültige E-Mail-Adresse ein. | Please enter a valid email address. | Введите корректный e-mail. |
