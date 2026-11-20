@@ -104,6 +104,25 @@ neutral, `type:contract` не зависит ни от чего. Теги: `sign
   TypeScript-плагин; пришлось бы генерировать отдельный `metadata.ts`
   (`PluginMetadataGenerator` из `@nestjs/cli`) — ещё один сгенерированный файл и ещё
   один инструмент.
+- **Официальный вариант NestJS: Jest + ts-jest с `astTransformers`.** В документации Nest
+  плагин swagger в тестах подключается так: `ts-jest` компилирует TypeScript через
+  настоящий компилятор, а в `astTransformers.before` указывается `@nestjs/swagger/plugin`.
+  По сути это та же идея, что у нашего плагина (настоящий `tsc` + плагин), только внутри
+  Jest. Почему не взяли:
+  - **Nest 12 выпускается только в ESM**, а поддержка ESM в Jest до сих пор помечена как
+    экспериментальная: нужен запуск Node с `--experimental-vm-modules`, режим `useESM` в
+    ts-jest и `moduleNameMapper`, чтобы импорты `./x.js` находили файлы `./x.ts`.
+    Подмена модулей (`jest.mock`) в ESM работает иначе и ограниченнее.
+  - **Второй тест-раннер в репозитории.** Angular-проекты и `tools/*` уже работают на
+    Vitest; Jest добавил бы свои конфиги, свои типы (`@types/jest`) и свои глобальные
+    функции — больше того, что нужно уметь объяснить.
+  - Наш плагин — около 60 строк без комментариев, и он делает ровно одно: отдаёт Vitest
+    вывод `tsc` с тем же плагином swagger и теми же опциями, что сборка.
+
+  Честно: связку Jest + ESM + Nest 12 мы **не запускали**; вывод сделан по документации
+  Jest (ESM — experimental) и по тому, что Vitest уже стоит в репозитории. Если плагин
+  станет мешать (например, при обновлении Vite), Jest + ts-jest — запасной вариант.
+
 - Явные `@ApiProperty` на каждом поле вместо плагина: дублирование — `@IsIn(['ok'])` и
   `@ApiProperty({ enum: ['ok'] })` могут разойтись. ADR-0007 выбирает «один класс —
   валидация, тип и схема».
@@ -185,7 +204,13 @@ neutral, `signflow` and `libs/ui` web. The rules start to bite in 1c with the AP
 
 **Alternatives considered and why rejected.** `@nx/nest` (no Nest 12 support); esbuild
 build (no decorator metadata, no TS plugins); `unplugin-swc` + a generated `metadata.ts`
-(one more generated file and tool); explicit `@ApiProperty` everywhere (duplicates
+(one more generated file and tool); the official NestJS way, Jest + ts-jest with
+`astTransformers: { before: ['@nestjs/swagger/plugin'] }` — the same idea (real compiler +
+plugin) inside Jest, but Nest 12 is ESM-only and Jest's ESM support is still experimental
+(`--experimental-vm-modules`, ts-jest `useESM`, a `moduleNameMapper` for `.js` → `.ts`,
+limited `jest.mock`), and it would add a second test runner next to Vitest; our plugin is
+about 60 lines without comments and does one thing (not run, so this is judged from Jest's
+documentation; Jest + ts-jest stays the fallback); explicit `@ApiProperty` everywhere (duplicates
 validation, can drift); Nest URI versioning (ADR-0008 chose a plain prefix).
 
 **What can break and how to fix it.** DTO without properties in the spec → file not named
