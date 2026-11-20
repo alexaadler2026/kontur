@@ -4,7 +4,7 @@
   "sourceRoot": "libs/ui/src",
   "prefix": "k",
   "projectType": "library",
-  "tags": ["scope:shared", "type:ui"],
+  "tags": ["scope:shared", "type:ui", "platform:web"],
   "targets": {
     "build": {
       "executor": "@angular/build:ng-packagr",

@@ -4,7 +4,7 @@
   "projectType": "application",
   "prefix": "sf",
   "sourceRoot": "apps/signflow/src",
-  "tags": ["scope:signflow", "type:app"],
+  "tags": ["scope:signflow", "type:app", "platform:web"],
   "targets": {
     "build": {
       "executor": "@angular/build:application",

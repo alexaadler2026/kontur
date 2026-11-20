@@ -5,7 +5,7 @@ export default [
   ...nx.configs['flat/typescript'],
   ...nx.configs['flat/javascript'],
   {
-    ignores: ['**/dist', '**/out-tsc'],
+    ignores: ['**/dist', '**/out-tsc', '**/vitest.config.*.timestamp*'],
   },
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
@@ -60,6 +60,20 @@ export default [
             {
               sourceTag: 'type:util',
               onlyDependOnLibsWithTags: ['type:util'],
+            },
+            // The API contract (openapi.json) depends on nothing (ADR-0007).
+            {
+              sourceTag: 'type:contract',
+              onlyDependOnLibsWithTags: [],
+            },
+            // platform: where the code runs. The browser never imports server code.
+            {
+              sourceTag: 'platform:web',
+              onlyDependOnLibsWithTags: ['platform:web', 'platform:neutral'],
+            },
+            {
+              sourceTag: 'platform:server',
+              onlyDependOnLibsWithTags: ['platform:server', 'platform:neutral'],
             },
           ],
         },
