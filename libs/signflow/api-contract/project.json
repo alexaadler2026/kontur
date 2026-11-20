@@ -1,0 +1,7 @@
+{
+  "name": "signflow-api-contract",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "tags": ["scope:signflow", "type:contract", "platform:neutral"],
+  "targets": {}
+}

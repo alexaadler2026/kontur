@@ -1,0 +1,50 @@
+{
+  "name": "signflow-api",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/signflow-api/src",
+  "projectType": "application",
+  "tags": ["scope:signflow", "type:app", "platform:server"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/signflow-api",
+        "main": "apps/signflow-api/src/main.ts",
+        "tsConfig": "apps/signflow-api/tsconfig.app.json",
+        "generatePackageJson": true,
+        "transformers": [
+          {
+            "name": "@nestjs/swagger/plugin",
+            "options": { "introspectComments": true }
+          }
+        ]
+      }
+    },
+    "serve": {
+      "continuous": true,
+      "executor": "@nx/js:node",
+      "options": {
+        "buildTarget": "signflow-api:build"
+      }
+    },
+    "test": {
+      "command": "vitest run",
+      "options": { "cwd": "apps/signflow-api" },
+      "cache": true,
+      "inputs": ["default", "^production"]
+    },
+    "typecheck": {
+      "command": "tsc -p apps/signflow-api/tsconfig.spec.json --noEmit",
+      "cache": true,
+      "inputs": ["default", "{workspaceRoot}/tsconfig.base.json"]
+    },
+    "openapi": {
+      "command": "node dist/apps/signflow-api/src/openapi.js libs/signflow/api-contract/openapi.json",
+      "dependsOn": ["build"],
+      "cache": true,
+      "inputs": ["production"],
+      "outputs": ["{workspaceRoot}/libs/signflow/api-contract/openapi.json"]
+    }
+  }
+}
