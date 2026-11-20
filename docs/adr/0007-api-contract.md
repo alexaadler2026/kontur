@@ -128,6 +128,27 @@ Rules:
   it is still used for reads, behind the generated helpers, so a later API change touches
   generated code only.
 
+#### Results (task 1a, 2026-11-21)
+
+- **Nest 12 is ESM-only** (`"type": "module"` in `@nestjs/*` 12). `@nx/nest` 24.0.6 still
+  requires `@nestjs/* <12`, so `signflow-api` is created with the `@nx/node` generator and
+  Nest 12 (`common`, `core`, `platform-express`, `testing` ~12.5.1, `swagger` ~12.1.2) is
+  installed by hand. The app compiles with `tsc` (`@nx/js:tsc`, `module: nodenext`) because
+  Nest needs `emitDecoratorMetadata` and the `@nestjs/swagger` compiler plugin, which
+  esbuild/oxc cannot run.
+- **Tests compile with `tsc` too.** Vitest's default transform has the same gap, so a
+  small Vite plugin (`apps/signflow-api/vite-plugin-tsc.mts`) compiles each file with the
+  TypeScript compiler and the same plugin options as the build (read from `project.json`).
+- **class-validator / class-transformer work** with Nest 12: global `ValidationPipe`;
+  the plugin turns `@IsIn(['ok'])` (and the literal type `'ok'`) into `enum: ["ok"]`, JSDoc
+  into `description` and `@example` into `example`.
+- **The document declares `openapi: 3.1.0`** (`DocumentBuilder.setOpenAPIVersion`), and
+  `nullable: true` is written the 3.1 way, `type: ["string", "null"]` — checked on a
+  test-only DTO, `HealthDto` has no nullable field.
+- **Prisma is not part of task 1.** The stable line is 7.10.1 (`latest` points at an
+  8.0 release candidate); it is pinned and installed in task 5, together with Testcontainers.
+- **`httpResource` is stable** in Angular 22 (`@publicApi 22.0`) and is used without caveats.
+
 ### Consequences
 
 - Good: one place to change an endpoint; validation, types and docs cannot disagree.
