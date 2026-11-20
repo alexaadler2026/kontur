@@ -1,41 +1,36 @@
 # Состояние работы и следующие шаги
 
-Снимок на **2026-11-17**: пауза перед задачей 1a (план задачи 1 одобрен). Этот файл нужен, чтобы продолжить без
+Снимок на **2026-11-21**: задача 1a сделана, следующая — 1b. Этот файл нужен, чтобы продолжить без
 старой переписки. Порядок задач задаёт [`roadmap.md`](roadmap.md); здесь — только где мы
 остановились.
 
 ## 1. Что сделано последним
 
-| Что                                                                                                                                                               | Где                                                                                                                                                             | Журнал                                              |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| ADR-0021 — формы на Signal Forms; прототип «Forms/Sign-in» в Storybook (правило показа ошибок, ошибки сервера из Problem Details, общая ошибка формы)             | [`docs/adr/0021-forms-signal-forms.md`](../adr/0021-forms-signal-forms.md), `apps/ui-storybook/src/forms-prototype/`, `apps/ui-storybook-e2e/src/forms.spec.ts` | [015](../journal/015-forms-signal-forms.md)         |
-| Перенос волны 3 (ADR 0023–0028, план, объяснения, термины, вопросы юристу 33–38) и сводный roadmap; сверка roadmap с волной 1 и исправления по решениям владельца | [`architecture-wave3.md`](architecture-wave3.md), [`roadmap.md`](roadmap.md), `docs/architecture/wave3-explanations.md`                                         | [016](../journal/016-architecture-wave3-roadmap.md) |
-| Kontur v4.4 в `docs/design` (Alert, экраны входа Anmelden); ключи ошибок в дизайне приведены к `errors.<code>`                                                    | `docs/design/components/Alert.md`, `docs/design/screens/signflow/Anmelden.md`                                                                                   | —                                                   |
-| ADR-0010: код блокировки входа `auth.throttled` (429, `Retry-After` в секундах → минуты вверх), один ключ `errors.auth.throttled` без заголовка                   | [`docs/adr/0010-authentication.md`](../adr/0010-authentication.md)                                                                                              | —                                                   |
-| ADR-0022 — иконки через `@lucide/angular ~1.73.0`; иконки `libs/ui` переведены на пакет; форма иконки — по Lucide, пути в макетах иллюстративные                  | [`docs/adr/0022-icons-lucide-angular.md`](../adr/0022-icons-lucide-angular.md), `libs/ui/package.json` (peerDependency)                                         | [017](../journal/017-icons-lucide.md)               |
-| UI-17 — `k-alert` (InlineAlert + Banner), `KonturIntl.closeLabel`; Alert.md и контракт исправлены (`@for … track`, `closeLabel`, видимостью владеет хост)         | `libs/ui/src/lib/alert/`, `apps/ui-storybook-e2e/src/alert.spec.ts`, `docs/design/components/Alert.md`                                                          | [018](../journal/018-alert.md)                      |
-| Forms/Sign-in: общая ошибка — `k-alert` (повтор через `@for … track`), тексты en/ru по дизайну; ADR-0021 «Open for design» закрыт                                 | `apps/ui-storybook/src/forms-prototype/sign-in.stories.ts`, `apps/ui-storybook-e2e/src/forms.spec.ts`                                                           | [019](../journal/019-sign-in-alert.md)              |
+| Что                                                                                                                                                                                                                 | Где                                                                                                                                                             | Журнал                                                |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| ADR-0021 — формы на Signal Forms; прототип «Forms/Sign-in» в Storybook (правило показа ошибок, ошибки сервера из Problem Details, общая ошибка формы)                                                               | [`docs/adr/0021-forms-signal-forms.md`](../adr/0021-forms-signal-forms.md), `apps/ui-storybook/src/forms-prototype/`, `apps/ui-storybook-e2e/src/forms.spec.ts` | [015](../journal/015-forms-signal-forms.md)           |
+| Перенос волны 3 (ADR 0023–0028, план, объяснения, термины, вопросы юристу 33–38) и сводный roadmap; сверка roadmap с волной 1 и исправления по решениям владельца                                                   | [`architecture-wave3.md`](architecture-wave3.md), [`roadmap.md`](roadmap.md), `docs/architecture/wave3-explanations.md`                                         | [016](../journal/016-architecture-wave3-roadmap.md)   |
+| Kontur v4.4 в `docs/design` (Alert, экраны входа Anmelden); ключи ошибок в дизайне приведены к `errors.<code>`                                                                                                      | `docs/design/components/Alert.md`, `docs/design/screens/signflow/Anmelden.md`                                                                                   | —                                                     |
+| ADR-0010: код блокировки входа `auth.throttled` (429, `Retry-After` в секундах → минуты вверх), один ключ `errors.auth.throttled` без заголовка                                                                     | [`docs/adr/0010-authentication.md`](../adr/0010-authentication.md)                                                                                              | —                                                     |
+| ADR-0022 — иконки через `@lucide/angular ~1.73.0`; иконки `libs/ui` переведены на пакет; форма иконки — по Lucide, пути в макетах иллюстративные                                                                    | [`docs/adr/0022-icons-lucide-angular.md`](../adr/0022-icons-lucide-angular.md), `libs/ui/package.json` (peerDependency)                                         | [017](../journal/017-icons-lucide.md)                 |
+| UI-17 — `k-alert` (InlineAlert + Banner), `KonturIntl.closeLabel`; Alert.md и контракт исправлены (`@for … track`, `closeLabel`, видимостью владеет хост)                                                           | `libs/ui/src/lib/alert/`, `apps/ui-storybook-e2e/src/alert.spec.ts`, `docs/design/components/Alert.md`                                                          | [018](../journal/018-alert.md)                        |
+| Forms/Sign-in: общая ошибка — `k-alert` (повтор через `@for … track`), тексты en/ru по дизайну; ADR-0021 «Open for design» закрыт                                                                                   | `apps/ui-storybook/src/forms-prototype/sign-in.stories.ts`, `apps/ui-storybook-e2e/src/forms.spec.ts`                                                           | [019](../journal/019-sign-in-alert.md)                |
+| Задача 1a: `signflow-api` на Nest 12 (ESM, `tsc` + плагин swagger, и в тестах), `GET /api/v1/health/live`, контракт `openapi.json` 3.1; теги `platform:*`; ADR-0007 «Results»; `/health/ready` перенесён в задачу 5 | `apps/signflow-api/`, `libs/signflow/api-contract/`, `docs/adr/0007-api-contract.md`, `docs/plans/roadmap.md`                                                   | [020](../journal/020-signflow-api-health-contract.md) |
 
-Последний коммит работы: `docs(journal): add entry 019 sign-in alert`.
+Последний коммит работы: `docs(journal): add entry 020 signflow-api health contract`.
 
-**Проверки после журнала 019 (локально):**
+**Проверки после журнала 020 (локально):**
 
-- `pnpm nx run-many -t lint test typecheck build build-storybook` — зелёные, 9 проектов;
+- `pnpm nx run-many -t lint test typecheck build build-storybook` — зелёные, 10 проектов
+  (`signflow-api`: 7 тестов);
 - `CI=true pnpm nx run-many -t e2e` — 3 + 3 + 37 зелёные (включая axe);
 - `pnpm nx format:check --all` — без замечаний;
 - `node_modules/nx/dist/bin/nx.js` SHA-256 начинается с `2a1c0e6bcf0c3d72` (как ожидается).
 
 ## 2. Что не запушено
 
-На момент паузы владелец запушил всё до `55e862d` включительно (CI для `55e862d` ещё шёл,
-предыдущий прогон `a9532df` — success). Не запушены:
-
-- `9a7e811` docs: single errors.auth.throttled key; icon shape from Lucide
-- `4853202` docs(plans): record state before the pause
-- `78b9df0` docs(design): re-create k-alert with @for keyed by counter; closeLabel
-- `536f95c` feat(ui): add k-alert (InlineAlert + Banner) and KonturIntl.closeLabel
-- `45d09d3` docs(journal): add entry 018 alert
-- `c6dbe35`, `c84393a`, `359d456`, `9f48200`, `f4737eb`, `5c8e905`, `0d382b1`, `bea980f` и коммит журнала 019 (см. журнал 019)
+На GitHub всё до `12311cb` (журнал 019) включительно. Не запушены: `b264ed4` (план задачи 1
+перед паузой) и коммиты задачи 1a (журнал 020). Владелец пушит сам.
 
 После push: проверить CI —
 `curl -s "https://api.github.com/repos/alexaadler2026/kontur/actions/runs?per_page=3"`.
@@ -46,18 +41,18 @@
 2. ~~Forms/Sign-in на `k-alert`, тексты по дизайну~~ — сделано (журнал 019). Ключи
    `forms.signIn.*` остаются до задачи 8. Блокировка входа в задаче 8: `k-alert` warning
    **без заголовка**, один ключ `errors.auth.throttled` (ICU, `minutes`).
-3. **Следующее: задача 1** — сквозной срез. План одобрен владельцем 2026-11-17. Описание —
+3. **Сейчас: задача 1** — сквозной срез. План одобрен владельцем 2026-11-17. Описание —
    [`architecture-wave1.md`](architecture-wave1.md), порядок — `roadmap.md`. Четыре части, у
-   каждой свой PR и свой журнал; **начинать с 1a**.
+   каждой свой PR и свой журнал. **1a сделана (журнал 020); следующая — 1b.**
 
-   **Принятые находки (записать в ADR-0007, раздел «To verify in the first task», и в журнал 1a):**
+   **Принятые находки (записаны в ADR-0007, «Results (task 1a)», и в журнал 020):**
    - `@nx/nest` 24.0.6 требует `@nestjs/* <12` → приложение создаётся генератором `@nx/node`,
      Nest 12 (`core`, `common`, `platform-express`, `swagger` 12) ставится вручную;
    - Prisma: тег `latest` — предрелиз `8.0.0-rc.34`; берём стабильную **`7.10.1`, версию
      закрепить**. В задачу 1 Prisma **не ставим** — целиком в задачу 5 вместе с Testcontainers;
    - `httpResource` в Angular 22 стабилен (`@publicApi 22.0`) — используем без оговорок.
 
-   **1a — сервер и контракт.** `apps/signflow-api` (Nest 12 на `@nx/node`),
+   **~~1a — сервер и контракт~~ — сделано (журнал 020).** Как задумано: `apps/signflow-api` (Nest 12 на `@nx/node`),
    `GET /api/v1/health/live` → `HealthDto { status: 'ok'; version: string }`; версия — поле
    `version` из `apps/signflow-api/package.json` (`0.1.0`). Глобальный `ValidationPipe`,
    CLI-плагин `@nestjs/swagger`. Таргет `signflow-api:openapi` →
@@ -66,10 +61,9 @@
    документ объявляет `openapi: 3.1.0`; nullable по-новому (`type: [..., "null"]`) проверяется
    на **тестовом DTO внутри теста** — временных полей в `HealthDto` не добавлять. Тесты: unit
    контроллера (красный первым) и HTTP-уровень (`@nestjs/testing` + supertest).
-   Заодно в `roadmap.md`: перенести `/health/ready` из задачи 53 в задачу 5 (в 53 остаются
-   журналы JSON и остальное).
+   В `roadmap.md` `/health/ready` перенесён из задачи 53 в задачу 5 (в 53 — журналы JSON).
 
-   **1b — Transloco в SignFlow** по ADR-0006: de по умолчанию, en, ru, ICU; **без
+   **1b — Transloco в SignFlow (следующее)** по ADR-0006: de по умолчанию, en, ru, ICU; **без
    переключателя языка**.
 
    **1c — Orval-клиент, MSW, экран.** `libs/signflow/api-client`: Orval → `httpResource`-хелперы
@@ -85,7 +79,11 @@
      задаче 24;
    - в задаче 22 сборка образа добавляет в ответ health поле `commit` (SHA), чтобы было видно,
      какая сборка работает на сервере (ADR-0014);
-   - `api:check` в CI — задача 2.
+   - `api:check` в CI — задача 2. `openapi.json` уже в `.prettierignore`, его сравнивает
+     `api:check`, а не Prettier;
+   - в задаче 22 проверить `dist/apps/signflow-api/package.json`: `generatePackageJson`
+     сейчас пишет пустые `dependencies` (сервер запускается из корня репозитория, поэтому
+     пока не мешает).
 
 4. Перед задачей 8 владелец обещал прислать спецификацию и макет экрана входа — они уже
    пришли в v4.4 (Anmelden). «Passwort vergessen?», Datenschutz и Impressum в задаче 8 не
