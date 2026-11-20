@@ -46,3 +46,5 @@ __screenshots__/
 
 # VS Code Local History extension
 .history/
+vitest.config.*.timestamp*
+.vitest

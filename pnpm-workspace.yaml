@@ -5,3 +5,5 @@ allowBuilds:
   lmdb: false
   msgpackr-extract: false
   '@parcel/watcher': false
+  unrs-resolver: false
+  '@scarf/scarf': false

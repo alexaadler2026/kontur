@@ -20,6 +20,13 @@
     "@jsverse/transloco": "~8.4.0",
     "@jsverse/transloco-messageformat": "~8.4.0",
     "@lucide/angular": "~1.73.0",
+    "@nestjs/common": "~12.5.1",
+    "@nestjs/core": "~12.5.1",
+    "@nestjs/platform-express": "~12.5.1",
+    "@nestjs/swagger": "~12.1.2",
+    "class-transformer": "~0.5.1",
+    "class-validator": "~0.15.1",
+    "reflect-metadata": "~0.2.2",
     "rxjs": "~7.8.0"
   },
   "devDependencies": {
@@ -34,11 +41,13 @@
     "@commitlint/config-conventional": "^21.2.4",
     "@eslint/js": "^9.8.0",
     "@messageformat/parser": "~5.2.0",
+    "@nestjs/testing": "~12.5.1",
     "@nx/angular": "24.0.6",
     "@nx/devkit": "24.0.6",
     "@nx/eslint": "24.0.6",
     "@nx/eslint-plugin": "24.0.6",
     "@nx/js": "24.0.6",
+    "@nx/node": "24.0.6",
     "@nx/playwright": "24.0.6",
     "@nx/storybook": "24.0.6",
     "@nx/web": "24.0.6",
@@ -55,6 +64,7 @@
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/user-event": "^14.6.10",
     "@types/node": "^24.0.0",
+    "@types/supertest": "~7.2.1",
     "@typescript-eslint/utils": "^8.58.0",
     "angular-eslint": "^22.5.0",
     "autoprefixer": "^10.4.0",
@@ -69,10 +79,12 @@
     "postcss": "^8.4.5",
     "prettier": "^3.8.1",
     "storybook": "^10.6.2",
+    "supertest": "~7.3.2",
     "ts-node": "10.9.1",
     "tslib": "^2.3.0",
     "typescript": "6.0.3",
     "typescript-eslint": "^8.58.0",
+    "unplugin-swc": "~2.0.0",
     "vitest": "^4.0.8"
   }
 }
