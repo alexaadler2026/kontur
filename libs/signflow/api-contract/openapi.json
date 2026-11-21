@@ -8,6 +8,7 @@
             "enum": [
               "ok"
             ],
+            "example": "ok",
             "type": "string"
           },
           "version": {

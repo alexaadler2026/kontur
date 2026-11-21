@@ -46,7 +46,8 @@ describe('OpenAPI document of signflow-api', () => {
       type: 'object',
       required: ['status', 'version'],
       properties: {
-        status: { type: 'string', enum: ['ok'] },
+        // example: generated MSW mocks take it instead of random faker data (ADR-0007).
+        status: { type: 'string', enum: ['ok'], example: 'ok' },
         version: { type: 'string', example: '0.1.0' },
       },
     });

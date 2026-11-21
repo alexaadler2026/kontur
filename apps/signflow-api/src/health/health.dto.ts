@@ -2,7 +2,10 @@ import { IsIn } from 'class-validator';
 
 /** Liveness answer: the process is running and can handle a request. */
 export class HealthDto {
-  /** Always `ok`: an API that cannot answer returns no body at all. */
+  /**
+   * Always `ok`: an API that cannot answer returns no body at all.
+   * @example "ok"
+   */
   @IsIn(['ok'])
   status!: 'ok';
 
