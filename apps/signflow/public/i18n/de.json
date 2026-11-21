@@ -1,4 +1,9 @@
 {
+  "apiStatus": {
+    "loading": "API wird geprüft …",
+    "ok": "API: OK, Version {version}",
+    "error": "API nicht erreichbar"
+  },
   "kontur": {
     "removeLabel": "Entfernen",
     "closeLabel": "Schließen"

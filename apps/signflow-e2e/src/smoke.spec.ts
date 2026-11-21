@@ -1,5 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page, test } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 /** Collects console errors: a missing key or a failed load is reported there (ADR-0006). */
 function consoleErrors(page: Page): string[] {
@@ -11,6 +13,38 @@ function consoleErrors(page: Page): string[] {
   });
   return errors;
 }
+
+/**
+ * Until task 1d runs these tests against the real API, GET /api/v1/health/live is
+ * answered here — with the `example` values of HealthDto from the committed contract,
+ * so the stub cannot drift from the API. The contract is data, read as a file
+ * (project.json lists it as an implicit dependency).
+ */
+interface Contract {
+  components: {
+    schemas: Record<
+      string,
+      { properties: Record<string, { example?: unknown }> }
+    >;
+  };
+}
+const contract = JSON.parse(
+  readFileSync(
+    join(__dirname, '../../../libs/signflow/api-contract/openapi.json'),
+    'utf8',
+  ),
+) as Contract;
+const healthExample = Object.fromEntries(
+  Object.entries(contract.components.schemas['HealthDto'].properties).map(
+    ([name, property]) => [name, property.example],
+  ),
+);
+
+test.beforeEach(async ({ page }) => {
+  await page.route('**/api/v1/health/live', (route) =>
+    route.fulfill({ json: healthExample }),
+  );
+});
 
 test.describe('SignFlow smoke', () => {
   test.describe('browser language the app does not have', () => {
@@ -27,7 +61,21 @@ test.describe('SignFlow smoke', () => {
       await expect(page).toHaveTitle('SignFlow');
       await expect(page.locator('html')).toHaveAttribute('lang', 'de');
       await expect(page.locator('sf-root router-outlet')).toBeAttached();
+      await expect(page.getByRole('status')).toHaveText(
+        'API: OK, Version 0.1.0',
+      );
       expect(errors).toEqual([]);
+    });
+
+    test('start page: main landmark and the product name as h1', async ({
+      page,
+    }) => {
+      await page.goto('/');
+
+      await expect(page.getByRole('main')).toBeVisible();
+      await expect(
+        page.getByRole('heading', { level: 1, name: 'SignFlow' }),
+      ).toBeVisible();
     });
   });
 

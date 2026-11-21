@@ -1,4 +1,9 @@
 {
+  "apiStatus": {
+    "loading": "Проверяем API…",
+    "ok": "API: OK, версия {version}",
+    "error": "API недоступен"
+  },
   "kontur": {
     "removeLabel": "Удалить",
     "closeLabel": "Закрыть"

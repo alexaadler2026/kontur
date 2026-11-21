@@ -8,6 +8,7 @@
   "targets": {
     "build": {
       "executor": "@angular/build:application",
+      "dependsOn": ["^build", "^generate"],
       "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
@@ -55,6 +56,10 @@
         "signal": true
       },
       "executor": "@angular/build:dev-server",
+      "dependsOn": ["^generate"],
+      "options": {
+        "proxyConfig": "apps/signflow/proxy.conf.json"
+      },
       "defaultConfiguration": "development",
       "configurations": {
         "production": {
@@ -67,9 +72,14 @@
     },
     "test": {
       "executor": "@angular/build:unit-test",
+      "dependsOn": ["^generate"],
       "options": {
-        "watch": false
+        "watch": false,
+        "setupFiles": ["apps/signflow/src/test-setup.ts"]
       }
+    },
+    "lint": {
+      "dependsOn": ["^generate"]
     },
     "serve-static": {
       "continuous": true,
