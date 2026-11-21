@@ -1,6 +1,6 @@
 # Состояние работы и следующие шаги
 
-Снимок на **2026-11-21**: задачи 1a, 1b и AGENTS.md сделаны, следующая — 1c. Этот файл нужен, чтобы продолжить без
+Снимок на **2026-11-21**: задачи 1a, 1b, AGENTS.md и 1c сделаны, следующая — 1d. Этот файл нужен, чтобы продолжить без
 старой переписки. Порядок задач задаёт [`roadmap.md`](roadmap.md); здесь — только где мы
 остановились.
 
@@ -21,20 +21,24 @@
 Потом: правила агентов перенесены в `AGENTS.md` (`CLAUDE.md` — импорт `@AGENTS.md`),
 проверка длины `pnpm check:agents-md` в CI — журнал [022](../journal/022-agents-md.md).
 
-Последний коммит работы: `docs: plan grill-with-docs before task 15; journal 022`.
+Затем задача 1c: Orval-клиент, MSW-моки из `example`, строка статуса API — журнал
+[023](../journal/023-signflow-api-client.md).
 
-**Проверки после журнала 021 (локально):**
+Последний коммит работы: `docs(journal): add entry 023 signflow api client`.
 
-- `pnpm nx run-many -t lint test typecheck build build-storybook` — зелёные, 10 проектов
-  (`signflow`: 12 тестов, `signflow-api`: 7);
-- `CI=true pnpm nx run-many -t e2e` — signflow 5 + belegscan 3 + Storybook 37 зелёные (включая axe);
+**Проверки после журнала 023 (локально, без `src/generated/` и с `--skip-nx-cache`):**
+
+- `pnpm nx run-many -t lint test typecheck build` — зелёные, 11 проектов (`generate`
+  выполняется первым; `signflow`: 18 тестов, `signflow-api`: 7); `build-storybook` — отдельно
+  зелёный (параллельно — гонка кэша, см. раздел 3);
+- `CI=true pnpm nx run-many -t e2e` — signflow 6 + belegscan 3 + Storybook 37 зелёные (включая axe);
 - `pnpm nx format:check --all` — без замечаний;
 - `node_modules/nx/dist/bin/nx.js` SHA-256 начинается с `2a1c0e6bcf0c3d72` (как ожидается).
 
 ## 2. Что не запушено
 
 Владелец пушит сам. Запушено (по его слову от 2026-11-21) всё до `3cfcdb9` (журнал 021).
-Не запушены: коммиты задачи AGENTS.md (журнал 022).
+Не запушены: коммиты задачи AGENTS.md (журнал 022) и задачи 1c (журнал 023).
 
 После push: проверить CI — `gh run list --limit 3` (в PowerShell `curl` — псевдоним
 `Invoke-WebRequest`, поэтому не `curl`; без `gh` — `curl.exe -s "https://api.github.com/repos/alexaadler2026/kontur/actions/runs?per_page=3"`).
@@ -47,8 +51,8 @@
    **без заголовка**, один ключ `errors.auth.throttled` (ICU, `minutes`).
 3. **Сейчас: задача 1** — сквозной срез. План одобрен владельцем 2026-11-17. Описание —
    [`architecture-wave1.md`](architecture-wave1.md), порядок — `roadmap.md`. Четыре части, у
-   каждой свой PR и свой журнал. **1a (журнал 020) и 1b (журнал 021) сделаны; перед 1c —
-   задача AGENTS.md (журнал 022, сделана); следующая — 1c (сначала план).**
+   каждой свой PR и свой журнал. **1a (020), 1b (021), AGENTS.md (022) и 1c (023) сделаны;
+   следующая — 1d (сначала план).**
 
    **Принятые находки (записаны в ADR-0007, «Results (task 1a)», и в журнал 020):**
    - `@nx/nest` 24.0.6 требует `@nestjs/* <12` → приложение создаётся генератором `@nx/node`,
@@ -74,14 +78,23 @@
    `libs/shared/i18n` — когда i18n понадобится Belegscan; сохранённый выбор языка — с
    переключателем.
 
-   **1c — Orval-клиент, MSW, экран (следующее).** Тексты строки (загрузка, ок, ошибка) — новые
-   ключи в `apps/signflow/public/i18n`, de/en на проверку владельцу. `libs/signflow/api-client`: Orval → `httpResource`-хелперы
-   и MSW-хендлеры (вывод в `.gitignore`, таргет `generate` кэшируется Nx). Строка
-   «API: ок, версия …» на экране SignFlow (загрузка и ошибка — свои тексты), тест компонента
-   на `msw/node`, dev-прокси `/api`.
+   **~~1c — Orval-клиент, MSW, экран~~ — сделано (журнал 023).** `libs/signflow/api-client`
+   (Orval 8.48, `retrievalClient: 'both'`, MSW-моки `useExamples: true`, без faker; MSW 3.0.7),
+   `generate` — зависимость lint/typecheck/test/build/serve (e2e — через build). Стартовая
+   страница: `<main>`, `<h1>SignFlow</h1>`, строка статуса `role="status"`, `title: 'SignFlow'`.
+   Тексты `apiStatus.*` утверждены владельцем (ru: «API: OK, версия {version}»). В
+   `HealthDto` добавлен `@example "ok"`. В smoke e2e `/api/v1/health/live` подменён через
+   `page.route` телом из `example` контракта — **в 1d убрать подмену**.
 
-   **1d — e2e против настоящего API.** Собранный API на порту **4310** (добавить в список
-   портов e2e, журнал 008a: 4300 / 4301 / 4402), статика SignFlow с прокси `/api`; axe.
+   **1d — e2e против настоящего API (следующее).** Собранный API на порту **4310** (добавить
+   в список портов e2e, журнал 008a: 4300 / 4301 / 4402), статика SignFlow с прокси `/api`;
+   убрать `page.route` из `smoke.spec.ts`; axe.
+
+   **Найдено в 1c, отдельная задача (до 1d, ждёт решения владельца):** гонка кэша —
+   `@angular/build` 22 (`purge-cache.js`) при каждой сборке удаляет из `.angular/cache` все
+   папки других версий, а Storybook собирается `build-angular` 21 в `.angular/cache/21.2.30`.
+   При свежем параллельном прогоне `ui-storybook:build-storybook` падает с `ENOENT`. Может
+   попасть и в CI (там прогон всегда свежий).
 
    **Решения на потом:**
    - `/health/ready` (база доступна, миграции применены) — в задаче 5: он нужен автооткату в
