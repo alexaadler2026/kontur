@@ -1,0 +1,29 @@
+{
+  "name": "signflow-api-client",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/signflow/api-client/src",
+  "tags": ["scope:signflow", "type:data-access", "platform:web"],
+  "implicitDependencies": ["signflow-api-contract"],
+  "targets": {
+    "generate": {
+      "command": "orval --config orval.config.ts",
+      "options": { "cwd": "libs/signflow/api-client" },
+      "cache": true,
+      "inputs": [
+        "{workspaceRoot}/libs/signflow/api-contract/openapi.json",
+        "{projectRoot}/orval.config.ts"
+      ],
+      "outputs": ["{projectRoot}/src/generated"]
+    },
+    "lint": {
+      "dependsOn": ["generate"]
+    },
+    "typecheck": {
+      "command": "tsc -p libs/signflow/api-client/tsconfig.lib.json --noEmit",
+      "dependsOn": ["generate"],
+      "cache": true,
+      "inputs": ["default", "{workspaceRoot}/tsconfig.base.json"]
+    }
+  }
+}

@@ -18,7 +18,13 @@
     "noPropertyAccessFromIndexSignature": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "@adlersoft/kontur-ui": ["./libs/ui/src/index.ts"]
+      "@adlersoft/kontur-ui": ["./libs/ui/src/index.ts"],
+      "@adlersoft/signflow-api-client": [
+        "./libs/signflow/api-client/src/index.ts"
+      ],
+      "@adlersoft/signflow-api-client/mocks": [
+        "./libs/signflow/api-client/src/mocks.ts"
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

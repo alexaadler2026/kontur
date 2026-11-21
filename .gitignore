@@ -11,6 +11,9 @@ test-results/
 playwright-report/
 blob-report/
 
+# Generated API clients (Orval, ADR-0007): derived from the committed openapi.json
+/libs/signflow/api-client/src/generated/
+
 # Nx
 .nx/cache/
 .nx/workspace-data/

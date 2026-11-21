@@ -51,7 +51,12 @@ export default [
             },
             {
               sourceTag: 'type:data-access',
-              onlyDependOnLibsWithTags: ['type:data-access', 'type:util'],
+              // type:contract: the generated API client reads the committed openapi.json.
+              onlyDependOnLibsWithTags: [
+                'type:data-access',
+                'type:util',
+                'type:contract',
+              ],
             },
             {
               sourceTag: 'type:ui',
