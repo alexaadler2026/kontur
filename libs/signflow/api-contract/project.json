@@ -3,5 +3,12 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "tags": ["scope:signflow", "type:contract", "platform:neutral"],
-  "targets": {}
+  "targets": {
+    "test": {
+      "command": "vitest run",
+      "options": { "cwd": "libs/signflow/api-contract" },
+      "cache": true,
+      "inputs": ["{projectRoot}/**/*"]
+    }
+  }
 }

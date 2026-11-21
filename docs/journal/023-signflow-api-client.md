@@ -35,11 +35,15 @@ ADR-0007 требует, чтобы моки брали значения из `e
   `@faker-js/faker`. Решение — точнее контракт: в `HealthDto` добавлен JSDoc
   `@example "ok"` → в `openapi.json` появился `"example": "ok"` → мок стал
   `{status: "ok", version: "0.1.0"}` без faker.
-- **Защита на будущее:** `@faker-js/faker` в проекте не установлен. Если у поля не будет
-  примера, сгенерированный мок снова импортирует faker — и сборка упадёт с
-  `Cannot find module '@faker-js/faker'`. **Мутация:** убрали `@example "ok"` → Nx сам
-  перегенерировал клиент (кэш зависит от `openapi.json`) → тесты SignFlow красные с этой
-  ошибкой. Вернули — зелёные.
+- **Защита на будущее (по решению владельца — понятная):** тест
+  `libs/signflow/api-contract/contract.spec.mts` проверяет, что у каждого свойства каждой
+  схемы в `openapi.json` есть `example`. Ошибка называет схему и поле и подсказывает, что
+  делать: `HealthDto.status: no example — add @ApiProperty({ example }) (or a JSDoc
+@example) to the DTO field`. **Мутация:** убрали `example` у `status` → тест красный с
+  этим сообщением; вернули — зелёный. faker по-прежнему не ставим.
+  Первая версия защиты была неявной: без faker в `node_modules` сгенерированный мок не
+  собирался (`Cannot find module '@faker-js/faker'`). Это работало, но ошибка не
+  объясняла причину — заменили на тест.
 - MSW: Orval требует `msw >=2`, установлена **3.0.7**. В MSW 3 опция «падать на запросе
   без хендлера» называется `onUnhandledFrame: 'error'` (была `onUnhandledRequest`).
 - `msw/node` перехватывает запросы `HttpClient` в тестовом раннере Angular — проверено
@@ -111,8 +115,8 @@ ADR-0007 требует, чтобы моки брали значения из `e
 
 **Что может сломаться и как починить.**
 
-- Симптом: `Cannot find module '@faker-js/faker'` → у поля в DTO нет `@example`;
-  добавить пример, а не faker.
+- Симптом: `signflow-api-contract:test` падает с `<Schema>.<field>: no example` → у поля
+  в DTO нет примера; добавить `@ApiProperty({ example })` или JSDoc `@example`, а не faker.
 - Симптом: `Cannot find module '@adlersoft/signflow-api-client'` в IDE → нет
   `src/generated/`; `pnpm nx run signflow-api-client:generate`.
 - Симптом: на `nx serve signflow` строка «API nicht erreichbar» → не запущен API;
@@ -127,7 +131,8 @@ ADR-0007 требует, чтобы моки брали значения из `e
   MSW-моки генерируются из него Orval'ом при каждой сборке (Nx кэширует по хешу
   контракта). Изменили поле на сервере — клиент изменился сам, и TypeScript покажет все
   места на фронте, которые сломались. Моки берут `example` из контракта, поэтому тесты
-  детерминированы; если примера нет, сборка падает — мы это проверили мутацией.
+  детерминированы; если у поля нет примера, тест контракта падает и называет поле — мы
+  это проверили мутацией.
 
 ## 🇬🇧 What and why (full)
 
@@ -142,8 +147,11 @@ cast automatically from it, the mocks are a test bench built from the same drawi
 **Step 0: deterministic mocks.** Orval 8.48 calls the option `useExamples: true`. The first
 run used `example` for `version` but faker for `status`, which had no example; adding
 `@example "ok"` to the DTO made the mock `{status: "ok", version: "0.1.0"}` without faker.
-`@faker-js/faker` is not installed, so a field without an example breaks the build —
-proven by mutation (removing the example → `Cannot find module '@faker-js/faker'`). MSW
+A contract test (`api-contract/contract.spec.mts`) requires an example on every property
+of every schema and names the field with a hint ("add @ApiProperty({ example })");
+mutation: removing the example of `status` fails it with that message. faker stays
+uninstalled; the first, implicit guard (a mock that cannot import faker) was replaced
+because its error did not explain the cause. MSW
 3.0.7 (Orval needs `>=2`); MSW 3 renamed the strict option to `onUnhandledFrame: 'error'`.
 
 **How it works.** `libs/signflow/api-client` with `orval.config.ts` (`client: 'angular'`,
@@ -175,23 +183,24 @@ Angular 22 build purges all other version folders of `.angular/cache`
 faker mocks (non-deterministic); a hard-coded e2e stub (drifts from the contract); a
 feature library for a one-line screen (comes with the first real screen).
 
-**What can break and how to fix it.** `@faker-js/faker` missing → add `@example` to the
-DTO. Client module not found in the IDE → run `generate`. "API unreachable" on
+**What can break and how to fix it.** Contract test reports `<Schema>.<field>: no
+example` → add `@ApiProperty({ example })` or a JSDoc `@example` to the DTO. Client module not found in the IDE → run `generate`. "API unreachable" on
 `nx serve` → start the API too. MSW unhandled request → add a (generated) handler.
 
 **Interview question on this topic.** Q: How do frontend and backend stay in sync? A: The
 spec is generated from server DTOs and committed; the Angular client and MSW mocks are
 generated from it on every build, cached by its hash. A server change regenerates the
 client, and TypeScript shows every broken use. Mocks take the spec's examples, so tests
-are deterministic, and a missing example fails the build — proven by mutation.
+are deterministic, and a contract test names any field without an example — proven by
+mutation.
 
 ## 🇩🇪 Kurzfassung (Niveau B1)
 
 Die Startseite von SignFlow zeigt jetzt den Status der API mit ihrer Version. Der
 Angular-Client wird von Orval aus der Datei `openapi.json` erzeugt und nicht von Hand
 geschrieben. Auch die Mocks für die Tests entstehen aus derselben Datei; sie benutzen die
-Beispielwerte aus dem Vertrag, keine Zufallsdaten. Fehlt ein Beispiel, bricht der Build ab –
-das haben wir mit einer Mutation geprüft. Die Komponente zeigt drei Zustände: Prüfung, OK
+Beispielwerte aus dem Vertrag, keine Zufallsdaten. Fehlt ein Beispiel, meldet ein Test
+das Feld – das haben wir mit einer Mutation geprüft. Die Komponente zeigt drei Zustände: Prüfung, OK
 und nicht erreichbar, in drei Sprachen. Alle Prüfungen laufen auch ohne erzeugten Code
 und ohne Cache grün. Nebenbei haben wir einen Fehler im Build von Storybook gefunden, den
 wir in einer eigenen Aufgabe beheben.

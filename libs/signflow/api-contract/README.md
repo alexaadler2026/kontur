@@ -6,3 +6,5 @@ the pull request.
 
 - Regenerate: `pnpm nx run signflow-api:openapi`
 - Never edit `openapi.json` by hand. The Angular client (task 1c) is generated from it.
+- `nx run signflow-api-contract:test`: every property of every schema has an `example`
+  (the generated MSW mocks use them instead of random data).
