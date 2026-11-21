@@ -1,6 +1,6 @@
 # Состояние работы и следующие шаги
 
-Снимок на **2026-11-21**: задача 1a сделана, следующая — 1b. Этот файл нужен, чтобы продолжить без
+Снимок на **2026-11-21**: задачи 1a и 1b сделаны, следующая — 1c. Этот файл нужен, чтобы продолжить без
 старой переписки. Порядок задач задаёт [`roadmap.md`](roadmap.md); здесь — только где мы
 остановились.
 
@@ -16,21 +16,22 @@
 | UI-17 — `k-alert` (InlineAlert + Banner), `KonturIntl.closeLabel`; Alert.md и контракт исправлены (`@for … track`, `closeLabel`, видимостью владеет хост)                                                           | `libs/ui/src/lib/alert/`, `apps/ui-storybook-e2e/src/alert.spec.ts`, `docs/design/components/Alert.md`                                                          | [018](../journal/018-alert.md)                        |
 | Forms/Sign-in: общая ошибка — `k-alert` (повтор через `@for … track`), тексты en/ru по дизайну; ADR-0021 «Open for design» закрыт                                                                                   | `apps/ui-storybook/src/forms-prototype/sign-in.stories.ts`, `apps/ui-storybook-e2e/src/forms.spec.ts`                                                           | [019](../journal/019-sign-in-alert.md)                |
 | Задача 1a: `signflow-api` на Nest 12 (ESM, `tsc` + плагин swagger, и в тестах), `GET /api/v1/health/live`, контракт `openapi.json` 3.1; теги `platform:*`; ADR-0007 «Results»; `/health/ready` перенесён в задачу 5 | `apps/signflow-api/`, `libs/signflow/api-contract/`, `docs/adr/0007-api-contract.md`, `docs/plans/roadmap.md`                                                   | [020](../journal/020-signflow-api-health-contract.md) |
+| Задача 1b: Transloco в SignFlow — старт по языку браузера, `<html lang>`, адаптер `KonturIntl`; файл перевода не загрузился → приложение всё равно стартует (de или ключи) + `console.error`                        | `apps/signflow/src/app/i18n/`, `apps/signflow/public/i18n/`, `apps/signflow-e2e/src/smoke.spec.ts`                                                              | [021](../journal/021-signflow-transloco.md)           |
 
-Последний коммит работы: `docs(journal): add entry 020 signflow-api health contract`.
+Последний коммит работы: `docs(journal): add entry 021 signflow transloco`.
 
-**Проверки после журнала 020 (локально):**
+**Проверки после журнала 021 (локально):**
 
 - `pnpm nx run-many -t lint test typecheck build build-storybook` — зелёные, 10 проектов
-  (`signflow-api`: 7 тестов);
-- `CI=true pnpm nx run-many -t e2e` — 3 + 3 + 37 зелёные (включая axe);
+  (`signflow`: 12 тестов, `signflow-api`: 7);
+- `CI=true pnpm nx run-many -t e2e` — signflow 5 + belegscan 3 + Storybook 37 зелёные (включая axe);
 - `pnpm nx format:check --all` — без замечаний;
 - `node_modules/nx/dist/bin/nx.js` SHA-256 начинается с `2a1c0e6bcf0c3d72` (как ожидается).
 
 ## 2. Что не запушено
 
-На GitHub всё до `12311cb` (журнал 019) включительно. Не запушены: `b264ed4` (план задачи 1
-перед паузой) и коммиты задачи 1a (журнал 020). Владелец пушит сам.
+На GitHub всё до `12311cb` (журнал 019) включительно. Владелец пушит сам: 1a (до `9aff9f2`)
+пушит по своему слову от 2026-11-21; коммиты задачи 1b (журнал 021) не запушены.
 
 После push: проверить CI —
 `curl -s "https://api.github.com/repos/alexaadler2026/kontur/actions/runs?per_page=3"`.
@@ -43,7 +44,7 @@
    **без заголовка**, один ключ `errors.auth.throttled` (ICU, `minutes`).
 3. **Сейчас: задача 1** — сквозной срез. План одобрен владельцем 2026-11-17. Описание —
    [`architecture-wave1.md`](architecture-wave1.md), порядок — `roadmap.md`. Четыре части, у
-   каждой свой PR и свой журнал. **1a сделана (журнал 020); следующая — 1b.**
+   каждой свой PR и свой журнал. **1a (журнал 020) и 1b (журнал 021) сделаны; следующая — 1c.**
 
    **Принятые находки (записаны в ADR-0007, «Results (task 1a)», и в журнал 020):**
    - `@nx/nest` 24.0.6 требует `@nestjs/* <12` → приложение создаётся генератором `@nx/node`,
@@ -63,10 +64,14 @@
    контроллера (красный первым) и HTTP-уровень (`@nestjs/testing` + supertest).
    В `roadmap.md` `/health/ready` перенесён из задачи 53 в задачу 5 (в 53 — журналы JSON).
 
-   **1b — Transloco в SignFlow (следующее)** по ADR-0006: de по умолчанию, en, ru, ICU; **без
-   переключателя языка**.
+   **~~1b — Transloco в SignFlow~~ — сделано (журнал 021).** de по умолчанию, en, ru, ICU, без
+   переключателя; старт по языку браузера; ошибка загрузки перевода не блокирует запуск.
+   Решения владельца: Vite-плагин 020 (74 строки, с source maps) оставляем;
+   `libs/shared/i18n` — когда i18n понадобится Belegscan; сохранённый выбор языка — с
+   переключателем.
 
-   **1c — Orval-клиент, MSW, экран.** `libs/signflow/api-client`: Orval → `httpResource`-хелперы
+   **1c — Orval-клиент, MSW, экран (следующее).** Тексты строки (загрузка, ок, ошибка) — новые
+   ключи в `apps/signflow/public/i18n`, de/en на проверку владельцу. `libs/signflow/api-client`: Orval → `httpResource`-хелперы
    и MSW-хендлеры (вывод в `.gitignore`, таргет `generate` кэшируется Nx). Строка
    «API: ок, версия …» на экране SignFlow (загрузка и ошибка — свои тексты), тест компонента
    на `msw/node`, dev-прокси `/api`.

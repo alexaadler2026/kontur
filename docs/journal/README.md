@@ -29,3 +29,4 @@ German summary with a glossary (template: [TEMPLATE.md](TEMPLATE.md)).
 | [018](018-alert.md)                        | UI-17 Alert: InlineAlert + Banner, live roles, re-announce via @for track, controlled visibility, focus on close           | 2026-11-17 |
 | [019](019-sign-in-alert.md)                | Sign-in prototype: form error as k-alert re-created per attempt, design texts; an accidental green test proven by mutation | 2026-11-17 |
 | [020](020-signflow-api-health-contract.md) | Task 1a: signflow-api on Nest 12 (ESM, tsc + swagger plugin, also in tests), /api/v1/health/live, OpenAPI 3.1 contract     | 2026-11-21 |
+| [021](021-signflow-transloco.md)           | Task 1b: Transloco in SignFlow, start language from the browser; a failed translation load never blocks the app            | 2026-11-21 |
