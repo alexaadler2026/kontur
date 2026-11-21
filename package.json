@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "prepare": "husky",
-    "check:agents-md": "node tools/check-agents-md.mjs"
+    "check:agents-md": "node tools/check-agents-md.mjs",
+    "check:angular-builders": "node tools/check-angular-builders.mjs"
   },
   "engines": {
     "node": ">=24 <25"

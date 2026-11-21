@@ -48,7 +48,10 @@ Date: 2026-11-21 · Task: found in 1c, fixed before 1d · PR: — · Commits: `f
    `pnpm why @angular/build` → `Found 1 version`.
 7. **Правило, чтобы не вернулось:** `@angular/build` и `@angular-devkit/build-angular`
    обновляются вместе, на одну версию (`docs/plans/next-steps.md`, раздел «Обновление
-   зависимостей»).
+   зависимостей»). По решению владельца **оба** закреплены точно (`22.2.7`): с `~22.2.0`
+   `@angular/build` мог бы при следующей установке уехать на 22.2.8. Автоматическая проверка —
+   `tools/check-angular-builders.mjs` (`pnpm check:angular-builders`, шаг CI): сравнивает
+   установленные версии и падает, если они разные (мутация записана ниже).
 
 **Доказательство.**
 
@@ -57,6 +60,10 @@ Date: 2026-11-21 · Task: found in 1c, fixed before 1d · PR: — · Commits: `f
 - После: три прогона подряд, каждый с `rm -rf .angular/cache` и `--skip-nx-cache` →
   0 `ENOENT`, все цели зелёные (12 проектов), в кэше одна папка `22.2.7`.
 - `CI=true pnpm nx run-many -t e2e` — e2e Storybook (с axe) работает на новом сборщике.
+- **Мутация проверки:** временно `build-angular` 22.2.8 + `pnpm install` →
+  `pnpm check:angular-builders` падает: `@angular/build 22.2.7 != @angular-devkit/build-angular
+22.2.8. Update both together to the same exact version (journal 024).` Вернули
+  `package.json` и lock-файл → зелёный.
 
 **Какие были альтернативы и почему отказались.**
 
@@ -98,12 +105,16 @@ builds through `build-angular`, which pnpm had resolved to 21.2.30, writing to
 help: 10.6.8 and 11.0.0-beta still require `build-angular` and cannot use
 `@angular/build`. Both `@storybook/angular` and `@nx/angular` accept `build-angular` 22, so
 it is pinned. `~22.2.7` resolved to 22.2.8, which needs `@angular/build` exactly 22.2.8 —
-two versions again — hence the exact pin. Rule: `@angular/build` and
-`@angular-devkit/build-angular` are updated together, to the same version.
+two versions again — hence the exact pin, now on both packages (`22.2.7`). Rule:
+`@angular/build` and `@angular-devkit/build-angular` are updated together, to the same
+version; `tools/check-angular-builders.mjs` (`pnpm check:angular-builders`, CI step) fails
+when the installed versions differ.
 
 **Proof.** Before: 7 `ENOENT` lines, `build-storybook` failed, cache folders `21.2.30` and
 `22.2.7`. After: three runs in a row, each with a deleted cache and `--skip-nx-cache`,
 0 `ENOENT`, all green, one cache folder `22.2.7`; e2e (including Storybook with axe) green.
+Mutation of the check: `build-angular` 22.2.8 installed → `pnpm check:angular-builders`
+fails with the `!=` message; restored → green.
 
 **Alternatives considered and why rejected.** Update Storybook (no effect); separate
 Storybook cache path (treats the symptom); separate CI step (slower, hides it); disabling

@@ -62,6 +62,9 @@ jobs:
       - name: AGENTS.md stays short
         run: pnpm check:agents-md
 
+      - name: Angular builders share one version
+        run: pnpm check:angular-builders
+
       # The step name shows the real mode: "run-many" on main, "affected" in PRs.
       - name: Lint, test, typecheck, build, Storybook (nx ${{ env.NX_RUN }})
         run: pnpm nx $NX_RUN -t lint test typecheck build build-storybook
