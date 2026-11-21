@@ -151,7 +151,8 @@
 ### Обновление зависимостей
 
 - **`@angular/build` и `@angular-devkit/build-angular` обновляются вместе, на одну версию**
-  (журнал 024). `build-angular` закреплён точно (`22.2.7`, без `~`): он тянет
-  `@angular/build` ровно своей версии. Разные версии → две папки в `.angular/cache` →
-  сборка Angular удаляет чужую на ходу → Storybook падает с `ENOENT`. После обновления:
+  (журнал 024). Оба закреплены точно (`22.2.7`, без `~`): `build-angular` тянет
+  `@angular/build` ровно своей версии, а `~` дал бы им разъехаться. Разные версии → две
+  папки в `.angular/cache` → сборка Angular удаляет чужую на ходу → Storybook падает с
+  `ENOENT`. Проверка: `pnpm check:angular-builders` (и шаг CI); вручную —
   `pnpm why @angular/build` → `Found 1 version`.
