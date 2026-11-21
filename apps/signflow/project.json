@@ -83,17 +83,8 @@
     },
     "serve-static": {
       "continuous": true,
-      "readyWhen": {
-        "signal": true
-      },
       "dependsOn": ["build"],
-      "executor": "@nx/web:file-server",
-      "options": {
-        "buildTarget": "signflow:build",
-        "port": 4300,
-        "staticFilePath": "dist/apps/signflow/browser",
-        "spa": true
-      }
+      "command": "node apps/signflow-e2e/static-server.mjs"
     }
   }
 }

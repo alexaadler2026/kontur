@@ -1,6 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { expect, type Page, test } from '@playwright/test';
 import { readFileSync } from 'node:fs';
+import { get } from 'node:http';
 import { join } from 'node:path';
 
 /** Collects console errors: a missing key or a failed load is reported there (ADR-0006). */
@@ -15,36 +16,29 @@ function consoleErrors(page: Page): string[] {
 }
 
 /**
- * Until task 1d runs these tests against the real API, GET /api/v1/health/live is
- * answered here — with the `example` values of HealthDto from the committed contract,
- * so the stub cannot drift from the API. The contract is data, read as a file
- * (project.json lists it as an implicit dependency).
+ * Since task 1d these tests run against the real, built signflow-api (port 4310, behind
+ * the /api proxy of the static server). The API reports the version from its own
+ * package.json, so the expected text is read from the same file.
  */
-interface Contract {
-  components: {
-    schemas: Record<
-      string,
-      { properties: Record<string, { example?: unknown }> }
-    >;
-  };
-}
-const contract = JSON.parse(
-  readFileSync(
-    join(__dirname, '../../../libs/signflow/api-contract/openapi.json'),
-    'utf8',
-  ),
-) as Contract;
-const healthExample = Object.fromEntries(
-  Object.entries(contract.components.schemas['HealthDto'].properties).map(
-    ([name, property]) => [name, property.example],
-  ),
-);
+const apiVersion = (
+  JSON.parse(
+    readFileSync(join(__dirname, '../../signflow-api/package.json'), 'utf8'),
+  ) as { version: string }
+).version;
 
-test.beforeEach(async ({ page }) => {
-  await page.route('**/api/v1/health/live', (route) =>
-    route.fulfill({ json: healthExample }),
-  );
-});
+/** Sends the path exactly as written: browsers and fetch would normalize `/../`. */
+function rawGet(path: string): Promise<{ status: number; body: string }> {
+  const { hostname, port } = new URL(test.info().project.use.baseURL ?? '');
+  return new Promise((done, fail) => {
+    get({ hostname, port, path }, (response) => {
+      let body = '';
+      response.on('data', (chunk: Buffer) => (body += chunk.toString()));
+      response.on('end', () =>
+        done({ status: response.statusCode ?? 0, body }),
+      );
+    }).on('error', fail);
+  });
+}
 
 test.describe('SignFlow smoke', () => {
   test.describe('browser language the app does not have', () => {
@@ -62,7 +56,7 @@ test.describe('SignFlow smoke', () => {
       await expect(page.locator('html')).toHaveAttribute('lang', 'de');
       await expect(page.locator('sf-root router-outlet')).toBeAttached();
       await expect(page.getByRole('status')).toHaveText(
-        'API: OK, Version 0.1.0',
+        `API: OK, Version ${apiVersion}`,
       );
       expect(errors).toEqual([]);
     });
@@ -155,6 +149,21 @@ test.describe('SignFlow smoke', () => {
     expect(fonts.latin).toEqual(['loaded']);
     expect(fonts.cyrillicRange).toHaveLength(1);
     expect(fonts.cyrillicRange[0]).toContain('U+400-45F');
+  });
+
+  test.describe('static server never serves files outside the build folder', () => {
+    // dist/apps/signflow/browser is four levels below the repository root.
+    for (const path of [
+      '/../../../../package.json',
+      '/..%2f..%2f..%2f..%2fpackage.json',
+    ]) {
+      test(`${path} → 404`, async () => {
+        const response = await rawGet(path);
+
+        expect(response.status).toBe(404);
+        expect(response.body).not.toContain('"@adlersoft/source"');
+      });
+    }
   });
 
   test('has no WCAG 2.1 A/AA violations (axe)', async ({ page }) => {

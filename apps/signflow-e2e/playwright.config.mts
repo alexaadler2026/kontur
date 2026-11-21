@@ -9,6 +9,8 @@ import { getReadyUrl, workspaceRoot } from '@nx/devkit';
  * is the same locally and in CI: build first (cached), then serve-static, then Playwright.
  */
 const e2ePort = 4300;
+/** The built signflow-api for e2e (dev API: 3333). Ports: 4300 / 4301 / 4402 / 4310. */
+const apiPort = 4310;
 const baseURL =
   process.env['BASE_URL'] || getReadyUrl(`http://localhost:${e2ePort}`);
 
@@ -36,14 +38,24 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },
-  webServer: {
-    command: 'pnpm exec nx run signflow:serve-static',
-    url: baseURL,
-    // true: when run via `nx e2e`, Nx has already started serve-static on the e2e port.
-    // Nothing else listens there — the dev server uses 4200.
-    reuseExistingServer: true,
-    cwd: workspaceRoot,
-  },
+  // reuseExistingServer true: when run via `nx e2e`, Nx has already started both on the
+  // e2e ports. Nothing else listens there — the dev servers use 4200 and 3333.
+  webServer: [
+    {
+      // The built signflow-api (task 1d): e2e run against the real API, not a stub.
+      command: 'pnpm exec nx run signflow-api:serve-e2e',
+      url: `http://localhost:${apiPort}/api/v1/health/live`,
+      reuseExistingServer: true,
+      cwd: workspaceRoot,
+    },
+    {
+      // Static build + /api proxy to the API (apps/signflow-e2e/static-server.mjs).
+      command: 'pnpm exec nx run signflow:serve-static',
+      url: baseURL,
+      reuseExistingServer: true,
+      cwd: workspaceRoot,
+    },
+  ],
   projects: [
     {
       name: 'chromium',
