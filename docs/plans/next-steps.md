@@ -1,6 +1,6 @@
 # Состояние работы и следующие шаги
 
-Снимок на **2026-11-21**: задачи 1a и 1b сделаны, следующая — 1c. Этот файл нужен, чтобы продолжить без
+Снимок на **2026-11-21**: задачи 1a, 1b и AGENTS.md сделаны, следующая — 1c. Этот файл нужен, чтобы продолжить без
 старой переписки. Порядок задач задаёт [`roadmap.md`](roadmap.md); здесь — только где мы
 остановились.
 
@@ -18,7 +18,10 @@
 | Задача 1a: `signflow-api` на Nest 12 (ESM, `tsc` + плагин swagger, и в тестах), `GET /api/v1/health/live`, контракт `openapi.json` 3.1; теги `platform:*`; ADR-0007 «Results»; `/health/ready` перенесён в задачу 5 | `apps/signflow-api/`, `libs/signflow/api-contract/`, `docs/adr/0007-api-contract.md`, `docs/plans/roadmap.md`                                                   | [020](../journal/020-signflow-api-health-contract.md) |
 | Задача 1b: Transloco в SignFlow — старт по языку браузера, `<html lang>`, адаптер `KonturIntl`; файл перевода не загрузился → приложение всё равно стартует (de или ключи) + `console.error`                        | `apps/signflow/src/app/i18n/`, `apps/signflow/public/i18n/`, `apps/signflow-e2e/src/smoke.spec.ts`                                                              | [021](../journal/021-signflow-transloco.md)           |
 
-Последний коммит работы: `docs(journal): add entry 021 signflow transloco`.
+Потом: правила агентов перенесены в `AGENTS.md` (`CLAUDE.md` — импорт `@AGENTS.md`),
+проверка длины `pnpm check:agents-md` в CI — журнал [022](../journal/022-agents-md.md).
+
+Последний коммит работы: `docs: plan grill-with-docs before task 15; journal 022`.
 
 **Проверки после журнала 021 (локально):**
 
@@ -30,11 +33,11 @@
 
 ## 2. Что не запушено
 
-На GitHub всё до `12311cb` (журнал 019) включительно. Владелец пушит сам: 1a (до `9aff9f2`)
-пушит по своему слову от 2026-11-21; коммиты задачи 1b (журнал 021) не запушены.
+Владелец пушит сам. Запушено (по его слову от 2026-11-21) всё до `3cfcdb9` (журнал 021).
+Не запушены: коммиты задачи AGENTS.md (журнал 022).
 
-После push: проверить CI —
-`curl -s "https://api.github.com/repos/alexaadler2026/kontur/actions/runs?per_page=3"`.
+После push: проверить CI — `gh run list --limit 3` (в PowerShell `curl` — псевдоним
+`Invoke-WebRequest`, поэтому не `curl`; без `gh` — `curl.exe -s "https://api.github.com/repos/alexaadler2026/kontur/actions/runs?per_page=3"`).
 
 ## 3. Что дальше, по порядку
 
@@ -44,7 +47,8 @@
    **без заголовка**, один ключ `errors.auth.throttled` (ICU, `minutes`).
 3. **Сейчас: задача 1** — сквозной срез. План одобрен владельцем 2026-11-17. Описание —
    [`architecture-wave1.md`](architecture-wave1.md), порядок — `roadmap.md`. Четыре части, у
-   каждой свой PR и свой журнал. **1a (журнал 020) и 1b (журнал 021) сделаны; следующая — 1c.**
+   каждой свой PR и свой журнал. **1a (журнал 020) и 1b (журнал 021) сделаны; перед 1c —
+   задача AGENTS.md (журнал 022, сделана); следующая — 1c (сначала план).**
 
    **Принятые находки (записаны в ADR-0007, «Results (task 1a)», и в журнал 020):**
    - `@nx/nest` 24.0.6 требует `@nestjs/* <12` → приложение создаётся генератором `@nx/node`,
@@ -90,7 +94,13 @@
      сейчас пишет пустые `dependencies` (сервер запускается из корня репозитория, поэтому
      пока не мешает).
 
-4. Перед задачей 8 владелец обещал прислать спецификацию и макет экрана входа — они уже
+4. **Перед задачей 15** (документ: модель, загрузка, отпечаток, список) — сессия навыка
+   **grill-with-docs** из [`mattpocock/skills`](https://github.com/mattpocock/skills)
+   (`skills/engineering/grill-with-docs/SKILL.md`): агент расспрашивает владельца о модели
+   документа и обновляет `docs/glossary.md` и ADR. **Перед установкой прочитать `SKILL.md`
+   целиком** — это чужие инструкции для агента, как пакет из npm. Там же решить: навык
+   пишет `CONTEXT.md`, а глоссарий у нас — `docs/glossary.md`.
+5. Перед задачей 8 владелец обещал прислать спецификацию и макет экрана входа — они уже
    пришли в v4.4 (Anmelden). «Passwort vergessen?», Datenschutz и Impressum в задаче 8 не
    выводятся (раздел «Not active yet» в `Anmelden.md`).
 
