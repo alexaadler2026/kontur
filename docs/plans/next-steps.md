@@ -1,6 +1,6 @@
 # Состояние работы и следующие шаги
 
-Снимок на **2026-11-21**: задачи 1a, 1b, AGENTS.md и 1c сделаны, следующая — 1d. Этот файл нужен, чтобы продолжить без
+Снимок на **2026-11-21**: задача 1 (1a–1d), AGENTS.md и гонка кэша сделаны; следующая — задача 2 по `roadmap.md` (сначала план). Этот файл нужен, чтобы продолжить без
 старой переписки. Порядок задач задаёт [`roadmap.md`](roadmap.md); здесь — только где мы
 остановились.
 
@@ -24,9 +24,9 @@
 Затем задача 1c: Orval-клиент, MSW-моки из `example`, строка статуса API — журнал
 [023](../journal/023-signflow-api-client.md).
 
-Затем гонка кэша Angular — журнал [024](../journal/024-angular-cache-race.md).
+Затем гонка кэша Angular — журнал [024](../journal/024-angular-cache-race.md); задача 1d (e2e против настоящего API) — журнал [025](../journal/025-signflow-e2e-real-api.md).
 
-Последний коммит работы: `fix(deps): align @angular-devkit/build-angular with @angular/build 22`.
+Последний коммит работы: `docs(journal): add entry 025 signflow e2e against the real api`.
 
 **Проверки после журнала 023 (локально, без `src/generated/` и с `--skip-nx-cache`):**
 
@@ -40,7 +40,7 @@
 ## 2. Что не запушено
 
 Владелец пушит сам. Запушено (по его слову от 2026-11-21) всё до `3cfcdb9` (журнал 021).
-Не запушены: коммиты задачи AGENTS.md (журнал 022) и задачи 1c (журнал 023, с `74308a4`) и гонки кэша (журнал 024).
+Не запушены: коммиты задачи AGENTS.md (журнал 022) и задачи 1c (журнал 023, с `74308a4`), гонки кэша (журнал 024) и задачи 1d (журнал 025).
 
 После push: проверить CI — `gh run list --limit 3` (в PowerShell `curl` — псевдоним
 `Invoke-WebRequest`, поэтому не `curl`; без `gh` — `curl.exe -s "https://api.github.com/repos/alexaadler2026/kontur/actions/runs?per_page=3"`).
@@ -88,9 +88,11 @@
    `HealthDto` добавлен `@example "ok"`. В smoke e2e `/api/v1/health/live` подменён через
    `page.route` телом из `example` контракта — **в 1d убрать подмену**.
 
-   **1d — e2e против настоящего API (следующее).** Собранный API на порту **4310** (добавить
-   в список портов e2e, журнал 008a: 4300 / 4301 / 4402), статика SignFlow с прокси `/api`;
-   убрать `page.route` из `smoke.spec.ts`; axe.
+   **~~1d — e2e против настоящего API~~ — сделано (журнал 025). Задача 1 закрыта.** Собранный
+   API — `signflow-api:serve-e2e` на **4310** (порты e2e: 4300 / 4301 / 4402 / 4310).
+   Статика SignFlow на 4300 — временный `apps/signflow-e2e/static-server.mjs` (`/api` → 4310,
+   файлы из `dist`, остальное → `index.html`; путь вне папки сборки → 404). `page.route`
+   убран; версия в тесте — из `apps/signflow-api/package.json`.
 
    **~~Гонка кэша Angular (найдена в 1c)~~ — исправлено (журнал 024).** `@angular/build` 22
    (`purge-cache.js`) удалял `.angular/cache/21.2.30`, в который Storybook собирался через
@@ -104,6 +106,9 @@
      какая сборка работает на сервере (ADR-0014);
    - `api:check` в CI — задача 2. `openapi.json` уже в `.prettierignore`, его сравнивает
      `api:check`, а не Prettier;
+   - **в задаче 22 e2e переходят на Docker-образы с Caddy, как в проде (ADR-0014):
+     `apps/signflow-e2e/static-server.mjs` удалить**, цели `signflow:serve-static` и
+     `signflow-api:serve-e2e` заменить запуском образов (журнал 025);
    - в задаче 22 проверить `dist/apps/signflow-api/package.json`: `generatePackageJson`
      сейчас пишет пустые `dependencies` (сервер запускается из корня репозитория, поэтому
      пока не мешает).
