@@ -28,6 +28,12 @@
         "buildTarget": "signflow-api:build"
       }
     },
+    "serve-e2e": {
+      "continuous": true,
+      "dependsOn": ["build"],
+      "command": "node dist/apps/signflow-api/src/main.js",
+      "options": { "env": { "PORT": "4310" } }
+    },
     "test": {
       "command": "vitest run",
       "options": { "cwd": "apps/signflow-api" },
