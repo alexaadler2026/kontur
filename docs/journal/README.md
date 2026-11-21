@@ -32,3 +32,4 @@ German summary with a glossary (template: [TEMPLATE.md](TEMPLATE.md)).
 | [021](021-signflow-transloco.md)           | Task 1b: Transloco in SignFlow, start language from the browser; a failed translation load never blocks the app            | 2026-11-21 |
 | [022](022-agents-md.md)                    | AGENTS.md: one rule file for every agent, a map not an encyclopedia (≤ 150 lines, checked in CI); CLAUDE.md imports it     | 2026-11-21 |
 | [023](023-signflow-api-client.md)          | Task 1c: Orval client (httpResource) and MSW mocks from contract examples, no faker; API status line on the start page     | 2026-11-21 |
+| [024](024-angular-cache-race.md)           | Angular cache race: Storybook ENOENT in fresh parallel runs; build-angular pinned to the @angular/build version            | 2026-11-21 |

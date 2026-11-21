@@ -24,7 +24,9 @@
 Затем задача 1c: Orval-клиент, MSW-моки из `example`, строка статуса API — журнал
 [023](../journal/023-signflow-api-client.md).
 
-Последний коммит работы: `docs(journal): add entry 023 signflow api client`.
+Затем гонка кэша Angular — журнал [024](../journal/024-angular-cache-race.md).
+
+Последний коммит работы: `fix(deps): align @angular-devkit/build-angular with @angular/build 22`.
 
 **Проверки после журнала 023 (локально, без `src/generated/` и с `--skip-nx-cache`):**
 
@@ -38,7 +40,7 @@
 ## 2. Что не запушено
 
 Владелец пушит сам. Запушено (по его слову от 2026-11-21) всё до `3cfcdb9` (журнал 021).
-Не запушены: коммиты задачи AGENTS.md (журнал 022) и задачи 1c (журнал 023).
+Не запушены: коммиты задачи AGENTS.md (журнал 022) и задачи 1c (журнал 023, с `74308a4`) и гонки кэша (журнал 024).
 
 После push: проверить CI — `gh run list --limit 3` (в PowerShell `curl` — псевдоним
 `Invoke-WebRequest`, поэтому не `curl`; без `gh` — `curl.exe -s "https://api.github.com/repos/alexaadler2026/kontur/actions/runs?per_page=3"`).
@@ -90,11 +92,10 @@
    в список портов e2e, журнал 008a: 4300 / 4301 / 4402), статика SignFlow с прокси `/api`;
    убрать `page.route` из `smoke.spec.ts`; axe.
 
-   **Найдено в 1c, отдельная задача (до 1d, ждёт решения владельца):** гонка кэша —
-   `@angular/build` 22 (`purge-cache.js`) при каждой сборке удаляет из `.angular/cache` все
-   папки других версий, а Storybook собирается `build-angular` 21 в `.angular/cache/21.2.30`.
-   При свежем параллельном прогоне `ui-storybook:build-storybook` падает с `ENOENT`. Может
-   попасть и в CI (там прогон всегда свежий).
+   **~~Гонка кэша Angular (найдена в 1c)~~ — исправлено (журнал 024).** `@angular/build` 22
+   (`purge-cache.js`) удалял `.angular/cache/21.2.30`, в который Storybook собирался через
+   `build-angular` 21. Теперь `@angular-devkit/build-angular` закреплён на `22.2.7` в
+   корневом `package.json` — одна версия, одна папка кэша. Правило — в разделе 5.
 
    **Решения на потом:**
    - `/health/ready` (база доступна, миграции применены) — в задаче 5: он нужен автооткату в
@@ -146,3 +147,11 @@
   `pnpm install --frozen-lockfile --force`.
 - Не обходить правило минимального возраста пакетов pnpm (`minimumReleaseAgeExclude` не
   добавлять).
+
+### Обновление зависимостей
+
+- **`@angular/build` и `@angular-devkit/build-angular` обновляются вместе, на одну версию**
+  (журнал 024). `build-angular` закреплён точно (`22.2.7`, без `~`): он тянет
+  `@angular/build` ровно своей версии. Разные версии → две папки в `.angular/cache` →
+  сборка Angular удаляет чужую на ходу → Storybook падает с `ENOENT`. После обновления:
+  `pnpm why @angular/build` → `Found 1 version`.
