@@ -4,7 +4,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "prepare": "husky"
+    "prepare": "husky",
+    "check:agents-md": "node tools/check-agents-md.mjs"
   },
   "engines": {
     "node": ">=24 <25"

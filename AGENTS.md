@@ -55,7 +55,7 @@ Business processes and requirements: docs/business-processes.md — the source o
 truth for what the products do and by which rules. What is not there, ask.
 
 ## Map, not encyclopedia
-- This file is a map: rules and pointers, at most ~150 lines.
+- This file is a map: rules and pointers, at most ~150 lines (CI: `pnpm check:agents-md`).
 - Details live in `docs/` and are linked from here: decisions → `docs/adr/`, plans and
   order → `docs/plans/`, design → `docs/design/`, terms → `docs/glossary.md`,
   requirements → `docs/business-processes.md`.
