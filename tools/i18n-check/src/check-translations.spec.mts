@@ -155,7 +155,10 @@ describe('translation folders of the repo', () => {
 
   it('finds the folders (guard: a check over zero folders proves nothing)', () => {
     expect(folders).toEqual(
-      expect.arrayContaining(['apps/ui-storybook/src/i18n']),
+      expect.arrayContaining([
+        'apps/signflow/public/i18n',
+        'apps/ui-storybook/src/i18n',
+      ]),
     );
   });
 
