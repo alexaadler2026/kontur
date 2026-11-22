@@ -9,7 +9,7 @@ Date: 2026-11-22 · Task: roadmap 3, part 3a, [ADR-0008](../adr/0008-api-convent
 (RFC 9457), `Content-Type: application/problem+json`:
 
 ```json
-{ "type": "urn:kontur:problem:validation.invalid", "title": "The request failed validation", "status": 422, "code": "validation.invalid", "instance": "/api/v1/probe", "traceId": "…uuid…", "errors": [{ "pointer": "/email", "code": "validation.email", "params": {} }] }
+{ "type": "urn:kontur:problem:validation.failed", "title": "The request failed validation", "status": 422, "code": "validation.failed", "instance": "/api/v1/probe", "traceId": "…uuid…", "errors": [{ "pointer": "/email", "code": "validation.email", "params": {} }] }
 ```
 
 Коды берутся из одного реестра и попадают в контракт как enum `ProblemCode`, а значит,
@@ -34,11 +34,11 @@ Date: 2026-11-22 · Task: roadmap 3, part 3a, [ADR-0008](../adr/0008-api-convent
 **Как это работает, шаг за шагом.**
 
 1. **Реестр** `problem/problem-codes.ts`: код → HTTP-статус и английский `title`. Шесть
-   кодов: `validation.invalid`, `validation.required`, `validation.email`,
+   кодов, после решения владельца семь: `validation.failed` (форма целиком), `validation.invalid` (одно поле), `validation.required`, `validation.email`,
    `request.malformed`, `request.not_found`, `server.internal`. По решению владельца лежит
    в приложении, в задаче 6 переедет в `libs/shared/api-kit`.
 2. **`ValidationPipe` → `ProblemException`.** Вместо стандартного 400 Nest `exceptionFactory`
-   бросает наше исключение с кодом `validation.invalid` и списком полей.
+   бросает наше исключение с кодом `validation.failed` и списком полей.
    `toFieldErrors()` обходит дерево ошибок class-validator и строит **одну запись на
    поле**: указатель, код, `params`. Правила: `isNotEmpty`/`isDefined` →
    `validation.required`, `isEmail` → `validation.email`, остальные →
@@ -104,14 +104,16 @@ Date: 2026-11-22 · Task: roadmap 3, part 3a, [ADR-0008](../adr/0008-api-convent
 - **Урок.** Тест на утечку должен искать то, что реально может утечь, — часть значения,
   а не всё значение. Без мутации мы бы не узнали, что тест ничего не ловит.
 
-**Открытые решения (для владельца).**
+**Решения владельца после 3a.**
 
-- Код верхнего уровня при ошибке валидации — **`validation.invalid`** (одна запись на
-  форму, текст «Bitte überprüfen Sie diese Eingabe.»). Отдельного кода в утверждённом
-  списке не было; если нужен свой (например, `validation.failed` с текстом для формы),
-  это одна строка в реестре и один ключ.
-- Любой другой 4xx Nest/Express (413, 415 …) пока → `request.malformed`. Свои коды — с
-  первым endpoint'ом загрузки (ADR-0008, Results 3a).
+- Сначала код верхнего уровня у ошибки валидации был `validation.invalid` — тот же, что у
+  одного поля. Владелец: **форма целиком и одно поле — разный смысл, значит разные
+  коды.** Добавлен `validation.failed` («Bitte überprüfen Sie Ihre Eingaben.»), а
+  `validation.invalid` остался для поля. Тест HTTP изменён в том же коммите, причина —
+  в сообщении коммита. Хорошая иллюстрация правила «один смысл — один ключ», в обе
+  стороны: ключ не дублируют, но и разные смыслы в один ключ не сливают.
+- Любой другой 4xx Nest/Express (413, 415 …) пока → `request.malformed`, пока не
+  появятся задачи загрузки (ADR-0008, Results 3a) — согласовано.
 
 **Какие были альтернативы и почему отказались.**
 
@@ -155,7 +157,7 @@ language.
 
 **How it works, step by step.** Registry `problem/problem-codes.ts` (six codes; moves to
 `libs/shared/api-kit` in task 6). The `ValidationPipe`'s `exceptionFactory` throws a
-`ProblemException('validation.invalid', toFieldErrors(errors))`: one entry per field
+`ProblemException('validation.failed', toFieldErrors(errors))`: one entry per field
 (JSON Pointer, code, params), rules mapped to codes, "required" wins. The sent value
 (`ValidationError.value`) and `target` are never copied. `ProblemFilter` (`@Catch()`):
 own code for `ProblemException`, 404 → `request.not_found`, other 4xx →
@@ -177,8 +179,10 @@ it is red. E2E: `GET /api/v1/does-not-exist` through the proxy → 404 problem+j
 the filter → red. Two of the new tests were adjusted before commit for incidental details
 (entry order, `allOf` around `$ref`), not to make code pass.
 
-**Open decisions (for the owner).** Top-level validation code is `validation.invalid`;
-other Nest/Express 4xx map to `request.malformed` until uploads bring 413/415 codes.
+**Owner decisions after 3a.** The form-level code first reused `validation.invalid`; the
+owner separated it: `validation.failed` for the form as a whole, `validation.invalid` for
+one field (different meaning, different key). The HTTP test changed in the same commit,
+with the reason. Other Nest/Express 4xx stay `request.malformed` until uploads.
 
 **Alternatives considered and why rejected.** Nest's format with translated `message`;
 a per-endpoint error decorator; copying class-validator messages; logging every 4xx.

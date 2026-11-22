@@ -69,9 +69,29 @@
 
    **3b — фронт (следующее).** `problemMessage()` в `libs/signflow/api-client`;
    незнакомый код: 4xx → `errors.generic.client`, 5xx → `errors.server.internal`, нет
-   ответа → `errors.generic.network`; переводы (тексты утверждены 2026-11-22, см. журнал
-   027); `i18n-check`: у каждого кода контракта есть `errors.<code>`; тест на de/en/ru.
-   Валидация на экране — в задаче 8 (endpoint не придумываем).
+   ответа → `errors.generic.network`; `i18n-check`: у каждого кода контракта есть
+   `errors.<code>`; тест на de/en/ru. Валидация на экране — в задаче 8 (endpoint не
+   придумываем). **Тексты (утверждены владельцем 2026-11-22), ключи `errors.*`:**
+   - `validation.required`, `validation.email` — из Storybook-прототипа
+     (`apps/ui-storybook/src/i18n`);
+   - `validation.failed` (форма целиком): «Bitte überprüfen Sie Ihre Eingaben.» / «Please
+     check your entries.» / «Проверьте введённые данные.»;
+   - `validation.invalid` (одно поле): «Bitte überprüfen Sie diese Eingabe.» / «Please check
+     this entry.» / «Проверьте, пожалуйста, это значение.»;
+   - `request.malformed`: «Die Anfrage konnte nicht verarbeitet werden. Bitte laden Sie die
+     Seite neu.» / «The request could not be processed. Please reload the page.» / «Запрос не
+     удалось обработать. Обновите страницу.»;
+   - `request.not_found`: «Der angeforderte Eintrag wurde nicht gefunden.» / «The requested
+     item was not found.» / «Запрошенный объект не найден.»;
+   - `server.internal` (и незнакомый 5xx): «Ein unerwarteter Fehler ist aufgetreten. Bitte
+     versuchen Sie es später erneut.» / «An unexpected error occurred. Please try again
+     later.» / «Произошла непредвиденная ошибка. Попробуйте позже.»;
+   - `generic.client`: «Die Aktion konnte nicht ausgeführt werden. Bitte versuchen Sie es
+     erneut.» / «The action could not be completed. Please try again.» / «Действие не
+     удалось выполнить. Попробуйте ещё раз.»;
+   - `generic.network`: «Keine Verbindung zum Server. Bitte prüfen Sie Ihre
+     Internetverbindung.» / «No connection to the server. Please check your internet
+     connection.» / «Нет связи с сервером. Проверьте подключение к интернету.»
 
    **Принятые находки (записаны в ADR-0007, «Results (task 1a)», и в журнал 020):**
    - `@nx/nest` 24.0.6 требует `@nestjs/* <12` → приложение создаётся генератором `@nx/node`,
@@ -117,6 +137,9 @@
    корневом `package.json` — одна версия, одна папка кэша. Правило — в разделе 5.
 
    **Решения на потом:**
+   - **в задаче 5: сообщения ошибок Prisma могут содержать значения из запроса** —
+     тест «секрета нет в ответе и логе» (журнал 027) распространить на ошибки базы
+     (решение владельца 2026-11-22);
    - `/health/ready` (база доступна, миграции применены) — в задаче 5: он нужен автооткату в
      задаче 24;
    - в задаче 22 сборка образа добавляет в ответ health поле `commit` (SHA), чтобы было видно,

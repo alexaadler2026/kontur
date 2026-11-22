@@ -69,10 +69,10 @@ Every error response has `Content-Type: application/problem+json`:
 #### Results (task 3a, 2026-11-22)
 
 - Registry: `apps/signflow-api/src/problem/problem-codes.ts` (code → status, English
-  title); moves to `libs/shared/api-kit` in task 6. First codes: `validation.invalid`,
+  title); moves to `libs/shared/api-kit` in task 6. First codes: `validation.failed`, `validation.invalid`,
   `validation.required`, `validation.email`, `request.malformed`, `request.not_found`,
   `server.internal`. The contract lists them as the `ProblemCode` enum.
-- A validation failure is 422 with top-level code `validation.invalid` and one
+- A validation failure is 422 with top-level code `validation.failed` (the form as a whole; owner, 2026-11-22) and one
   `errors[]` entry per field. class-validator rules map to codes (`isNotEmpty`/`isDefined`
   → `validation.required`, `isEmail` → `validation.email`, any other → `validation.invalid`);
   "required" wins over the other rules of the same field. Entry order is not part of the
