@@ -73,8 +73,51 @@ Date: 2026-11-22 · Task: roadmap 4, part 4b — task 4 complete, [ADR-0009](../
 неудаче — запасной `de`, у каждого по 10 с. Если браузер en или ru, а сервер завис,
 переводы ждут 10 + 10 = **20 с**. Параллельность с настройками это не ухудшает, но и
 обещание «худший случай 10 с» для такого браузера не выполняется. Чинить не стал: это
-меняет поведение 1b. Вариант — один общий срок 10 с на всю цепочку переводов. Решает
-владелец.
+меняет поведение 1b. Решает владелец.
+
+**Решение владельца и исправление (2026-11-22, коммит `fix(signflow)`).** Вариант C:
+если стартовый язык не de, его файл и `de.json` запрашиваются **одновременно**, с одним
+сроком `STARTUP_TIMEOUT_MS`:
+
+- пришёл стартовый язык → он, немецкий догружается в фоне и не задерживает старт;
+- не пришёл, но пришёл de → de, `console.error` с причиной;
+- ничего → ключи, `console.error`.
+
+Цена — лишний запрос `de.json` для en/ru, несколько КБ. Тесты на фейковых таймерах были
+красными первыми:
+
+- ru завис, de пришёл → на 9 999 мс ещё нет, на 10 000 мс приложение на de;
+- ru пришёл, de завис → старт сразу, на ru.
+
+Мутация «de только после неудачи ru» (старое поведение) → оба красные. Тест 1b
+«переключение языка» ждал, что `de.json` загрузится при переключении. Теперь он уже
+загружен, поэтому тест переключает на en. Требование изменилось, причина в коммите и в
+журнале [021](021-signflow-transloco.md). Теперь худший случай — 10 с для любого языка
+браузера.
+
+**Вторая находка — её поймал e2e, а не unit-тест.** После правки e2e «браузер ru»
+покраснел: de.json грузился **дважды**. Причина — опция Transloco
+`useFallbackTranslation`, включённая в production:
+
+- `load('ru')` тогда грузит ru.json и de.json одной операцией (`forkJoin`), мимо кэша.
+  Наш параллельный запрос de.json стал вторым.
+- Хуже: если de.json **не пришёл**, падала вся операция, то есть и русский. Приложение
+  стартовало с ключами, хотя ru.json был на месте. Так было и до варианта C.
+- Unit-тесты не видели этого, потому что работают в dev-режиме, где опция выключена.
+
+Исправление: опция выключена везде. «Немецкий текст для пропущенного ключа в production»
+(ADR-0006) теперь делает наш `ReportingMissingHandler`: если ключа нет в активном языке,
+а в немецком есть, он показывает немецкий. Обработчик проверяет ключ **до** перевода,
+иначе перевод отсутствующего ключа снова вызвал бы обработчик, и так по кругу.
+
+Новые e2e на production-сборке:
+
+- de.json 404 → приложение на русском, в консоли причина. До исправления — красный;
+- ключа `apiStatus.ok` нет в ru.json → на экране немецкий текст.
+
+Мутации: вернуть `useFallbackTranslation` → красные «браузер ru» (дубль) и «de.json
+404». Обработчик без немецкого → красный тест пропущенного ключа. e2e 13/13. Урок:
+поведение, которое зависит от `isDevMode()`, проверяет только e2e на production-сборке.
 
 **Какие были альтернативы и почему отказались.**
 
@@ -139,8 +182,32 @@ offers? The shop opens without them.
 
 **Finding — open question for the owner.** Translations themselves are sequential (1b):
 the browser language, then German as the fallback, 10 s each. With an en/ru browser and
-a hanging server that is 20 s. Not changed here, because it alters 1b. One option is a
-single 10 s deadline for the whole chain.
+a hanging server that is 20 s.
+
+**Owner's decision and fix (2026-11-22, `fix(signflow)` commit).** Option C: the start
+language and `de.json` are requested at once with one `STARTUP_TIMEOUT_MS` deadline.
+
+- The start language arrives → use it; German loads in the background.
+- Only de arrives → German, plus `console.error`.
+- Nothing → keys, plus `console.error`.
+
+The cost is one extra `de.json` for en/ru. The fake-timer tests were red first: ru hangs
+and de arrives → German at 10 000 ms; ru arrives and de hangs → starts at once. The
+"sequential" mutation fails both. The 1b runtime-switch test now switches to en, because
+de is loaded at start (requirement changed; see entry 021). The worst case is now 10 s
+for every browser language.
+
+**Second finding, caught by e2e, not by unit tests.** After the fix the "Russian browser"
+e2e failed: de.json was fetched twice. Transloco's `useFallbackTranslation`, on in
+production, makes `load('ru')` fetch ru.json and de.json in one `forkJoin` that bypasses the
+cache. Worse, a failed de.json failed Russian too, and the app started with keys. That was
+already true before option C. Unit tests run in dev mode, where the option is off. The fix:
+the option is off everywhere, and `ReportingMissingHandler` shows the German text in
+production when the active language lacks a key (checked first, to avoid recursion). New
+e2e tests on the production build: de.json 404 → Russian (red before the fix); a key
+missing in ru.json → German. Mutations: restoring the option fails two tests; a handler
+without German fails one. e2e 13/13. Lesson: behaviour behind `isDevMode()` is proven only
+by e2e on the production build.
 
 **Alternatives considered and why rejected.**
 
@@ -169,8 +236,8 @@ liegen im Service `AppConfig`, als Signal. Antwortet der Server nicht, startet d
 trotzdem, ohne Einstellungen; der Grund steht in der Konsole. Übersetzungen und
 Einstellungen werden gleichzeitig geladen. Deshalb wartet man höchstens 10 Sekunden,
 nicht 20. Ein Test mit simulierten Timern beweist das. Ein E2E-Test prüft die echte API.
-Offen ist eine Frage an den Owner: Innerhalb der Übersetzungen kann das Warten noch
-20 Sekunden dauern. Damit ist Aufgabe 4 fertig.
+Danach wurde auch das Laden der Übersetzungen geändert: Startsprache und Deutsch kommen
+gleichzeitig, mit einer Frist von 10 Sekunden. Damit ist Aufgabe 4 fertig.
 
 ### Fachwortschatz
 

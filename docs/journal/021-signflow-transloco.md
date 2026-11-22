@@ -62,6 +62,28 @@ Angular **ждёт** инициализатор. Если файл перево�
 
 Красивое (без мигания ключей) осталось, но не ценой работающего.
 
+> **Обновление 2026-11-22 (после задачи 4, журнал [030](030-frontend-settings.md)).**
+> Шаги 1 и 2 шли **друг за другом**, у каждого свои 10 с. Браузер на ru и зависший
+> сервер давали 20 с белой страницы. Решение владельца (вариант C): если стартовый язык
+> не de, его файл и `de.json` запрашиваются **одновременно**, с одним сроком
+> `STARTUP_TIMEOUT_MS` (10 с):
+>
+> - пришёл стартовый язык → работаем на нём; немецкий догружается в фоне;
+> - не пришёл, но пришёл de → немецкий и `console.error` с причиной;
+> - ничего → ключи и `console.error`.
+>
+> Цена — лишний запрос `de.json` для en/ru, несколько КБ; в продакшене он нужен всё равно
+> как запасной. Тест «переключение языка» теперь переключает на en: de больше не
+> загружается по требованию, он уже есть после старта.
+>
+> **Находка при этом исправлении.** В production был включён `useFallbackTranslation`
+> Transloco. Тогда `load('ru')` грузит ru.json и de.json **вместе** (`forkJoin`, мимо
+> кэша). Если de.json не пришёл, падал и русский, и приложение стартовало с ключами. Да
+> ещё de.json грузился второй раз. Unit-тесты этого не видели: они работают в dev-режиме.
+> Поймал e2e на production-сборке. Теперь `useFallbackTranslation: false`, а «немецкий
+> для пропущенного ключа в production» (ADR-0006) делает наш `ReportingMissingHandler`.
+> Новые e2e: de.json 404 → приложение на русском; ключа нет в ru.json → немецкий текст.
+
 **Как это работает, шаг за шагом (`apps/signflow/src/app/i18n/`).**
 
 1. `languages.ts` импортирует `public/i18n/languages.json` (он попадает в сборку) и даёт
@@ -159,6 +181,26 @@ completes: load the start language → on failure log `[i18n] Could not load "ru
 German → on failure log again and start with keys. A 10 s `timeout` turns a hanging request
 into the same path. Transloco's own silent load fallback is disabled (`NoLoadFallback`) so
 the whole policy lives in one visible function, `loadStartLanguage()`.
+
+> **Update 2026-11-22 (after task 4, entry [030](030-frontend-settings.md)).** The two steps
+> ran one after the other, 10 s each: a ru browser and a hanging server meant a 20 s blank
+> page. Owner's option C: when the start language is not de, its file and `de.json` are
+> requested at once, with one deadline, `STARTUP_TIMEOUT_MS` (10 s).
+>
+> - Start language arrived → use it; German keeps loading in the background.
+> - Only de arrived → German, plus `console.error`.
+> - Nothing → keys, plus `console.error`.
+>
+> The cost is one extra `de.json` for en/ru, a few KB, which production needs anyway as the
+> fallback. The "runtime switch" test now switches to en: de is no longer fetched on demand.
+>
+> **Found while fixing.** Production had Transloco's `useFallbackTranslation` on. It makes
+> `load('ru')` fetch ru.json and de.json together (`forkJoin`, bypassing the cache): a
+> failed de.json failed Russian too (keys on screen), and de.json was fetched twice. Unit
+> tests run in dev mode and missed it; e2e on the production build caught it. Now
+> `useFallbackTranslation: false`, and `ReportingMissingHandler` shows German for a missing
+> key in production (ADR-0006). New e2e tests: de.json 404 → Russian; a key missing in
+> ru.json → German text.
 
 **How it works, step by step.** `languages.ts` (config, `startLang`); `provide-i18n.ts`
 (`provideTransloco` with an HTTP loader and `failedRetries: 0`, missing handler,

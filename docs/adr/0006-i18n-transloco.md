@@ -131,6 +131,11 @@ folder has **one** config, `languages.json`:
     (ru: `one`, `few`, `many`, `other`).
 - **Runtime:** in development and tests a missing key is reported as an error by Transloco's
   missing handler; in production the German text is shown as fallback.
+  - _Implementation note (2026-11-22, journal 030):_ the production fallback is done by our
+    missing handler, not by Transloco's `useFallbackTranslation`. That option loads a
+    language and German together (`forkJoin`). A failed `de.json` then failed the start
+    language as well, and German was fetched twice. German is loaded in parallel at start
+    (one 10 s deadline). The handler shows its text when the active language lacks a key.
 
 ### Who translates
 
