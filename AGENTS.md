@@ -36,6 +36,8 @@ simpler solution that works and is understood over a clever one.
 - Keep a table of contents in `docs/journal/README.md`.
 - Journal explains; `docs/adr/` (English, MADR format) still records decisions.
 - When Alexander says "объясни проще" — rewrite simpler, without complaining.
+- Owner's shell is Windows PowerShell: manual verification commands must work there
+  ($env:VAR = …, curl.exe, $LASTEXITCODE).
 
 ## Design source of truth
 - Design system "Kontur" and the SignFlow/Belegscan mockups are the reference.
