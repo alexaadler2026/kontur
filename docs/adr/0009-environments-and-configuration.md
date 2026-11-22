@@ -90,6 +90,18 @@ no separate build. The `demo` column below and the demo-only settings apply in t
 - Angular `fileReplacements` are not used for environment values.
 - The config response contains nothing secret; it is public by definition.
 
+#### Results (task 4b, 2026-11-22)
+
+- `AppConfig` (`apps/signflow/src/app/config/app-config.ts`): `settings()` is a read-only
+  signal with the `PublicConfigDto` or `undefined` = "no settings". `provideAppConfig()`
+  loads it through the generated `ConfigService` in an app initializer.
+- The request fails or hangs → the app starts anyway, `settings()` stays `undefined`,
+  the reason goes to `console.error` (owner, 2026-11-22). A screen that needs the
+  settings shows `errors.generic.network` itself.
+- Angular runs all app initializers at once: translations and settings load **in
+  parallel**, sharing one `STARTUP_TIMEOUT_MS` (10 s). Test with fake timers: both
+  requests hang → the start completes at 10 s, not before; a sequential mutation fails.
+
 ### Host names and browser isolation
 
 One domain, one host per app and environment, one level deep:
