@@ -5,7 +5,8 @@
  * i18n-check requires a translation for each.
  */
 export const PROBLEM_CODES = {
-  'validation.invalid': { status: 422, title: 'The request failed validation' },
+  'validation.failed': { status: 422, title: 'The request failed validation' },
+  'validation.invalid': { status: 422, title: 'A value is not valid' },
   'validation.required': { status: 422, title: 'A required value is missing' },
   'validation.email': { status: 422, title: 'Not a valid e-mail address' },
   'request.malformed': {

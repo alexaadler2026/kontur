@@ -26,6 +26,7 @@
       "ProblemCode": {
         "description": "Stable code; the UI shows the translation `errors.<code>`.",
         "enum": [
+          "validation.failed",
           "validation.invalid",
           "validation.required",
           "validation.email",
@@ -44,7 +45,7 @@
               }
             ],
             "description": "Stable code; the UI shows the translation `errors.<code>`.",
-            "example": "validation.invalid"
+            "example": "validation.failed"
           },
           "errors": {
             "description": "Failed fields of a validation problem.",
@@ -82,7 +83,7 @@
           },
           "type": {
             "description": "URN of the problem type; its last part is the code.",
-            "example": "urn:kontur:problem:validation.invalid",
+            "example": "urn:kontur:problem:validation.failed",
             "type": "string"
           }
         },

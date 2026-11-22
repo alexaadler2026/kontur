@@ -101,10 +101,10 @@ describe('Problem Details (RFC 9457, ADR-0008) over HTTP', () => {
       .expect('Content-Type', /application\/problem\+json/);
 
     expect(response.body).toEqual({
-      type: 'urn:kontur:problem:validation.invalid',
+      type: 'urn:kontur:problem:validation.failed',
       title: expect.any(String),
       status: 422,
-      code: 'validation.invalid',
+      code: 'validation.failed',
       instance: '/api/v1/probe',
       traceId: expect.stringMatching(UUID),
       errors: [

@@ -19,7 +19,7 @@ export function configureApp<T extends INestApplication>(app: T): T {
       transform: true,
       // ADR-0008: a validation failure is 422 Problem Details with errors[], not Nest's 400.
       exceptionFactory: (errors) =>
-        new ProblemException('validation.invalid', toFieldErrors(errors)),
+        new ProblemException('validation.failed', toFieldErrors(errors)),
     }),
   );
   // ADR-0008: every error, including unknown routes and crashes, is Problem Details.

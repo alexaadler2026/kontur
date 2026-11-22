@@ -35,7 +35,7 @@ export class ProblemFieldErrorDto implements ProblemFieldError {
 export class ProblemDetailsDto implements ProblemBody {
   /**
    * URN of the problem type; its last part is the code.
-   * @example "urn:kontur:problem:validation.invalid"
+   * @example "urn:kontur:problem:validation.failed"
    */
   type!: string;
 
@@ -50,7 +50,7 @@ export class ProblemDetailsDto implements ProblemBody {
   status!: number;
 
   /** Stable code; the UI shows the translation `errors.<code>`. */
-  @ApiProperty({ ...CODE, example: 'validation.invalid' })
+  @ApiProperty({ ...CODE, example: 'validation.failed' })
   code!: ProblemCode;
 
   /**
