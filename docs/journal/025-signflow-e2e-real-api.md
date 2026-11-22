@@ -69,6 +69,29 @@ NestJS. Задача 1 (сквозной срез) на этом закрыта.
   отправки, и запрос «чинился» бы сам.
 - После прогона порты 4300 и 4310 свободны: процессы закрываются вместе с прогоном.
 
+**История находки: `..%2f` (что случилось → как нашли → как исправили → урок).**
+
+- **Что случилось.** Требование владельца звучало так: «запрос `/../package.json` не
+  отдаёт файл». Первая проверка в голову напрашивается такая: послать запрос и увидеть 404. Но с обычным клиентом такой тест ничего не докажет. Браузер, `fetch` и
+  `new URL()` по стандарту URL выкидывают `/../` ещё до отправки: запрос уходит как
+  `/package.json`. Сервер получает безобидный путь, и тест зелёный **даже без защиты**.
+  Вторая ловушка: `%2f` — это закодированный `/`. Для парсера URL `..%2f..%2fpackage.json`
+  — один обычный сегмент, его никто не «чинит». А сервер вызывает `decodeURIComponent`,
+  получает `../../package.json` и выходит из папки.
+- **Как нашли.** Через мутацию: временно убрали проверку пути, запустили сервер и
+  отправили оба варианта клиентом на `node:http`, который шлёт путь как есть. Оба вернули
+  **корневой `package.json` репозитория** — дыра настоящая, а не теоретическая. С проверкой
+  оба дают 404. Число `..` подобрано точно (4 уровня до корня): при большем числе путь
+  ушёл бы выше репозитория, там `package.json` нет, и тест был бы зелёным даже с дырой.
+- **Как исправили.** Проверка идёт **после** декодирования и по **итоговому** пути:
+  `resolve(root, '.' + decodeURIComponent(rawPath))`, затем `startsWith(root + sep)`,
+  иначе 404. Сервер берёт «сырой» `req.url`, без `new URL()`. Битая кодировка (`%E0`) даёт
+  400, а не падение сервера. В тесте — оба варианта пути и свой `rawGet`.
+- **Урок.** (1) Проверять нужно то, что реально откроется (итоговый путь), а не то, что
+  пришло в URL. (2) Тест безопасности должен уметь отправить «плохой» запрос: если клиент
+  сам его исправляет, тест зелёный и бесполезный. (3) Мутация — единственный способ
+  узнать, ловит ли тест дыру: зелёный тест без мутации ничего не доказывает.
+
 **Какие были альтернативы и почему отказались.**
 
 - `express` + `http-proxy-middleware`: привычно, но новые зависимости ради временного
@@ -126,6 +149,17 @@ check): traversal tests red, and a manual check showed the repository `package.j
 really served for both `/../../../../package.json` and the `%2f` variant. Mutation 2
 (proxy to 4399): "API nicht erreichbar". The test uses a raw `node:http` client because
 browsers and fetch normalize `/../`. Ports 4300 and 4310 are free after the run.
+
+**The `..%2f` story (what happened → how found → how fixed → lesson).** What happened: a
+test that requests `/../package.json` with a normal client proves nothing — browsers,
+fetch and `new URL()` drop `/../` before sending, so the test is green even without a
+guard; and `..%2f` passes the URL parser untouched but becomes `../` after the server's
+`decodeURIComponent`. How found: a mutation (guard removed) plus a raw `node:http` client —
+both variants returned the repository's own `package.json`; exactly four `..` reach the
+root (more would overshoot and pass falsely). How fixed: check the final path after
+decoding (`resolve` + `startsWith(root + sep)`, else 404), use the raw `req.url`,
+malformed encoding → 400. Lesson: check what will actually be opened; a security test
+must be able to send the bad request; only a mutation shows that a test catches the hole.
 
 **Alternatives considered and why rejected.** express + http-proxy-middleware (new
 dependencies for a temporary file); CORS and a configurable API URL (production is one
