@@ -17,7 +17,9 @@
         "transformers": [
           {
             "name": "@nestjs/swagger/plugin",
-            "options": { "introspectComments": true }
+            "options": {
+              "introspectComments": true
+            }
           }
         ]
       }
@@ -33,13 +35,20 @@
       "continuous": true,
       "dependsOn": ["build"],
       "command": "node dist/apps/signflow-api/src/main.js",
-      "options": { "env": { "PORT": "4310" } }
+      "options": {
+        "env": {
+          "PORT": "4310"
+        }
+      }
     },
     "test": {
       "command": "vitest run",
-      "options": { "cwd": "apps/signflow-api" },
+      "options": {
+        "cwd": "apps/signflow-api"
+      },
       "cache": true,
-      "inputs": ["default", "^production"]
+      "inputs": ["default", "^production", "{projectRoot}/.env.example"],
+      "dependsOn": ["build"]
     },
     "typecheck": {
       "command": "tsc -p apps/signflow-api/tsconfig.spec.json --noEmit",
