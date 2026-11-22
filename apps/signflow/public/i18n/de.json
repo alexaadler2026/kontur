@@ -7,5 +7,24 @@
   "kontur": {
     "removeLabel": "Entfernen",
     "closeLabel": "Schließen"
+  },
+  "errors": {
+    "validation": {
+      "failed": "Bitte überprüfen Sie Ihre Eingaben.",
+      "invalid": "Bitte überprüfen Sie diese Eingabe.",
+      "required": "Bitte füllen Sie dieses Feld aus.",
+      "email": "Bitte geben Sie eine gültige E-Mail-Adresse ein."
+    },
+    "request": {
+      "malformed": "Die Anfrage konnte nicht verarbeitet werden. Bitte laden Sie die Seite neu.",
+      "not_found": "Der angeforderte Eintrag wurde nicht gefunden."
+    },
+    "server": {
+      "internal": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut."
+    },
+    "generic": {
+      "client": "Die Aktion konnte nicht ausgeführt werden. Bitte versuchen Sie es erneut.",
+      "network": "Keine Verbindung zum Server. Bitte prüfen Sie Ihre Internetverbindung."
+    }
   }
 }

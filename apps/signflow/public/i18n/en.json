@@ -7,5 +7,24 @@
   "kontur": {
     "removeLabel": "Remove",
     "closeLabel": "Close"
+  },
+  "errors": {
+    "validation": {
+      "failed": "Please check your entries.",
+      "invalid": "Please check this entry.",
+      "required": "Please fill in this field.",
+      "email": "Please enter a valid email address."
+    },
+    "request": {
+      "malformed": "The request could not be processed. Please reload the page.",
+      "not_found": "The requested item was not found."
+    },
+    "server": {
+      "internal": "An unexpected error occurred. Please try again later."
+    },
+    "generic": {
+      "client": "The action could not be completed. Please try again.",
+      "network": "No connection to the server. Please check your internet connection."
+    }
   }
 }

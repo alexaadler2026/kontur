@@ -12,7 +12,8 @@
       "inputs": [
         "default",
         "{workspaceRoot}/apps/*/public/i18n/**/*.json",
-        "{workspaceRoot}/apps/*/src/i18n/**/*.json"
+        "{workspaceRoot}/apps/*/src/i18n/**/*.json",
+        "{workspaceRoot}/libs/*/api-contract/openapi.json"
       ]
     },
     "typecheck": {
