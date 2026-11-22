@@ -1,5 +1,6 @@
 import type { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ProblemDetailsDto } from '../problem/problem-details.dto.js';
 import { readAppVersion } from './app-version.js';
 
 /** Builds the OpenAPI document from the controllers and DTOs of a configured app. */
@@ -12,8 +13,32 @@ export function createOpenApiDocument(app: INestApplication) {
     )
     .setVersion(readAppVersion())
     .build();
-  return SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, config, {
+    extraModels: [ProblemDetailsDto],
+  });
+  // ADR-0008: any operation can fail, and every failure is Problem Details. Declared once
+  // here instead of a decorator on each endpoint, so no endpoint can forget it.
+  for (const operations of Object.values(document.paths)) {
+    for (const method of METHODS) {
+      const operation = operations[method];
+      if (operation) {
+        operation.responses['default'] ??= PROBLEM_RESPONSE;
+      }
+    }
+  }
+  return document;
 }
+
+const METHODS = ['get', 'put', 'post', 'delete', 'patch'] as const;
+
+const PROBLEM_RESPONSE = {
+  description: 'Error as Problem Details (RFC 9457, ADR-0008)',
+  content: {
+    'application/problem+json': {
+      schema: { $ref: '#/components/schemas/ProblemDetailsDto' },
+    },
+  },
+};
 
 /**
  * The same value with object keys sorted, so the committed openapi.json changes only

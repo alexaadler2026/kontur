@@ -22,6 +22,114 @@
           "version"
         ],
         "type": "object"
+      },
+      "ProblemCode": {
+        "description": "Stable code; the UI shows the translation `errors.<code>`.",
+        "enum": [
+          "validation.invalid",
+          "validation.required",
+          "validation.email",
+          "request.malformed",
+          "request.not_found",
+          "server.internal"
+        ],
+        "type": "string"
+      },
+      "ProblemDetailsDto": {
+        "properties": {
+          "code": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProblemCode"
+              }
+            ],
+            "description": "Stable code; the UI shows the translation `errors.<code>`.",
+            "example": "validation.invalid"
+          },
+          "errors": {
+            "description": "Failed fields of a validation problem.",
+            "example": [
+              {
+                "code": "validation.email",
+                "params": {},
+                "pointer": "/email"
+              }
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ProblemFieldErrorDto"
+            },
+            "type": "array"
+          },
+          "instance": {
+            "description": "Path of the request, without the query string.",
+            "example": "/api/v1/envelopes",
+            "type": "string"
+          },
+          "status": {
+            "description": "HTTP status, repeated in the body.",
+            "example": 422,
+            "type": "integer"
+          },
+          "title": {
+            "description": "English summary for developers and logs — never shown to users.",
+            "example": "The request failed validation",
+            "type": "string"
+          },
+          "traceId": {
+            "description": "Id of this error; the same id is in the server log of a 500.",
+            "example": "0193a1c2-7b4e-7c1a-9f00-3c5d2e1b0a99",
+            "type": "string"
+          },
+          "type": {
+            "description": "URN of the problem type; its last part is the code.",
+            "example": "urn:kontur:problem:validation.invalid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "code",
+          "type",
+          "title",
+          "instance",
+          "traceId"
+        ],
+        "type": "object"
+      },
+      "ProblemFieldErrorDto": {
+        "properties": {
+          "code": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProblemCode"
+              }
+            ],
+            "description": "Stable code; the UI shows the translation `errors.<code>`.",
+            "example": "validation.email"
+          },
+          "params": {
+            "additionalProperties": {
+              "type": [
+                "string",
+                "number"
+              ]
+            },
+            "description": "Parameters of the rule for the message, e.g. `{ \"max\": 25 }`.",
+            "example": {},
+            "type": "object"
+          },
+          "pointer": {
+            "description": "JSON Pointer (RFC 6901) to the field in the request body.",
+            "example": "/signers/0/email",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "params",
+          "pointer"
+        ],
+        "type": "object"
       }
     }
   },
@@ -47,6 +155,16 @@
               }
             },
             "description": ""
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            },
+            "description": "Error as Problem Details (RFC 9457, ADR-0008)"
           }
         },
         "summary": "Liveness: the process answers.",

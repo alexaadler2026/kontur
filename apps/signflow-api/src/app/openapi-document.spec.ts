@@ -5,6 +5,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { AppModule } from './app.module.js';
 import { configureApp } from './configure-app.js';
 import { createOpenApiDocument } from './openapi-document.js';
+import { PROBLEM_CODE_LIST } from '../problem/problem-codes.js';
 
 describe('OpenAPI document of signflow-api', () => {
   let app: INestApplication;
@@ -37,6 +38,43 @@ describe('OpenAPI document of signflow-api', () => {
         },
       },
     });
+  });
+
+  it('every operation can answer with Problem Details (default response, ADR-0008)', () => {
+    const operation = document.paths['/api/v1/health/live']?.get;
+
+    expect(operation?.responses['default']).toMatchObject({
+      content: {
+        'application/problem+json': {
+          schema: { $ref: '#/components/schemas/ProblemDetailsDto' },
+        },
+      },
+    });
+  });
+
+  it('lists every code of the registry as the ProblemCode enum', () => {
+    const schemas = document.components?.schemas ?? {};
+
+    expect(schemas['ProblemCode']).toMatchObject({
+      type: 'string',
+      enum: PROBLEM_CODE_LIST,
+    });
+    // allOf: the way OpenAPI puts a $ref next to sibling keys (description, example).
+    const codeRef = { allOf: [{ $ref: '#/components/schemas/ProblemCode' }] };
+    expect(schemas['ProblemDetailsDto']).toMatchObject({
+      properties: { code: codeRef },
+    });
+    expect(
+      (schemas['ProblemDetailsDto'] as { required: string[] }).required.sort(),
+    ).toEqual(['code', 'instance', 'status', 'title', 'traceId', 'type']);
+    expect(schemas['ProblemFieldErrorDto']).toMatchObject({
+      properties: { code: codeRef },
+    });
+    expect(
+      (
+        schemas['ProblemFieldErrorDto'] as { required: string[] }
+      ).required.sort(),
+    ).toEqual(['code', 'params', 'pointer']);
   });
 
   // The compiler plugin writes this schema from the class alone: types, @IsIn (enum),
