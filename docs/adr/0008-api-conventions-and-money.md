@@ -66,6 +66,27 @@ Every error response has `Content-Type: application/problem+json`:
   (stale version, illegal state transition), 413 too large, 415 wrong type, 422 validation
   or business rule, 429 rate limit (`Retry-After`), 500 unexpected (no internals leaked).
 
+#### Results (task 3a, 2026-11-22)
+
+- Registry: `apps/signflow-api/src/problem/problem-codes.ts` (code → status, English
+  title); moves to `libs/shared/api-kit` in task 6. First codes: `validation.invalid`,
+  `validation.required`, `validation.email`, `request.malformed`, `request.not_found`,
+  `server.internal`. The contract lists them as the `ProblemCode` enum.
+- A validation failure is 422 with top-level code `validation.invalid` and one
+  `errors[]` entry per field. class-validator rules map to codes (`isNotEmpty`/`isDefined`
+  → `validation.required`, `isEmail` → `validation.email`, any other → `validation.invalid`);
+  "required" wins over the other rules of the same field. Entry order is not part of the
+  contract.
+- **The sent value is never copied** into `errors[]` (class-validator keeps it in
+  `ValidationError.value`); only pointer, code and the rule's params. Only a 500 is
+  logged — `traceId`, method, path without query, status and the stack — never a body or
+  an error message of a 4xx (V8's JSON parse error quotes a slice of the input).
+- Unparseable JSON → 400 `request.malformed`; unknown route → 404 `request.not_found`;
+  for now **any other 4xx** from Nest/Express also becomes `request.malformed` — 413/415
+  get their own codes with the first upload endpoint.
+- Every operation declares a `default` response `application/problem+json` →
+  `ProblemDetailsDto`, added once in `createOpenApiDocument`.
+
 ### Lists — pagination, sorting, filters
 
 ```
