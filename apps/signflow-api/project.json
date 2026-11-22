@@ -4,6 +4,7 @@
   "sourceRoot": "apps/signflow-api/src",
   "projectType": "application",
   "tags": ["scope:signflow", "type:app", "platform:server"],
+  "implicitDependencies": ["signflow-api-contract"],
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",
@@ -51,6 +52,15 @@
       "cache": true,
       "inputs": ["production"],
       "outputs": ["{workspaceRoot}/libs/signflow/api-contract/openapi.json"]
+    },
+    "api-check": {
+      "command": "node dist/apps/signflow-api/src/openapi.js libs/signflow/api-contract/openapi.json --check",
+      "dependsOn": ["build"],
+      "cache": true,
+      "inputs": [
+        "production",
+        "{workspaceRoot}/libs/signflow/api-contract/openapi.json"
+      ]
     }
   }
 }
