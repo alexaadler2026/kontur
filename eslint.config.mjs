@@ -66,6 +66,11 @@ export default [
               sourceTag: 'type:util',
               onlyDependOnLibsWithTags: ['type:util'],
             },
+            // E2E talk to the app only through the browser and HTTP, never through imports.
+            {
+              sourceTag: 'type:e2e',
+              onlyDependOnLibsWithTags: ['type:util'],
+            },
             // The API contract (openapi.json) depends on nothing (ADR-0007).
             {
               sourceTag: 'type:contract',

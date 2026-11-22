@@ -3,7 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "tools/tokens/src",
-  "tags": ["scope:shared", "type:util"],
+  "tags": ["scope:shared", "type:util", "platform:server"],
   "namedInputs": {
     "design": [
       "{workspaceRoot}/docs/design/tokens.json",

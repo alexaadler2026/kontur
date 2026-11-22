@@ -4,7 +4,7 @@
   "projectType": "application",
   "prefix": "k",
   "sourceRoot": "apps/ui-storybook/src",
-  "tags": ["scope:shared", "type:app"],
+  "tags": ["scope:shared", "type:app", "platform:web"],
   "implicitDependencies": ["ui"],
   "targets": {
     "build": {

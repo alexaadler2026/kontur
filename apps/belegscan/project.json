@@ -4,7 +4,7 @@
   "projectType": "application",
   "prefix": "bs",
   "sourceRoot": "apps/belegscan/src",
-  "tags": ["scope:belegscan", "type:app"],
+  "tags": ["scope:belegscan", "type:app", "platform:web"],
   "targets": {
     "build": {
       "executor": "@angular/build:application",

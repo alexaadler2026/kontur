@@ -3,7 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "tools/i18n-check/src",
-  "tags": ["scope:shared", "type:util"],
+  "tags": ["scope:shared", "type:util", "platform:server"],
   "targets": {
     "test": {
       "command": "vitest run",
