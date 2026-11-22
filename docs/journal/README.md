@@ -34,3 +34,4 @@ German summary with a glossary (template: [TEMPLATE.md](TEMPLATE.md)).
 | [023](023-signflow-api-client.md)          | Task 1c: Orval client (httpResource) and MSW mocks from contract examples, no faker; API status line on the start page     | 2026-11-21 |
 | [024](024-angular-cache-race.md)           | Angular cache race: Storybook ENOENT in fresh parallel runs; build-angular pinned to the @angular/build version            | 2026-11-21 |
 | [025](025-signflow-e2e-real-api.md)        | Task 1d: SignFlow e2e against the real built API (4310) behind a temporary static server with /api proxy and a path check  | 2026-11-21 |
+| [026](026-api-check-boundaries.md)         | Task 2: api-check in CI, platform tags on every project (e2e = server), type:e2e rule, check:project-tags                  | 2026-11-22 |

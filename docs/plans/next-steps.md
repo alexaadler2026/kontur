@@ -1,6 +1,6 @@
 # Состояние работы и следующие шаги
 
-Снимок на **2026-11-21**: задача 1 (1a–1d), AGENTS.md и гонка кэша сделаны; следующая — задача 2 по `roadmap.md` (сначала план). Этот файл нужен, чтобы продолжить без
+Снимок на **2026-11-22**: задачи 1 (1a–1d) и 2, AGENTS.md и гонка кэша сделаны; следующая — задача 3 по `roadmap.md` (ошибки RFC 9457, сначала план). Этот файл нужен, чтобы продолжить без
 старой переписки. Порядок задач задаёт [`roadmap.md`](roadmap.md); здесь — только где мы
 остановились.
 
@@ -26,21 +26,26 @@
 
 Затем гонка кэша Angular — журнал [024](../journal/024-angular-cache-race.md); задача 1d (e2e против настоящего API) — журнал [025](../journal/025-signflow-e2e-real-api.md).
 
-Последний коммит работы: `docs(journal): add entry 025 signflow e2e against the real api`.
+Затем задача 2: `api-check` в CI, теги `platform:*` у всех проектов, правило `type:e2e`,
+`pnpm check:project-tags` — журнал [026](../journal/026-api-check-boundaries.md).
 
-**Проверки после журнала 023 (локально, без `src/generated/` и с `--skip-nx-cache`):**
+Последний коммит работы: `docs(journal): add entry 026 api-check and boundaries`.
 
-- `pnpm nx run-many -t lint test typecheck build` — зелёные, 11 проектов (`generate`
-  выполняется первым; `signflow`: 18 тестов, `signflow-api`: 7); `build-storybook` — отдельно
-  зелёный (параллельно — гонка кэша, см. раздел 3);
-- `CI=true pnpm nx run-many -t e2e` — signflow 6 + belegscan 3 + Storybook 37 зелёные (включая axe);
+**Проверки после журнала 026 (локально):**
+
+- `pnpm nx run-many -t lint test typecheck build build-storybook api-check` — зелёные,
+  12 проектов (первый прогон после `nx reset` — разовый тайм-аут запуска воркера vitest в
+  `belegscan:test`, повтор зелёный, см. журнал 026);
+- `CI=true pnpm nx run-many -t e2e` (после 1d) — signflow 8 + belegscan 3 + Storybook 37
+  зелёные (включая axe);
+- `pnpm check:agents-md`, `check:angular-builders`, `check:project-tags` — ok;
 - `pnpm nx format:check --all` — без замечаний;
 - `node_modules/nx/dist/bin/nx.js` SHA-256 начинается с `2a1c0e6bcf0c3d72` (как ожидается).
 
 ## 2. Что не запушено
 
-Владелец пушит сам. Запушено (по его слову от 2026-11-21) всё до `3cfcdb9` (журнал 021).
-Не запушены: коммиты задачи AGENTS.md (журнал 022) и задачи 1c (журнал 023, с `74308a4`), гонки кэша (журнал 024) и задачи 1d (журнал 025).
+Владелец пушит сам. Запушено всё до `e5adcbe` (журнал 025; CI зелёный, 2026-11-21).
+Не запушены: `9bd68a6` (история `..%2f` в журнале 025) и коммиты задачи 2 (журнал 026).
 
 После push: проверить CI — `gh run list --limit 3` (в PowerShell `curl` — псевдоним
 `Invoke-WebRequest`, поэтому не `curl`; без `gh` — `curl.exe -s "https://api.github.com/repos/alexaadler2026/kontur/actions/runs?per_page=3"`).
@@ -51,10 +56,10 @@
 2. ~~Forms/Sign-in на `k-alert`, тексты по дизайну~~ — сделано (журнал 019). Ключи
    `forms.signIn.*` остаются до задачи 8. Блокировка входа в задаче 8: `k-alert` warning
    **без заголовка**, один ключ `errors.auth.throttled` (ICU, `minutes`).
-3. **Сейчас: задача 1** — сквозной срез. План одобрен владельцем 2026-11-17. Описание —
-   [`architecture-wave1.md`](architecture-wave1.md), порядок — `roadmap.md`. Четыре части, у
-   каждой свой PR и свой журнал. **1a (020), 1b (021), AGENTS.md (022) и 1c (023) сделаны;
-   следующая — 1d (сначала план).**
+3. **~~Задача 1~~ — сквозной срез, сделана (журналы 020–025); ~~задача 2~~ — `api-check` и
+   границы Nx, сделана (журнал 026). Сейчас: задача 3** (ошибки RFC 9457, коды → переводы),
+   сначала план. Описание — [`architecture-wave1.md`](architecture-wave1.md), порядок —
+   `roadmap.md`.
 
    **Принятые находки (записаны в ADR-0007, «Results (task 1a)», и в журнал 020):**
    - `@nx/nest` 24.0.6 требует `@nestjs/* <12` → приложение создаётся генератором `@nx/node`,
@@ -104,8 +109,10 @@
      задаче 24;
    - в задаче 22 сборка образа добавляет в ответ health поле `commit` (SHA), чтобы было видно,
      какая сборка работает на сервере (ADR-0014);
-   - `api:check` в CI — задача 2. `openapi.json` уже в `.prettierignore`, его сравнивает
-     `api:check`, а не Prettier;
+   - **в задаче 6 вместе с `libs/shared/api-kit` (первая серверная библиотека) —
+     постоянный тест «импорт серверной библиотеки во фронтенд — ошибка lint»** (ESLint через
+     Node API на файле-образце). В задаче 2 это доказано только записанной мутацией
+     (журнал 026);
    - **в задаче 22 e2e переходят на Docker-образы с Caddy, как в проде (ADR-0014):
      `apps/signflow-e2e/static-server.mjs` удалить**, цели `signflow:serve-static` и
      `signflow-api:serve-e2e` заменить запуском образов (журнал 025);
