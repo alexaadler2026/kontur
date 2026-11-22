@@ -151,6 +151,22 @@ test.describe('SignFlow smoke', () => {
     expect(fonts.cyrillicRange[0]).toContain('U+400-45F');
   });
 
+  test('API errors arrive as Problem Details through the /api proxy (ADR-0008)', async ({
+    request,
+  }) => {
+    const response = await request.get('/api/v1/does-not-exist');
+
+    expect(response.status()).toBe(404);
+    expect(response.headers()['content-type']).toContain(
+      'application/problem+json',
+    );
+    expect(await response.json()).toMatchObject({
+      code: 'request.not_found',
+      status: 404,
+      instance: '/api/v1/does-not-exist',
+    });
+  });
+
   test.describe('static server never serves files outside the build folder', () => {
     // dist/apps/signflow/browser is four levels below the repository root.
     for (const path of [
