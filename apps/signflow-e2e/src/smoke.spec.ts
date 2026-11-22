@@ -120,6 +120,37 @@ test.describe('SignFlow smoke', () => {
     });
   });
 
+  test.describe('public settings (ADR-0009)', () => {
+    test('loads them from the real API before the start', async ({ page }) => {
+      const errors = consoleErrors(page);
+      const settings = page.waitForResponse('**/api/v1/config');
+      await page.goto('/');
+
+      const response = await settings;
+      expect(response.status()).toBe(200);
+      expect(await response.json()).toEqual({ version: apiVersion });
+      await expect(page.locator('sf-root router-outlet')).toBeAttached();
+      expect(errors).toEqual([]);
+    });
+
+    test('API answers 503: the app still starts and logs the reason', async ({
+      page,
+    }) => {
+      const errors = consoleErrors(page);
+      await page.route('**/api/v1/config', (route) =>
+        route.fulfill({ status: 503, body: 'Service Unavailable' }),
+      );
+      await page.goto('/');
+
+      await expect(page.locator('sf-root router-outlet')).toBeAttached();
+      expect(errors).toEqual(
+        expect.arrayContaining([
+          expect.stringContaining('[config] Could not load /api/v1/config'),
+        ]),
+      );
+    });
+  });
+
   test('applies Kontur design tokens and self-hosted IBM Plex fonts', async ({
     page,
   }) => {
