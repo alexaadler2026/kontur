@@ -65,6 +65,10 @@ jobs:
       - name: Angular builders share one version
         run: pnpm check:angular-builders
 
+      # A project without a scope/type/platform tag falls under no boundary rule.
+      - name: Every project has scope, type and platform tags
+        run: pnpm check:project-tags
+
       # The step name shows the real mode: "run-many" on main, "affected" in PRs.
       # api-check: the committed openapi.json must match the API's DTOs (ADR-0007).
       - name: Lint, test, typecheck, build, Storybook, api-check (nx ${{ env.NX_RUN }})

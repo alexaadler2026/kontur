@@ -6,7 +6,8 @@
   "scripts": {
     "prepare": "husky",
     "check:agents-md": "node tools/check-agents-md.mjs",
-    "check:angular-builders": "node tools/check-angular-builders.mjs"
+    "check:angular-builders": "node tools/check-angular-builders.mjs",
+    "check:project-tags": "node tools/check-project-tags.mjs"
   },
   "engines": {
     "node": ">=24 <25"
