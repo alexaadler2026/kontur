@@ -18,6 +18,9 @@ const DE: Translation = {
 const RU: Translation = {
   kontur: { removeLabel: 'Удалить', closeLabel: 'Закрыть' },
 };
+const EN: Translation = {
+  kontur: { removeLabel: 'Remove', closeLabel: 'Close' },
+};
 
 /**
  * Starts the app's initializers and answers every translation request: with the file
@@ -92,14 +95,15 @@ describe('provideI18n (Transloco in SignFlow, ADR-0006)', () => {
     const intl = TestBed.inject(KonturIntl);
     expect(intl.closeLabel()).toBe('Закрыть');
 
-    TestBed.inject(TranslocoService).setActiveLang('de');
+    TestBed.inject(TranslocoService).setActiveLang('en');
     TestBed.tick();
-    // German was not needed at start; the switch fetches it now.
-    TestBed.inject(HttpTestingController).expectOne('i18n/de.json').flush(DE);
+    // English was not needed at start (only ru and, since the fix after task 4, de);
+    // the switch fetches it now.
+    TestBed.inject(HttpTestingController).expectOne('i18n/en.json').flush(EN);
     TestBed.tick();
 
-    expect(TestBed.inject(DOCUMENT).documentElement.lang).toBe('de');
-    expect(intl.closeLabel()).toBe('Schließen');
+    expect(TestBed.inject(DOCUMENT).documentElement.lang).toBe('en');
+    expect(intl.closeLabel()).toBe('Close');
   });
 
   it('reports a missing key as an error and shows the key itself', async () => {
@@ -132,6 +136,45 @@ describe('provideI18n (Transloco in SignFlow, ADR-0006)', () => {
         expect.stringContaining('[i18n] Could not load "ru"'),
         expect.anything(),
       );
+    });
+
+    describe('start language not de: it and de.json are fetched at once, one deadline of 10 s', () => {
+      afterEach(() => vi.useRealTimers());
+
+      it('ru hangs, de arrives → at 10 000 ms the app starts in German, with the reason', async () => {
+        vi.useFakeTimers();
+        setUp(['ru-RU']);
+        const http = TestBed.inject(HttpTestingController);
+        const status = TestBed.inject(ApplicationInitStatus);
+
+        expect(http.match('i18n/ru.json')).toHaveLength(1); // never answered
+        http.expectOne('i18n/de.json').flush(DE);
+
+        await vi.advanceTimersByTimeAsync(9_999);
+        expect(status.done).toBe(false);
+        await vi.advanceTimersByTimeAsync(1);
+        expect(status.done).toBe(true);
+
+        expect(TestBed.inject(TranslocoService).getActiveLang()).toBe('de');
+        expect(consoleError).toHaveBeenCalledWith(
+          expect.stringContaining('[i18n] Could not load "ru"'),
+          expect.anything(),
+        );
+      });
+
+      it('ru arrives, de hangs → the app starts in Russian at once, without waiting for de', async () => {
+        vi.useFakeTimers();
+        setUp(['ru-RU']);
+        const http = TestBed.inject(HttpTestingController);
+        const status = TestBed.inject(ApplicationInitStatus);
+
+        expect(http.match('i18n/de.json')).toHaveLength(1); // never answered
+        http.expectOne('i18n/ru.json').flush(RU);
+        await vi.advanceTimersByTimeAsync(0);
+
+        expect(status.done).toBe(true);
+        expect(TestBed.inject(TranslocoService).getActiveLang()).toBe('ru');
+      });
     });
 
     it('404 for every file: the app still renders, with keys, and an error', async () => {

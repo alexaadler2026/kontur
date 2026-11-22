@@ -101,6 +101,45 @@ test.describe('SignFlow smoke', () => {
   test.describe('translation file cannot be loaded (working beats pretty)', () => {
     test.use({ locale: 'ru-RU' });
 
+    test('404 for de.json: the app still starts in Russian — German is only the fallback', async ({
+      page,
+    }) => {
+      const errors = consoleErrors(page);
+      await page.route('**/i18n/de.json', (route) =>
+        route.fulfill({ status: 404, body: 'Not Found' }),
+      );
+      await page.goto('/');
+
+      await expect(page.locator('html')).toHaveAttribute('lang', 'ru');
+      await expect(page.getByRole('status')).toHaveText(
+        `API: OK, версия ${apiVersion}`,
+      );
+      // The browser adds its own "Failed to load resource: 404" line.
+      expect(errors).toEqual(
+        expect.arrayContaining([
+          expect.stringContaining('[i18n] Could not load "de"'),
+        ]),
+      );
+    });
+
+    test('a key missing in ru.json: production shows the German text (ADR-0006)', async ({
+      page,
+    }) => {
+      await page.route('**/i18n/ru.json', async (route) => {
+        const ru = (await (await route.fetch()).json()) as {
+          apiStatus: Record<string, string>;
+        };
+        delete ru.apiStatus['ok'];
+        await route.fulfill({ json: ru });
+      });
+      await page.goto('/');
+
+      await expect(page.locator('html')).toHaveAttribute('lang', 'ru');
+      await expect(page.getByRole('status')).toHaveText(
+        `API: OK, Version ${apiVersion}`,
+      );
+    });
+
     test('404 for ru.json: the app still starts, in German, and logs the reason', async ({
       page,
     }) => {

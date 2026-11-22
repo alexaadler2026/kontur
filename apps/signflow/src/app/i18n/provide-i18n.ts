@@ -5,6 +5,7 @@ import {
   type EnvironmentProviders,
   inject,
   Injectable,
+  Injector,
   isDevMode,
   makeEnvironmentProviders,
   provideAppInitializer,
@@ -38,11 +39,35 @@ class HttpTranslationLoader implements TranslocoLoader {
   }
 }
 
-/** A missing key is an error in the console; the key itself is shown (ADR-0006). */
+/**
+ * A missing key is an error in the console (ADR-0006). Development and tests show the key
+ * itself, so a gap in en/ru is seen, not quietly filled. Production shows the German text
+ * when German has the key.
+ *
+ * Why here and not Transloco's `useFallbackTranslation`: that option makes `load('ru')`
+ * fetch ru.json and de.json together (forkJoin, bypassing the cache) — a second de.json
+ * next to ours, and a failed de.json would fail Russian too. German is loaded by
+ * loadStartLanguage, in parallel; this handler only reads it.
+ */
 @Injectable({ providedIn: 'root' })
 class ReportingMissingHandler implements TranslocoMissingHandler {
-  handle(key: string, data: TranslocoMissingHandlerData): string {
+  // Lazy: TranslocoService itself depends on this handler.
+  private readonly injector = inject(Injector);
+  private readonly showGerman = !isDevMode();
+
+  handle(
+    key: string,
+    data: TranslocoMissingHandlerData,
+    params?: Record<string, unknown>,
+  ): string {
     console.error(`Missing translation for '${key}' (${data.activeLang})`);
+    if (this.showGerman && data.activeLang !== SOURCE_LANG) {
+      const transloco = this.injector.get(TranslocoService);
+      // Checked first: translating a key German lacks would call this handler again.
+      if (key in transloco.getTranslation(SOURCE_LANG)) {
+        return transloco.translate(key, params, SOURCE_LANG);
+      }
+    }
     return key;
   }
 }
@@ -84,13 +109,20 @@ async function loadStartLanguage(): Promise<void> {
     inject(DOCUMENT).defaultView?.navigator.languages ?? [],
   );
 
-  if (await tryLoad(transloco, lang)) {
+  // Both files are requested at once, with the same STARTUP_TIMEOUT_MS: one deadline,
+  // so the worst case is 10 s, not 10 + 10 (owner, 2026-11-22). The cost: de.json is
+  // also fetched for en/ru — a few KB, and production needs it as the fallback anyway.
+  const start = tryLoad(transloco, lang);
+  const fallback =
+    lang === SOURCE_LANG ? start : tryLoad(transloco, SOURCE_LANG);
+
+  // The start language arrived → start in it; German keeps loading in the background.
+  if (await start) {
     transloco.setActiveLang(lang);
     return;
   }
-  if (lang !== SOURCE_LANG) {
-    await tryLoad(transloco, SOURCE_LANG);
-  }
+  // Otherwise German, if it arrived; else keys. Each failure was logged by tryLoad.
+  await fallback;
   transloco.setActiveLang(SOURCE_LANG);
 }
 
@@ -108,9 +140,9 @@ export function provideI18n(): EnvironmentProviders {
         failedRetries: 0,
         missingHandler: {
           logMissingKey: true,
-          // Development and tests: a key missing in en/ru is reported, not quietly
-          // filled from de. Production: the German text is shown (ADR-0006).
-          useFallbackTranslation: !isDevMode(),
+          // Off everywhere: the German fallback for a missing key lives in
+          // ReportingMissingHandler (production only), see its comment.
+          useFallbackTranslation: false,
         },
       },
       loader: HttpTranslationLoader,
