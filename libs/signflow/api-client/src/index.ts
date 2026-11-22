@@ -3,3 +3,5 @@
 // writes: injectable services. Regenerate: nx run signflow-api-client:generate.
 export * from './generated/endpoints';
 export * from './generated/model';
+// Hand-written: failed request -> translation key (ADR-0008).
+export * from './problem-message';

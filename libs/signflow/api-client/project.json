@@ -19,6 +19,16 @@
     "lint": {
       "dependsOn": ["generate"]
     },
+    "test": {
+      "command": "vitest run",
+      "options": { "cwd": "libs/signflow/api-client" },
+      "dependsOn": ["generate"],
+      "cache": true,
+      "inputs": [
+        "default",
+        "{workspaceRoot}/libs/signflow/api-contract/openapi.json"
+      ]
+    },
     "typecheck": {
       "command": "tsc -p libs/signflow/api-client/tsconfig.lib.json --noEmit",
       "dependsOn": ["generate"],
