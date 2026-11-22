@@ -37,3 +37,4 @@ German summary with a glossary (template: [TEMPLATE.md](TEMPLATE.md)).
 | [026](026-api-check-boundaries.md)         | Task 2: api-check in CI, platform tags on every project (e2e = server), type:e2e rule, check:project-tags                        | 2026-11-22 |
 | [027](027-problem-details-server.md)       | Task 3a: Problem Details (RFC 9457) on the server — code registry, filter, contract schema; sent values never in response or log | 2026-11-22 |
 | [028](028-error-codes-translated.md)       | Task 3b: error code → translation in de/en/ru — problemMessage(), i18n-check requires errors.<code> for every contract code      | 2026-11-22 |
+| [029](029-api-settings.md)                 | Task 4a: API settings validated at start (PORT), process.env lint rule, .env.example = schema, GET /api/v1/config                | 2026-11-22 |

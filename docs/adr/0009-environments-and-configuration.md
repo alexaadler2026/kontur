@@ -66,6 +66,21 @@ no separate build. The `demo` column below and the demo-only settings apply in t
   Each setting is tested on its own. A dangerous combination is rejected at start
   (e.g. `REGISTRATION_MODE=sandbox` together with `MAIL_TRANSPORT=provider`).
 
+#### Results (task 4a, 2026-11-22)
+
+- `apps/signflow-api/src/config/load-config.ts`: a class-validator schema (the same
+  language as the DTOs, no `@nestjs/config`), read once, only the schema's variables,
+  returned frozen. `main.ts` loads it **before** Nest starts; a `ConfigError` prints one
+  line per problem and exits with code 1. Messages name the variable, never its value.
+- Defaults (owner, 2026-11-22): **a secret never has a default**; a default only when the
+  value is the same in every environment and harmless. Everything else is required.
+- First and only setting: `PORT` (default 3333). The others above are added by the
+  tasks that need them; the combination check comes with the second of
+  `MAIL_TRANSPORT` (task 27) and `REGISTRATION_MODE` (task 50).
+- Lint: `process.env` is forbidden in `src/` except `load-config.ts` (and tests that start
+  a child process). `apps/signflow-api/.env.example` lists exactly the schema's settings
+  (test). `GET /api/v1/config` → `PublicConfigDto { version }`.
+
 ### Frontend configuration
 
 - The SPA bundle contains **no environment-specific values**. Before bootstrap it loads
