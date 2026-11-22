@@ -149,6 +149,27 @@ Rules:
   8.0 release candidate); it is pinned and installed in task 5, together with Testcontainers.
 - **`httpResource` is stable** in Angular 22 (`@publicApi 22.0`) and is used without caveats.
 
+#### Results (task 2, 2026-11-22)
+
+- **`api:check` is the `signflow-api:api-check` target**: `openapi.js --check` builds the
+  spec in memory and compares it with the committed file; a difference fails with the
+  first differing line and the regenerate command. Its inputs include the contract file,
+  and `signflow-api` implicitly depends on `signflow-api-contract`, so a hand edit of the
+  spec is caught by `nx affected` as well. CI runs it in the same step as `lint`.
+  Mutations: DTO changed without regenerating → red; spec edited by hand → red.
+- **Every project carries one tag per axis**, checked in CI by `pnpm check:project-tags`
+  (reads the Nx project graph, so `tools/*` projects count). Added: `platform:web` for
+  `belegscan` and `ui-storybook`; `platform:server` for the e2e projects and the Node
+  build tools (`tokens`, `i18n-check`) — `platform` says where the code runs, and code
+  that needs Node APIs such as `node:fs` is not `neutral`.
+- **New rule:** `type:e2e` may depend on `type:util` only — e2e reach the app through the
+  browser and HTTP, never through imports.
+- **"The frontend cannot import a server library"** is proven by a recorded mutation (a
+  temporary `platform:server` library imported from `apps/signflow` fails lint with the
+  platform rule). A permanent lint test follows in task 6 with `libs/shared/api-kit`, the
+  first real server library.
+- `AGENTS.md` already carries the line about generated API types (since task 1a).
+
 ### Consequences
 
 - Good: one place to change an endpoint; validation, types and docs cannot disagree.
