@@ -24,6 +24,7 @@ import {
 } from '@jsverse/transloco';
 import { provideTranslocoMessageformat } from '@jsverse/transloco-messageformat';
 import { firstValueFrom, timeout } from 'rxjs';
+import { STARTUP_TIMEOUT_MS } from '../startup-timeout';
 import { TranslocoKonturIntl } from './kontur-intl';
 import { LANGS, SOURCE_LANG, startLang } from './languages';
 
@@ -57,15 +58,14 @@ class NoLoadFallback implements TranslocoFallbackStrategy {
   }
 }
 
-/** A hanging request must not keep the page blank forever. */
-const LOAD_TIMEOUT_MS = 10_000;
-
 async function tryLoad(
   transloco: TranslocoService,
   lang: string,
 ): Promise<boolean> {
   try {
-    await firstValueFrom(transloco.load(lang).pipe(timeout(LOAD_TIMEOUT_MS)));
+    await firstValueFrom(
+      transloco.load(lang).pipe(timeout(STARTUP_TIMEOUT_MS)),
+    );
     return true;
   } catch (error) {
     console.error(`[i18n] Could not load "${lang}" (i18n/${lang}.json)`, error);
