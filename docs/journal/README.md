@@ -36,3 +36,4 @@ German summary with a glossary (template: [TEMPLATE.md](TEMPLATE.md)).
 | [025](025-signflow-e2e-real-api.md)        | Task 1d: SignFlow e2e against the real built API (4310) behind a temporary static server with /api proxy and a path check        | 2026-11-21 |
 | [026](026-api-check-boundaries.md)         | Task 2: api-check in CI, platform tags on every project (e2e = server), type:e2e rule, check:project-tags                        | 2026-11-22 |
 | [027](027-problem-details-server.md)       | Task 3a: Problem Details (RFC 9457) on the server — code registry, filter, contract schema; sent values never in response or log | 2026-11-22 |
+| [028](028-error-codes-translated.md)       | Task 3b: error code → translation in de/en/ru — problemMessage(), i18n-check requires errors.<code> for every contract code      | 2026-11-22 |

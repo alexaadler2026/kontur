@@ -87,6 +87,18 @@ Every error response has `Content-Type: application/problem+json`:
 - Every operation declares a `default` response `application/problem+json` →
   `ProblemDetailsDto`, added once in `createOpenApiDocument`.
 
+#### Results (task 3b, 2026-11-22)
+
+- `problemMessage()` in `libs/signflow/api-client` (hand-written next to the generated
+  client): a code of the contract (Orval's `ProblemCode` constant) → `errors.<code>`;
+  unknown code or a non-problem body → by status, 5xx → `errors.server.internal`, 4xx →
+  `errors.generic.client`; no answer (status 0) → `errors.generic.network`. One meaning,
+  one key: there is no separate `generic.server`. Field codes use the same rule
+  (`problemCodeKey`).
+- `i18n-check` reads `components.schemas.ProblemCode.enum` of every
+  `libs/<app>/api-contract/openapi.json` and requires `errors.<code>` in
+  `apps/<app>/public/i18n/de.json`; en/ru completeness follows from the existing check.
+
 ### Lists — pagination, sorting, filters
 
 ```

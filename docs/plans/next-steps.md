@@ -1,6 +1,6 @@
 # Состояние работы и следующие шаги
 
-Снимок на **2026-11-22**: задачи 1 (1a–1d), 2 и 3a сделаны; следующая — 3b (фронт: код ошибки → перевод). Этот файл нужен, чтобы продолжить без
+Снимок на **2026-11-22**: задачи 1 (1a–1d), 2 и 3 (3a, 3b) сделаны; следующая — задача 4 по `roadmap.md` (настройки с проверкой при старте, сначала план). Этот файл нужен, чтобы продолжить без
 старой переписки. Порядок задач задаёт [`roadmap.md`](roadmap.md); здесь — только где мы
 остановились.
 
@@ -29,9 +29,9 @@
 Затем задача 2: `api-check` в CI, теги `platform:*` у всех проектов, правило `type:e2e`,
 `pnpm check:project-tags` — журнал [026](../journal/026-api-check-boundaries.md).
 
-Затем 3a: Problem Details на сервере — журнал [027](../journal/027-problem-details-server.md).
+Затем 3a: Problem Details на сервере — журнал [027](../journal/027-problem-details-server.md); 3b: код ошибки → перевод — журнал [028](../journal/028-error-codes-translated.md).
 
-Последний коммит работы: `docs(journal): add entry 027 problem details on the server`.
+Последний коммит работы: `docs(journal): add entry 028 error codes translated`.
 
 **Проверки после журнала 026 (локально):**
 
@@ -46,8 +46,8 @@
 
 ## 2. Что не запушено
 
-Владелец пушит сам. Запушено всё до `179f4ab` (журнал 026; CI зелёный, 2026-11-22).
-Не запушены: `18c4ca4` (Alert.md) и коммиты 3a (журнал 027).
+Владелец пушит сам. Запушено всё до `3d50a4b` (журнал 027; CI зелёный, 2026-11-22).
+Не запушены: `65b3aed` (`validation.failed`), `42facb7` (документы) и коммиты 3b (журнал 028).
 
 После push: проверить CI — `gh run list --limit 3` (в PowerShell `curl` — псевдоним
 `Invoke-WebRequest`, поэтому не `curl`; без `gh` — `curl.exe -s "https://api.github.com/repos/alexaadler2026/kontur/actions/runs?per_page=3"`).
@@ -59,7 +59,7 @@
    `forms.signIn.*` остаются до задачи 8. Блокировка входа в задаче 8: `k-alert` warning
    **без заголовка**, один ключ `errors.auth.throttled` (ICU, `minutes`).
 3. **~~Задача 1~~ — сквозной срез, сделана (журналы 020–025); ~~задача 2~~ — `api-check` и
-   границы Nx, сделана (журнал 026). Сейчас: задача 3** (ошибки RFC 9457, коды → переводы).
+   границы Nx, сделана (журнал 026); ~~задача 3~~ — ошибки RFC 9457, сделана (журналы 027, 028). Сейчас: задача 4** (сначала план).
    План одобрен 2026-11-22. Описание — [`architecture-wave1.md`](architecture-wave1.md),
    порядок — `roadmap.md`.
 
@@ -67,7 +67,7 @@
    `ProblemDetailsDto` в контракте, 422 с `errors[]`, значение никогда не попадает в ответ
    и лог.
 
-   **3b — фронт (следующее).** `problemMessage()` в `libs/signflow/api-client`;
+   **~~3b — фронт~~ — сделано (журнал 028).** `problemMessage()` в `libs/signflow/api-client`;
    незнакомый код: 4xx → `errors.generic.client`, 5xx → `errors.server.internal`, нет
    ответа → `errors.generic.network`; `i18n-check`: у каждого кода контракта есть
    `errors.<code>`; тест на de/en/ru. Валидация на экране — в задаче 8 (endpoint не
