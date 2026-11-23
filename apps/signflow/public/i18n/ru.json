@@ -6,7 +6,8 @@
   },
   "kontur": {
     "removeLabel": "Удалить",
-    "closeLabel": "Закрыть"
+    "closeLabel": "Закрыть",
+    "actionLabel": "Действие"
   },
   "errors": {
     "validation": {

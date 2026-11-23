@@ -115,6 +115,7 @@ describe('k-tag', () => {
       readonly closeLabel = signal('Schließen').asReadonly();
       readonly removeLabel = this.label.asReadonly();
       readonly locale = signal('de-DE').asReadonly();
+      readonly actionLabel = signal('Aktion').asReadonly();
     }
     const { fixture } = await render(`<k-tag removable>NDA</k-tag>`, {
       imports: [TagComponent],

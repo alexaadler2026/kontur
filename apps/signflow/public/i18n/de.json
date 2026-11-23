@@ -6,7 +6,8 @@
   },
   "kontur": {
     "removeLabel": "Entfernen",
-    "closeLabel": "Schließen"
+    "closeLabel": "Schließen",
+    "actionLabel": "Aktion"
   },
   "errors": {
     "validation": {

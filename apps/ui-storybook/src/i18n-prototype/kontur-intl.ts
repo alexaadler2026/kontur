@@ -14,6 +14,7 @@ import { localeOf } from './locale';
 export class TranslocoKonturIntl extends KonturIntl {
   readonly removeLabel = translateSignal('kontur.removeLabel');
   readonly closeLabel = translateSignal('kontur.closeLabel');
+  readonly actionLabel = translateSignal('kontur.actionLabel');
 
   private readonly transloco = inject(TranslocoService);
   private readonly lang = toSignal(this.transloco.langChanges$, {

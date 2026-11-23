@@ -10,6 +10,18 @@ import {
 // KonturIntl.locale (owner, 2026-11-23, Progress.md): numbers the library formats itself —
 // the percent of k-progress — go through Intl with the locale of the UI language.
 
+describe('KonturIntl.actionLabel (Toast.md: the action is announced as "Aktion: …")', () => {
+  it.each([
+    [KonturIntlDe, 'Aktion'],
+    [KonturIntlEn, 'Action'],
+    [KonturIntlRu, 'Действие'],
+  ])('%o → %s', (intl, label) => {
+    TestBed.configureTestingModule({ providers: [provideKonturIntl(intl)] });
+
+    expect(TestBed.inject(KonturIntl).actionLabel()).toBe(label);
+  });
+});
+
 describe('KonturIntl.locale', () => {
   it.each([
     [KonturIntlDe, 'de-DE'],

@@ -137,6 +137,7 @@ describe('k-progress', () => {
     class SwitchableIntl extends KonturIntl {
       readonly removeLabel = signal('Entfernen').asReadonly();
       readonly closeLabel = signal('Schließen').asReadonly();
+      readonly actionLabel = signal('Aktion').asReadonly();
       readonly current = signal('de-DE');
       readonly locale = this.current.asReadonly();
     }

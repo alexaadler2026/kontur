@@ -13,13 +13,21 @@ import { App } from '../app';
 import { provideI18n } from './provide-i18n';
 
 const DE: Translation = {
-  kontur: { removeLabel: 'Entfernen', closeLabel: 'Schließen' },
+  kontur: {
+    removeLabel: 'Entfernen',
+    closeLabel: 'Schließen',
+    actionLabel: 'Aktion',
+  },
 };
 const RU: Translation = {
-  kontur: { removeLabel: 'Удалить', closeLabel: 'Закрыть' },
+  kontur: {
+    removeLabel: 'Удалить',
+    closeLabel: 'Закрыть',
+    actionLabel: 'Действие',
+  },
 };
 const EN: Translation = {
-  kontur: { removeLabel: 'Remove', closeLabel: 'Close' },
+  kontur: { removeLabel: 'Remove', closeLabel: 'Close', actionLabel: 'Action' },
 };
 
 /**
@@ -86,6 +94,7 @@ describe('provideI18n (Transloco in SignFlow, ADR-0006)', () => {
     await startWith({ 'i18n/ru.json': RU, 'i18n/de.json': DE });
 
     expect(TestBed.inject(KonturIntl).closeLabel()).toBe('Закрыть');
+    expect(TestBed.inject(KonturIntl).actionLabel()).toBe('Действие');
   });
 
   it('follows a runtime language switch in <html lang> and in KonturIntl', async () => {

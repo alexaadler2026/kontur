@@ -25,6 +25,8 @@ export abstract class KonturIntl {
   abstract readonly removeLabel: Signal<string>;
   /** Name of the close button of k-alert ("Schließen" in the Alert mockup). */
   abstract readonly closeLabel: Signal<string>;
+  /** Announced before the action of a toast: "… Aktion: Wiederholen" (Toast.md). */
+  abstract readonly actionLabel: Signal<string>;
   /**
    * BCP 47 locale of the UI language, for Intl formats ("68 %" in de, "68%" in en).
    * Not LOCALE_ID: that is fixed at bootstrap and cannot follow a language switch.
@@ -37,6 +39,7 @@ export abstract class KonturIntl {
 export class KonturIntlDe extends KonturIntl {
   readonly removeLabel = signal('Entfernen').asReadonly();
   readonly closeLabel = signal('Schließen').asReadonly();
+  readonly actionLabel = signal('Aktion').asReadonly();
   readonly locale = signal('de-DE').asReadonly();
 }
 
@@ -45,6 +48,7 @@ export class KonturIntlDe extends KonturIntl {
 export class KonturIntlEn extends KonturIntl {
   readonly removeLabel = signal('Remove').asReadonly();
   readonly closeLabel = signal('Close').asReadonly();
+  readonly actionLabel = signal('Action').asReadonly();
   readonly locale = signal('en-GB').asReadonly();
 }
 
@@ -53,6 +57,7 @@ export class KonturIntlEn extends KonturIntl {
 export class KonturIntlRu extends KonturIntl {
   readonly removeLabel = signal('Удалить').asReadonly();
   readonly closeLabel = signal('Закрыть').asReadonly();
+  readonly actionLabel = signal('Действие').asReadonly();
   readonly locale = signal('ru-RU').asReadonly();
 }
 

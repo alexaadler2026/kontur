@@ -7,7 +7,8 @@
   },
   "kontur": {
     "removeLabel": "Удалить",
-    "closeLabel": "Закрыть"
+    "closeLabel": "Закрыть",
+    "actionLabel": "Действие"
   },
   "forms": {
     "signIn": {
