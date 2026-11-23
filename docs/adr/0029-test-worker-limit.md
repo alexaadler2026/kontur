@@ -126,10 +126,15 @@ Assertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\win\async.c, li
 
 This is a known Node bug on Windows (nodejs/node#56645, reported for 23.x and 24.4–24.10;
 local Node is 24.11.0). Node signals a libuv handle that is already closing, usually at
-process exit. The fix, nodejs/node#61999, was merged into `main` in July 2026; whether a
-24.x release contains it was not confirmed. It may also explain `Worker exited
-unexpectedly` (a worker dying at exit), but no Vitest log contains the assertion, so that
-link is not proven. A Node version change is a separate decision for the owner.
+process exit. The fix, nodejs/node#61999 ("src: fix libuv assertion on windows"), is in
+**Node 24.20.0** (2026-08-26, `CHANGELOG_V24.md`); the latest 24.x on 2026-11-23 is
+24.22.3. CI never showed it: `.nvmrc` says only `24`, so CI gets a newer 24.x than the
+laptop. It may also explain `Worker exited unexpectedly` (a worker dying at exit), but no
+Vitest log contains the assertion, so that link is not proven.
+
+Owner's decision (2026-11-23): a separate small task before task 22 updates Node to the
+latest 24.x and pins the exact version in one place that CI and the future Dockerfile
+read (`docs/plans/next-steps.md`).
 
 ## More Information
 

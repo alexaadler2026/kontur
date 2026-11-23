@@ -61,23 +61,32 @@ maxWorkers = max(1, floor(ядра / parallel из nx.json))
    (минимум 4,4 ГБ свободно) — значит, узкое место процессор.
 5. Полный прогон «после» без кэша: зелёный, **4:37** (было 7:21), до 16 процессов Node (было 20). Пик памяти Node почти тот же (~4,8 ГБ): в полном прогоне её занимают сборки и Storybook, а не тесты.
 
-|                                  | до (без лимита)    | после (`maxWorkers` 2) |
-| -------------------------------- | ------------------ | ---------------------- |
-| нагрузка `--parallel=9`: падения | 3 из 3             | 0 из 3                 |
-| нагрузка: время                  | 5:02 / 4:00 / 3:57 | 3:02 / 2:16 / 1:59     |
-| нагрузка: пик `node.exe`         | 24                 | 20                     |
-| нагрузка: пик памяти Node        | 3,7–4,2 ГБ         | 2,1–2,3 ГБ             |
-| полный прогон: время             | 7:21               | 4:37                   |
-| CI, шаг `lint, test, …`          | 135 s              | CI_AFTER               |
+|                                  | до (без лимита)                        | после (`maxWorkers` 2)     |
+| -------------------------------- | -------------------------------------- | -------------------------- |
+| нагрузка `--parallel=9`: падения | 3 из 3                                 | 0 из 3                     |
+| нагрузка: время                  | 5:02 / 4:00 / 3:57                     | 3:02 / 2:16 / 1:59         |
+| нагрузка: пик `node.exe`         | 24                                     | 20                         |
+| нагрузка: пик памяти Node        | 3,7–4,2 ГБ                             | 2,1–2,3 ГБ                 |
+| полный прогон: время             | 7:21                                   | 4:37                       |
+| CI, шаг `Lint, test, …`          | 79–135 s, медиана ~105 s (14 прогонов) | 81 s (1 прогон, `e59ff1f`) |
 
-**Попутная находка (не исправлена, решение за владельцем).** Прогон «до» один раз упал
+**CI после push (решение владельца: лимит не должен замедлить CI).** На раннере 4 ядра,
+формула даёт 1 воркер на проект (было 3). Шаг `Lint, test, …` раньше занимал от 79 до
+135 s (14 прогонов `main` за 21–23.11), после — 81 s, весь CI зелёный. Разброс между
+прогонами ±30 s, а прогон «после» один, поэтому вывод — «замедления нет», а не «стало
+быстрее».
+
+**Попутная находка (отдельная задача перед задачей 22).** Прогон «до» один раз упал
 на `ui-storybook:build-storybook` **после** «Storybook build completed successfully»:
 `Assertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\win\async.c, line 76`.
 Это известная ошибка Node на Windows (nodejs/node#56645; у нас Node 24.11.0): Node
 трогает хэндл libuv (библиотеки ввода-вывода внутри Node), который уже закрывается,
-обычно при выходе процесса. Исправление (nodejs/node#61999) влито в `main` Node в июле
-2026; есть ли оно в каком-то 24.x — не подтверждено. Возможно, им же объясняется
-`Worker exited unexpectedly`, но в логах Vitest этой строки нет — связь не доказана.
+обычно при выходе процесса. Исправление (nodejs/node#61999) вошло в **Node 24.20.0**
+(2026-08-26, по `CHANGELOG_V24.md`); последняя 24.x на 2026-11-23 — 24.22.3. В CI сбоя не
+было, потому что `.nvmrc` = `24` даёт CI более свежую 24.x, чем на ноутбуке. Возможно,
+им же объясняется `Worker exited unexpectedly`, но в логах Vitest этой строки нет —
+связь не доказана. Решение владельца: обновить Node до последней 24.x и закрепить точную
+версию в одном месте — маленькая задача перед задачей 22.
 
 **Ещё одна ловушка.** Повторный полный прогон показал 70 минут: журнал Windows
 (Kernel-Power 42 → 107) показал, что ноутбук спал с 15:17 до 16:23. Время прогона
@@ -154,13 +163,14 @@ three to four times wall time. Baseline full run (CI-like, no cache): green, 7:2
 failure (`test --parallel=9 --skip-nx-cache`): **3 of 3 failed**. Same load with the
 limit: **0 of 3**, 40–50 % faster, Node peak memory halved; free memory was never short,
 so the CPU is the bottleneck. Full run after: 4:37 (was 7:21), peak 16 Node processes (was 20). CI step `lint, test, …`: 135 s
-before, CI_AFTER after.
+before 79–135 s over 14 runs of `main` (median ~105 s), after 81 s (one run, `e59ff1f`, all green): within the normal spread, so no slowdown; not a proof of a speed-up.
 
-**Side finding (not fixed).** One baseline run failed in `build-storybook` _after_ a
-successful build with Node's Windows libuv assertion
-(`UV_HANDLE_CLOSING`, `src\win\async.c` line 76; nodejs/node#56645, fix #61999 merged to
-Node `main` in July 2026, 24.x backport unconfirmed). It might also explain `Worker exited
-unexpectedly`, but no Vitest log shows it. A Node upgrade is the owner's decision. Also: a
+**Side finding (separate task before task 22).** One baseline run failed in
+`build-storybook` _after_ a successful build with Node's Windows libuv assertion
+(`UV_HANDLE_CLOSING`, `src\win\async.c` line 76; nodejs/node#56645). The fix #61999 is in
+Node 24.20.0; the laptop runs 24.11.0, CI a newer 24.x (`.nvmrc` = `24`). It might also
+explain `Worker exited unexpectedly`, but no Vitest log shows it. Owner's decision: update
+to the latest 24.x and pin the exact version in one place. Also: a
 70-minute "full run" turned out to be the laptop sleeping (Kernel-Power 42/107).
 
 **Alternatives considered and why rejected.** Lower Nx parallelism (slows lint/build, kept
