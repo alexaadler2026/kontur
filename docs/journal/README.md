@@ -43,3 +43,4 @@ German summary with a glossary (template: [TEMPLATE.md](TEMPLATE.md)).
 | [032](032-readiness-and-database-errors.md) | Task 5b: /health/ready (database + migrations of the build), server.unavailable, database errors logged without values; 5a timeout explained    | 2026-11-23 |
 | [033](033-api-kit-library.md)               | Task 6a: libs/shared/api-kit as a buildable pnpm workspace package, problem/ moved, permanent module-boundary check                             | 2026-11-23 |
 | [034](034-money.md)                         | Task 6b: ISO 4217 table (155 currencies, list of 2026-09-17), Money, DecimalString, money.currency_unsupported; cache inputs of api-check fixed | 2026-11-23 |
+| [035](035-lists-and-ids.md)                 | Task 6c: PageQueryDto, Page, parseSort (400 request.malformed), ParseIdPipe (404); task 6 complete                                              | 2026-11-23 |

@@ -112,6 +112,24 @@ GET /api/v1/envelopes?page=2&pageSize=25&sort=-updatedAt,title&status=waiting&st
 - Filters are **explicit named query parameters** per endpoint (repeatable for "any of");
   date ranges as `dueFrom` / `dueTo`; free text as `q`. No generic filter language.
 
+#### Results (task 6c, 2026-11-23)
+
+- **`PageQueryDto`** (`@adlersoft/api-kit`): `page` defaults to 1, `pageSize` defaults to 25
+  and may not exceed 100. Query strings are turned into numbers by `@Type(() => Number)`
+  before validation, so `"abc"`, `"1.5"`, `0` and `101` are 422 `validation.invalid` with a
+  pointer. An endpoint's query DTO extends it with its own `sort` and filters.
+- **`Page<T>`**, `toPage` and `toSkipTake` (Prisma `skip` / `take`). The Swagger class for a
+  page of a concrete item type is added with the first list endpoint, together with its
+  contract test.
+- **`parseSort(raw, allowed, fallback)`** and `toOrderBy`. An unknown field, an empty part
+  (`title,,x`, `-`, `""`) or a repeated field is **400 `request.malformed`**. That is the
+  existing 400 code; no new code was introduced.
+- **`ParseIdPipe`**: a path id that is not a UUID (canonical text form, any case) is **404
+  `request.not_found`** (owner, 2026-11-23). Such an id is never sent to PostgreSQL, which
+  used to turn it into a 500 (journal 032).
+- Proven over HTTP with test-only endpoints. Mutations: a pipe that lets everything through,
+  and a missing `@Type(() => Number)`, each turn a test red.
+
 ### Dates and time
 
 - Instants: ISO 8601 in UTC with `Z` (`2026-11-04T10:20:00Z`), schema `format: date-time`.
