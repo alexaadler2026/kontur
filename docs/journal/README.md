@@ -45,3 +45,4 @@ German summary with a glossary (template: [TEMPLATE.md](TEMPLATE.md)).
 | [034](034-money.md)                         | Task 6b: ISO 4217 table (155 currencies, list of 2026-09-17), Money, DecimalString, money.currency_unsupported; cache inputs of api-check fixed | 2026-11-23 |
 | [035](035-lists-and-ids.md)                 | Task 6c: PageQueryDto, Page, parseSort (400 request.malformed), ParseIdPipe (404); task 6 complete                                              | 2026-11-23 |
 | [036](036-vitest-worker-limit.md)           | Vitest worker failures: CPU overload by Nx × Vitest, reproduced 3/3; workers limited by "Nx parallel × maxWorkers ≤ cores" (ADR-0029)           | 2026-11-23 |
+| [037](037-password-hashing-and-rules.md)    | Task 7a: libs/shared/auth-server — Argon2id (built-in crypto.argon2, 46 MiB/t=2, PHC), NFC, password rules 15–128, common list, context words   | 2026-11-23 |
