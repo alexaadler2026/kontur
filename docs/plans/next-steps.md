@@ -1,6 +1,6 @@
 # Состояние работы и следующие шаги
 
-Снимок на **2026-11-22**: задачи 1–4 и 5a сделаны; следующая — 5b (`/health/ready` и ошибки базы без значений). Этот файл нужен, чтобы продолжить без
+Снимок на **2026-11-22**: задачи 1–5 сделаны; следующая — задача 6 по `roadmap.md` (`libs/shared/api-kit`, сначала план). Этот файл нужен, чтобы продолжить без
 старой переписки. Порядок задач задаёт [`roadmap.md`](roadmap.md); здесь — только где мы
 остановились.
 
@@ -29,9 +29,9 @@
 Затем задача 2: `api-check` в CI, теги `platform:*` у всех проектов, правило `type:e2e`,
 `pnpm check:project-tags` — журнал [026](../journal/026-api-check-boundaries.md).
 
-Затем 3a: Problem Details на сервере — журнал [027](../journal/027-problem-details-server.md); 3b: код ошибки → перевод — журнал [028](../journal/028-error-codes-translated.md); 4a: настройки API — журнал [029](../journal/029-api-settings.md); 4b: настройки на фронте — журнал [030](../journal/030-frontend-settings.md); 5a: PostgreSQL и Prisma — журнал [031](../journal/031-postgres-prisma.md).
+Затем 3a: Problem Details на сервере — журнал [027](../journal/027-problem-details-server.md); 3b: код ошибки → перевод — журнал [028](../journal/028-error-codes-translated.md); 4a: настройки API — журнал [029](../journal/029-api-settings.md); 4b: настройки на фронте — журнал [030](../journal/030-frontend-settings.md); 5a: PostgreSQL и Prisma — журнал [031](../journal/031-postgres-prisma.md); 5b: готовность и ошибки базы — журнал [032](../journal/032-readiness-and-database-errors.md).
 
-Последний коммит работы: `docs: keep full check logs and bake prisma engines into the image`.
+Последний коммит работы: `docs(journal): add entry 032 readiness and database errors`.
 
 **Проверки после журнала 026 (локально):**
 
@@ -47,7 +47,7 @@
 ## 2. Что не запушено
 
 Владелец пушит сам. Запушено всё до `c0d00c3` (журнал 031; 5a принята 2026-11-23).
-Не запушены: правила о логах и движках Prisma (после 5a).
+Не запушены: правила о логах и движках Prisma (после 5a) и коммиты 5b (журнал 032).
 
 После push: проверить CI — `gh run list --limit 3` (в PowerShell `curl` — псевдоним
 `Invoke-WebRequest`, поэтому не `curl`; без `gh` — `curl.exe -s "https://api.github.com/repos/alexaadler2026/kontur/actions/runs?per_page=3"`).
@@ -59,14 +59,14 @@
    `forms.signIn.*` остаются до задачи 8. Блокировка входа в задаче 8: `k-alert` warning
    **без заголовка**, один ключ `errors.auth.throttled` (ICU, `minutes`).
 3. **~~Задача 1~~ — сквозной срез, сделана (журналы 020–025); ~~задача 2~~ — `api-check` и
-   границы Nx, сделана (журнал 026); ~~задача 3~~ — ошибки RFC 9457, сделана (журналы 027, 028). ~~задача 4~~ — настройки, сделана (журналы 029, 030). Сейчас: задача 5** (PostgreSQL и Prisma; план одобрен 2026-11-22).
+   границы Nx, сделана (журнал 026); ~~задача 3~~ — ошибки RFC 9457, сделана (журналы 027, 028). ~~задача 4~~ — настройки, сделана (журналы 029, 030). ~~задача 5~~ — PostgreSQL и Prisma, сделана (журналы 031, 032). Сейчас: задача 6** (сначала план).
 
    **~~5a — база, Prisma, тесты на базе~~ — сделано (журнал 031).** `postgres:18.7-trixie`
    (Debian, не alpine — сортировка), Prisma 7.10.1, `users` (id UUIDv7 от базы, `email`
    citext), `DATABASE_URL` без умолчания, `compose.dev.yaml` (Postgres + Mailpit),
    `test-integration` в CI, `migrate diff` пустой.
 
-   **5b — следующее.** `GET /api/v1/health/ready`: база отвечает и последняя миграция
+   **~~5b — готовность и ошибки базы~~ — сделано (журнал 032).** `GET /api/v1/health/ready`: база отвечает и последняя миграция
    репозитория применена → 200, иначе 503 `server.unavailable` (тексты утверждены: de
    «Der Dienst ist vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut.»,
    en «The service is temporarily unavailable. Please try again later.», ru «Сервис
@@ -167,11 +167,11 @@
      `MAIL_TRANSPORT=provider` → запуск остановлен, ADR-0009) — в той из задач 27
      (`MAIL_TRANSPORT`) и 50 (`REGISTRATION_MODE`), что придёт второй (решение владельца
      2026-11-22);
-   - **в задаче 5: сообщения ошибок Prisma могут содержать значения из запроса** —
-     тест «секрета нет в ответе и логе» (журнал 027) распространить на ошибки базы
-     (решение владельца 2026-11-22);
-   - `/health/ready` (база доступна, миграции применены) — в задаче 5: он нужен автооткату в
-     задаче 24;
+   - ~~ошибки Prisma без значений в ответе и логе~~ и ~~`/health/ready`~~ — сделано в 5b
+     (журнал 032); проверку «хранилище доступно для записи» в `/health/ready` добавляет
+     задача файлового хранилища;
+   - **в задаче 6 при переносе `problem/` в `api-kit`**: фильтр узнаёт ошибки базы по имени
+     (`PrismaClient…`), без импорта сгенерированного клиента — так и оставить;
    - в задаче 22 сборка образа добавляет в ответ health поле `commit` (SHA), чтобы было видно,
      какая сборка работает на сервере (ADR-0014);
    - **в задаче 22 движки Prisma (schema engine для `migrate deploy`) кладутся в образ при
@@ -231,6 +231,8 @@
   `pnpm install --frozen-lockfile --force`.
 - Сбой воркера Vitest (`Timeout waiting for worker to respond`, журнал 026): если
   повторится в CI — отдельная задача до следующей фичи (решение владельца 2026-11-22).
+  Локально повторился 2026-11-23 (`Failed to start forks worker`, `signflow:test` при
+  четырёх проектах параллельно; журнал 032, лог в `tmp/logs`). В CI пока не было.
 - Не обходить правило минимального возраста пакетов pnpm (`minimumReleaseAgeExclude` не
   добавлять).
 - **Полный вывод каждого прогона проверок — в файл** `tmp/logs/<ГГГГ-ММ-ДД_ЧЧ-ММ>-<цель>.log`

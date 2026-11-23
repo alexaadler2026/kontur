@@ -141,6 +141,21 @@ Releases are tagged with the commit SHA, so an error points to the exact deploye
   text contains the check name and time only, no user data.
 - Logs are kept 14 days (confirmed by the owner).
 
+#### Results (task 5b, 2026-11-23)
+
+- `GET /api/v1/health/ready` (SignFlow): 200 `{ status, version }` when the database
+  answers **and** every migration of the build (`prisma/migrations`, copied into the build)
+  is in `_prisma_migrations` as finished and not rolled back. Otherwise 503
+  `server.unavailable` (new code, translated in de/en/ru). A warning line gives the
+  reason without values: `not ready: database unreachable (<code>)` or
+  `not ready: migration <name> not applied`. Liveness never touches the database. The
+  file-store check comes with the file store.
+- Database errors are logged as **name, error code, model** only, never with their
+  message or stack. PostgreSQL quotes what was sent (`invalid input syntax for type uuid:
+"<value>"`), and that value may be personal data. An integration test with a secret value
+  proves that neither the response nor the log contains it. Deliberate `ProblemException`s
+  (such as the 503) are not logged by the filter.
+
 ### Not in v1
 
 Metrics dashboards (Prometheus, Grafana), tracing and performance monitoring. Trigger:
