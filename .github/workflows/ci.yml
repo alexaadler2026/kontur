@@ -38,11 +38,18 @@ jobs:
       - name: Set up pnpm
         uses: pnpm/action-setup@v6 # version comes from "packageManager" in package.json
 
+      # .nvmrc holds the exact version (journal 038); engineStrict makes the install fail
+      # on any other Node, and the next step prints the version as an annotation.
       - name: Set up Node.js (.nvmrc)
         uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: pnpm
+
+      - name: Node version = .nvmrc = engines.node
+        run: |
+          pnpm check:node-version
+          echo "::notice title=Node version::$(node --version)"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

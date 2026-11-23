@@ -21,3 +21,6 @@ allowBuilds:
   cpu-features: false
   protobufjs: false
   ssh2: false
+
+# Refuse to install with a Node other than package.json engines.node = .nvmrc (journal 038).
+engineStrict: true

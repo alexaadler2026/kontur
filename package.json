@@ -8,10 +8,11 @@
     "check:agents-md": "node tools/check-agents-md.mjs",
     "check:angular-builders": "node tools/check-angular-builders.mjs",
     "check:project-tags": "node tools/check-project-tags.mjs",
-    "check:module-boundaries": "node tools/check-module-boundaries.mjs"
+    "check:module-boundaries": "node tools/check-module-boundaries.mjs",
+    "check:node-version": "node tools/check-node-version.mjs"
   },
   "engines": {
-    "node": ">=24 <25"
+    "node": "24.22.3"
   },
   "packageManager": "pnpm@12.18.0",
   "dependencies": {
