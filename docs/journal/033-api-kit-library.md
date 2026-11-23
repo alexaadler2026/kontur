@@ -66,8 +66,9 @@ Date: 2026-11-23 · Task: roadmap 6, part 6a, [ADR-0007](../adr/0007-api-contrac
 
 4. **Порядок сборки.** У `build`, `test`, `typecheck` и `test-integration` в `signflow-api`
    есть `dependsOn: ["^build"]`, то есть «сначала собери то, от чего я завишу». На чистой
-   машине CI сначала соберёт `api-kit`, иначе `dist` библиотеки не будет. Это проверено
-   на чистом клоне (см. ниже).
+   машине CI сначала соберёт `api-kit`, иначе `dist` библиотеки не будет. Проверено
+   на чистом клоне без `dist` и с `--skip-nx-cache`: `typecheck`, `test` 38/38,
+   `test-integration` 10/10 и `build`; каждая цель сама запускала `api-kit:build`.
 5. **Импорты.** В `signflow-api` четыре файла теперь пишут
    `import { … } from '@adlersoft/api-kit'`. HTTP-тест `problem.http.spec.ts` остался в
    приложении: он поднимает весь API.
@@ -118,6 +119,10 @@ Date: 2026-11-23 · Task: roadmap 6, part 6a, [ADR-0007](../adr/0007-api-contrac
 - Предупреждение Nx «package @adlersoft/api-kit not found» → появляется, пока в diff
   есть новая строка корневого `package.json`. Тогда Nx считает затронутыми все проекты:
   ошибка в безопасную сторону, после коммита пропадает.
+- Тесты API падают с `Cannot find module '…/u0410/u043B…'` → проект лежит в папке с
+  кириллицей в пути. Плагин `@nestjs/swagger` портит такой путь при компиляции тестов.
+  Нашлось на чистом клоне в `C:UsersАлександр…`; в `C:web…` и в CI путь ASCII.
+  Держать репозиторий в пути из латиницы.
 - Docker (задача 22): `generatePackageJson` приложения не перечисляет `api-kit`, поэтому
   Dockerfile должен сам собрать и скопировать библиотеку. Записано в `next-steps.md`.
 
@@ -189,6 +194,8 @@ kitchen door: the waiter (browser) stays out, the cook (API) goes in.
 - `Cannot find module '@adlersoft/api-kit'` / `TS2307` → run `nx run api-kit:build`.
 - Library changes not visible in `serve` → rebuild the library.
 - Nx warning "package not found" → only while the root `package.json` line is uncommitted.
+- API tests fail with `Cannot find module '…/u0410/u043B…'` → the checkout path contains
+  Cyrillic; the `@nestjs/swagger` plugin mangles it. Keep the repository on an ASCII path.
 - Docker (task 22) must build and copy `api-kit`.
 
 **Interview question on this topic.** Q: How do you share server code between two Node
