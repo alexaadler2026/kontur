@@ -166,12 +166,16 @@ interface ConfirmDialogConfig {
 // KonturDialog.open<C, D, R>(component: Type<C>, config: DialogConfig<D>): DialogRef<R>
 // KonturDialog.confirm(config: ConfirmDialogConfig): Promise<boolean>
 
-/** KonturToast — service. Class: k-toast. Queue, max 3 visible (bottom-right desktop, top mobile).
- *  info/success: role="status", auto-dismiss; warning/error: role="alert", stay until closed. */
+/** KonturToast — service. Class: k-toast. Queue, max 3 visible (bottom-right desktop, top mobile
+ *  = below 960 px, the one breakpoint, see README).
+ *  info/success: role="status", auto-dismiss; warning/error: role="alert", stay until closed.
+ *  Owner, 2026-11-23 (Toast.md): every toast has a close button (k-icon-btn, KonturIntl.closeLabel);
+ *  a toast with an action never auto-dismisses; the timer pauses on hover and focus (WCAG 2.2.1);
+ *  icons by tone as in Alert; live regions exist from app start: provideKonturToast(). */
 interface ToastOptions {
   tone?: "info" | "success" | "warning" | "error";
   title?: string;              // bold lead-in, e.g. "Signiert."
-  durationMs?: number;         // default 5000 for info/success; ignored for warning/error
+  durationMs?: number;         // default 5000 for info/success; ignored for warning/error and with an action
   action?: { label: string; run: () => void };
 }
 // KonturToast.show(message: string, options?: ToastOptions): void
@@ -265,7 +269,9 @@ interface FileDropProps {
 }
 interface FileDropOutputs { filesSelected: ReadonlyArray<File>; rejected: ReadonlyArray<{ file: File; reason: "type" | "size" | "count" }>; }
 
-/** <k-progress> — Class: k-progress. role="progressbar" with aria-valuenow; value null = indeterminate. */
+/** <k-progress> — Class: k-progress. role="progressbar" with aria-valuenow; value null = indeterminate.
+ *  The visible label names the bar (aria-labelledby); the percent is formatted with
+ *  Intl.NumberFormat(KonturIntl.locale(), { style: "percent" }) (owner, 2026-11-23, Progress.md). */
 interface ProgressProps { value: number | null; tone?: "brand" | "success" | "error"; label: string; }
 /** <k-spinner> — Class: k-spinner. role="status" with aria-label. */
 interface SpinnerProps { label: string; size?: number; }

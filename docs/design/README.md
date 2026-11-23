@@ -40,6 +40,9 @@ in the design system first and a new snapshot replaces this folder.
    words and longer Russian strings (no fixed widths on buttons/columns).
    Russian has three plural forms (1 документ / 2 документа / 5 документов) —
    use ICU plural rules, never `count + " documents"`.
+7. **One breakpoint: 960 px** (owner, 2026-11-23). Below it is "mobile": the SideNav
+   becomes a drawer, toasts queue at the top. There is no other breakpoint and no
+   breakpoint token; CSS media queries use `960px` with a comment pointing here.
 
 ## Components (22)
 
@@ -94,4 +97,9 @@ in the design system first and a new snapshot replaces this folder.
   it imitates content, not UI, and is intentionally outside the tokens.
 - Charts on the dashboard are drawn with plain bars; pick a charting approach in
   an ADR when implementing it.
+- `Progress.html`: the bars and the ring have `role=progressbar` but no accessible name —
+  a mockup error (WCAG 4.1.2). The component names them (see `components/Progress.md`).
+- `Toast.html`: the warning toast has `role=status`, the error toast uses the warning
+  triangle, and only the success toast has a close button. The contract wins (see
+  `components/Toast.md`).
 - Icons are inline stroke SVG in Lucide style; use the `@lucide/angular` package (ADR-0022; `lucide-angular` is deprecated).
