@@ -1,8 +1,4 @@
 import 'reflect-metadata';
-import { Logger } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app/app.module.js';
-import { configureApp } from './app/configure-app.js';
 import {
   type AppConfig,
   ConfigError,
@@ -19,6 +15,16 @@ try {
   console.error(error.message);
   process.exit(1);
 }
+
+// Loaded only now, with import(): static imports would load Nest, Prisma and pg before the
+// first line above runs — seconds of work for a start that is about to stop (journal 032).
+const [{ Logger }, { NestFactory }, { AppModule }, { configureApp }] =
+  await Promise.all([
+    import('@nestjs/common'),
+    import('@nestjs/core'),
+    import('./app/app.module.js'),
+    import('./app/configure-app.js'),
+  ]);
 
 const app = configureApp(await NestFactory.create(AppModule.forRoot(config)));
 await app.listen(config.PORT);
