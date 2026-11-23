@@ -7,3 +7,12 @@ allowBuilds:
   '@parcel/watcher': false
   unrs-resolver: false
   '@scarf/scarf': false
+  # Prisma: no install scripts. The CLI fetches its schema engine itself on first use
+  # (journal 031); the client needs no binary (query compiler + driver adapter).
+  '@prisma/engines': false
+  prisma: false
+  # Testcontainers: ssh2/cpu-features are optional native SSH speed-ups (Docker is reached
+  # through its socket/pipe); protobufjs only prints a version notice.
+  cpu-features: false
+  protobufjs: false
+  ssh2: false
