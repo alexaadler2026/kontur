@@ -39,5 +39,8 @@ describe('schema.prisma and the migrations tell the same story', () => {
         `  pnpm nx run signflow-api:prisma-migrate-dev --name=<what>\n` +
         `Missing SQL:\n${diff.stdout}${diff.stderr}`,
     ).toBe(0);
-  });
+    // Its own timeout: the Prisma CLI replays every migration in the shadow database —
+    // ~14 s alone on Docker Desktop, over 30 s while the other integration files start
+    // their containers (the failure in journal 031, found through the saved log, 032).
+  }, 120_000);
 });
