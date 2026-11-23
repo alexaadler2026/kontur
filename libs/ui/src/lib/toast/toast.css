@@ -1,0 +1,42 @@
+/* Ported 1:1 from docs/design/components.css, section "Overlays" (.k-toast).
+   Shared rules (focus ring) are in styles/kontur-base.css. */
+.k-toast {
+  display: flex; align-items: flex-start; gap: var(--space-3);
+  width: min(400px, calc(100vw - 32px)); padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md); background: var(--bg-surface-raised);
+  border: 1px solid var(--border-subtle); border-left: 3px solid var(--info);
+  box-shadow: var(--shadow-overlay-md); font: 400 14px/20px var(--font-sans); color: var(--text-primary);
+}
+.k-toast--success { border-left-color: var(--success); }
+.k-toast--error { border-left-color: var(--error); }
+.k-toast--warning { border-left-color: var(--warning); }
+.k-toast .k-ico { width: 18px; height: 18px; flex: none; margin-top: 1px; }
+.k-toast--success .k-ico { color: var(--success); }
+.k-toast--error .k-ico { color: var(--error); }
+.k-toast--warning .k-ico { color: var(--warning); }
+/* ---------- Layout of the mockup's inline styles (Toast.html), named here ---------- */
+.k-toast-text { flex: 1; min-width: 0; }
+/* Action and close button sit at the right edge (margin-left: auto in the mockup). */
+.k-toast-actions { display: flex; align-items: center; gap: var(--space-2); flex: none; margin: -2px -8px -2px 0; }
+.k-toast-actions > .k-icon-btn { width: var(--control-sm); height: var(--control-sm); }
+
+/* ---------- The region (Toast.md): queue at the bottom right, gap 12 as in the mockup ----------
+   Fixed above the page. Kontur has no z-index token; 1000 = above page content, the one
+   overlay layer so far (Dialog, UI-3, decides the order of layers). The empty region must
+   not catch clicks, the toasts do. */
+.k-toast-region {
+  position: fixed; z-index: 1000; right: var(--space-4); bottom: var(--space-4);
+  display: flex; flex-direction: column; align-items: flex-end; gap: var(--space-3);
+  pointer-events: none;
+}
+.k-toast-region > .k-toast { pointer-events: auto; }
+/* 960px — the one breakpoint of Kontur (docs/design/README.md, rule 7): on mobile the
+   queue is at the top, centred. */
+@media (max-width: 959.98px) {
+  .k-toast-region { top: var(--space-4); bottom: auto; left: var(--space-4); align-items: center; }
+}
+/* The live regions: read by screen readers, invisible on screen (the usual "sr-only"). */
+.k-toast-live {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}

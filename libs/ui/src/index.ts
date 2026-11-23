@@ -38,3 +38,9 @@ export {
 export { SpinnerComponent } from './lib/progress/spinner';
 export { ProgressComponent, type ProgressTone } from './lib/progress/progress';
 export { ProgressRingComponent } from './lib/progress/progress-ring';
+export {
+  KonturToast,
+  type ToastOptions,
+  type ToastTone,
+} from './lib/toast/toast.service';
+export { provideKonturToast } from './lib/toast/provide-toast';
