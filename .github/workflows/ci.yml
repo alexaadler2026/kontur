@@ -1,4 +1,5 @@
-# CI: format, lint, unit tests, build, Storybook build and e2e (incl. axe).
+# CI: format, lint, unit tests, build, Storybook build, integration tests on PostgreSQL
+#     and e2e (incl. axe).
 # CD: on main, the Storybook build that passed e2e/axe is published to GitHub Pages
 #     (build once, deploy the tested artifact — ADR-0005).
 # - pull request: only projects affected by the PR (compared with main)
@@ -73,6 +74,11 @@ jobs:
       # api-check: the committed openapi.json must match the API's DTOs (ADR-0007).
       - name: Lint, test, typecheck, build, Storybook, api-check (nx ${{ env.NX_RUN }})
         run: pnpm nx $NX_RUN -t lint test typecheck build build-storybook api-check
+
+      # Testcontainers starts PostgreSQL in the runner's Docker (ADR-0014): all migrations
+      # applied to an empty database, schema.prisma = migrations, the tests on real data.
+      - name: Integration tests on PostgreSQL (nx ${{ env.NX_RUN }})
+        run: pnpm nx $NX_RUN -t test-integration
 
       - name: Install Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium
