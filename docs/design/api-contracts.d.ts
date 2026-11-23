@@ -171,7 +171,9 @@ interface ConfirmDialogConfig {
  *  info/success: role="status", auto-dismiss; warning/error: role="alert", stay until closed.
  *  Owner, 2026-11-23 (Toast.md): every toast has a close button (k-icon-btn, KonturIntl.closeLabel);
  *  a toast with an action never auto-dismisses; the timer pauses on hover and focus (WCAG 2.2.1);
- *  icons by tone as in Alert; live regions exist from app start: provideKonturToast(). */
+ *  icons by tone as in Alert; live regions exist from app start: provideKonturToast().
+ *  The role belongs to two hidden live regions (status / alert by tone), not to the visible
+ *  toast; announced text = title + message + "Aktion: <action label>" (KonturIntl.actionLabel). */
 interface ToastOptions {
   tone?: "info" | "success" | "warning" | "error";
   title?: string;              // bold lead-in, e.g. "Signiert."
