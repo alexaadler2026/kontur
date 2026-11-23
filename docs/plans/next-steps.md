@@ -31,7 +31,7 @@
 
 Затем 3a: Problem Details на сервере — журнал [027](../journal/027-problem-details-server.md); 3b: код ошибки → перевод — журнал [028](../journal/028-error-codes-translated.md); 4a: настройки API — журнал [029](../journal/029-api-settings.md); 4b: настройки на фронте — журнал [030](../journal/030-frontend-settings.md); 5a: PostgreSQL и Prisma — журнал [031](../journal/031-postgres-prisma.md); 5b: готовность и ошибки базы — журнал [032](../journal/032-readiness-and-database-errors.md).
 
-Последний коммит работы: `docs: allow only identifiers in urls and log readiness changes only`.
+Последний коммит работы: `docs(journal): add entry 033 api-kit library`.
 
 **Проверки после журнала 026 (локально):**
 
@@ -47,7 +47,7 @@
 ## 2. Что не запушено
 
 Владелец пушит сам. Запушено всё до `0de5f5d` (журнал 032; задача 5 принята 2026-11-23).
-Не запушены: правило о URL (ADR-0008, AGENTS.md) и заметка к задаче 24.
+Не запушены: правило о URL (`f5e972d`), решения по задаче 6 (`8772b97`) и 6a (журнал 033).
 
 После push: проверить CI — `gh run list --limit 3` (в PowerShell `curl` — псевдоним
 `Invoke-WebRequest`, поэтому не `curl`; без `gh` — `curl.exe -s "https://api.github.com/repos/alexaadler2026/kontur/actions/runs?per_page=3"`).
@@ -61,12 +61,13 @@
 3. **~~Задача 1~~ — сквозной срез, сделана (журналы 020–025); ~~задача 2~~ — `api-check` и
    границы Nx, сделана (журнал 026); ~~задача 3~~ — ошибки RFC 9457, сделана (журналы 027, 028). ~~задача 4~~ — настройки, сделана (журналы 029, 030). ~~задача 5~~ — PostgreSQL и Prisma, сделана (журналы 031, 032). Сейчас: задача 6** (`libs/shared/api-kit`; план одобрен 2026-11-23).
 
-   **6a — следующее.** Библиотека без своей сборки (`@adlersoft/api-kit`, теги
+   **~~6a — библиотека и граница~~ — сделано (журнал 033).** Сборка своя, пакет pnpm
+   workspace (решение владельца 2026-11-23, проба: `TS6059 rootDir`). Библиотека без своей сборки (`@adlersoft/api-kit`, теги
    `scope:shared`, `type:util`, `platform:server`), перенос `problem/` (рефакторинг: `api-check`
    без изменений), постоянный тест границ в `tools/` (ESLint Node API: импорт из
    `apps/signflow/src` → ошибка, из `apps/signflow-api/src` → нет).
 
-   **6b — деньги.** `Money`, `addMoney` (разные валюты → ошибка), `toAmountMinor(bigint)`,
+   **6b — следующее: деньги.** `Money`, `addMoney` (разные валюты → ошибка), `toAmountMinor(bigint)`,
    `DecimalString`. Таблица валют: все действующие ISO 4217 из официального файла с датой
    источника, только коды с числом знаков после запятой (без XAU, XAG, XDR, XXX и фондовых
    кодов; XAF, XOF остаются). Тест: EUR 2, JPY 0, KWD 3, KGS 2, XAF 0; XAU нет. Код
@@ -201,6 +202,10 @@
      причина» / «снова готов»), а не каждый неудачный опрос: скрипт выката и внешний
      мониторинг опрашивают часто, и строка на каждый опрос забьёт лог (решение владельца
      2026-11-23; сейчас — строка на каждый 503, журнал 032);
+   - **в задаче 22 Dockerfile копирует и собирает `libs/shared/api-kit`** (пакет pnpm
+     workspace, ADR-0007, журнал 033): `generatePackageJson` приложения его не перечисляет,
+     а `node main.js` находит его только через `node_modules/@adlersoft/api-kit` → `dist`
+     (решение владельца 2026-11-23);
    - **в задаче 22 движки Prisma (schema engine для `migrate deploy`) кладутся в образ при
      сборке**: контейнер при старте ничего не скачивает. Локально и в CI Prisma CLI
      скачивает движок при первом запуске (скрипты установки запрещены, журнал 031), а на
@@ -258,8 +263,9 @@
   `pnpm install --frozen-lockfile --force`.
 - Сбой воркера Vitest (`Timeout waiting for worker to respond`, журнал 026): если
   повторится в CI — отдельная задача до следующей фичи (решение владельца 2026-11-22).
-  Локально повторился 2026-11-23 (`Failed to start forks worker`, `signflow:test` при
-  четырёх проектах параллельно; журнал 032, лог в `tmp/logs`). В CI пока не было.
+  Локально повторился 2026-11-23 дважды: `Failed to start forks worker` (`signflow:test`,
+  журнал 032) и `Worker exited unexpectedly` (`ui:test`, журнал 033; отдельно 106/106).
+  Логи в `tmp/logs`. В CI пока не было.
 - Не обходить правило минимального возраста пакетов pnpm (`minimumReleaseAgeExclude` не
   добавлять).
 - **Полный вывод каждого прогона проверок — в файл** `tmp/logs/<ГГГГ-ММ-ДД_ЧЧ-ММ>-<цель>.log`

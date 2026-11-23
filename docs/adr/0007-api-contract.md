@@ -170,6 +170,38 @@ Rules:
   first real server library.
 - `AGENTS.md` already carries the line about generated API types (since task 1a).
 
+#### Results (task 6a, 2026-11-23) — server libraries are buildable workspace packages
+
+- **Plan change, found by a probe before the move.** The plan was "`api-kit` without its own
+  build; the app's build compiles its sources". It does not work with `@nx/js:tsc`: `tsc`
+  refuses files outside the app's `rootDir` (`TS6059`), Nx 24 no longer inlines
+  non-buildable libraries, and even compiled, `node main.js` could not resolve a tsconfig
+  `paths` alias — those exist only for the compiler.
+- **Decision (owner):** server libraries are **buildable libraries and pnpm workspace
+  packages**.
+  - `libs/shared/api-kit` has `package.json` `@adlersoft/api-kit` with `exports` →
+    `dist/index.js` and `dist/index.d.ts`. Its own `@nx/js:tsc` build runs with the same
+    `@nestjs/swagger` plugin, so DTO comments still reach the spec — `api-check` stayed
+    byte-identical after the move.
+  - `pnpm-workspace.yaml` lists `libs/shared/*`. The root `package.json` depends on
+    `"@adlersoft/api-kit": "workspace:*"`, and pnpm links the folder into
+    `node_modules`.
+  - Node, `tsc` and Vitest resolve the package like any other, with no `paths` entry. The
+    APIs compile against the `.d.ts` files.
+  - `build`, `test`, `typecheck` and `test-integration` of an API depend on `^build`, so a
+    clean machine builds the library first.
+  - Rejected: webpack bundling (more config for ESM and Nest 12, and it replaces a working
+    build); keeping `problem/` in the app (breaks the owner's task-3 decision).
+  - Cost: the Docker image builds and copies `api-kit` (task 22). While a diff changes this
+    line of the root `package.json`, Nx warns "package @adlersoft/api-kit not found" and
+    treats every project as affected — safe, and gone once committed.
+- **The platform rule has a permanent test:** `pnpm check:module-boundaries` (CI step). It
+  lints a probe that imports `@adlersoft/api-kit` **by package name**, as if placed in
+  `apps/signflow` (must fail with `@nx/enforce-module-boundaries`) and in
+  `apps/signflow-api` (must pass). Nx resolves the package name to the `api-kit` project:
+  `nx graph` shows `signflow-api → api-kit (static)`.
+- `libs/shared/*` use their package name; Angular libraries keep tsconfig `paths`.
+
 ### Consequences
 
 - Good: one place to change an endpoint; validation, types and docs cannot disagree.
