@@ -84,6 +84,11 @@ jobs:
       - name: Integration tests on PostgreSQL (nx ${{ env.NX_RUN }})
         run: pnpm nx $NX_RUN -t test-integration
 
+      # Password hashing time on the runner (ADR-0010, target 200–500 ms); an annotation,
+      # so the number is readable on the run page without opening the log.
+      - name: Argon2id timing
+        run: pnpm nx run auth-server:measure-hash
+
       - name: Install Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium
 

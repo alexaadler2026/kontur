@@ -1,0 +1,19 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    // Same module system as the APIs: Nest 12 is ESM only, imports end in ".js".
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    // Nest reads decorators and the constructor parameter types they record.
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "lib": ["es2022"],
+    "types": ["node"]
+  },
+  "files": [],
+  "include": [],
+  "references": [
+    { "path": "./tsconfig.lib.json" },
+    { "path": "./tsconfig.spec.json" }
+  ]
+}

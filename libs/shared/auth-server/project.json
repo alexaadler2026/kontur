@@ -1,0 +1,40 @@
+{
+  "name": "auth-server",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/shared/auth-server/src",
+  "tags": ["scope:shared", "type:util", "platform:server"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "libs/shared/auth-server/dist",
+        "rootDir": "libs/shared/auth-server/src",
+        "main": "libs/shared/auth-server/src/index.ts",
+        "tsConfig": "libs/shared/auth-server/tsconfig.lib.json",
+        "generatePackageJson": false
+      },
+      "cache": true,
+      "inputs": ["production", "^production"]
+    },
+    "test": {
+      "command": "vitest run",
+      "options": {
+        "cwd": "libs/shared/auth-server"
+      },
+      "cache": true,
+      "inputs": ["default", "^production"]
+    },
+    "typecheck": {
+      "command": "tsc -p libs/shared/auth-server/tsconfig.spec.json --noEmit",
+      "cache": true,
+      "inputs": ["default", "{workspaceRoot}/tsconfig.base.json"]
+    },
+    "measure-hash": {
+      "command": "node libs/shared/auth-server/tools/measure-hash.mjs",
+      "dependsOn": ["build"],
+      "cache": false
+    }
+  }
+}
