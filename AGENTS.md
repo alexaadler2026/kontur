@@ -106,6 +106,8 @@ truth for what the products do and by which rules. What is not there, ask.
 - Shared API types are generated from `libs/<app>/api-contract/openapi.json`; do not
   hand-write request or response types (ADR-0007). Server-side building blocks used by
   both APIs (Problem Details, Money, pagination DTOs) live in `libs/shared/api-kit`.
+- URL paths and query parameters carry only identifiers — never personal data or secrets
+  (logs, browser history, `instance`); those go in the body, link tokens in `#` (ADR-0008).
 
 ## When unsure
 Ask. Do not invent requirements, endpoints or business rules.
