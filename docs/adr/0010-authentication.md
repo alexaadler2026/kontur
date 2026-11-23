@@ -58,12 +58,34 @@ Second factor in v1: **no (prepared)** / TOTP for everyone / TOTP for admins.
 - **Argon2id** with at least the OWASP baseline parameters (19 MiB memory, 2 iterations,
   1 lane), stored as a PHC string (algorithm, parameters and salt inside the hash), so
   parameters can be raised later and old hashes are upgraded at the next login.
-- Library: `argon2` (bindings to the reference implementation, prebuilt binaries; its
-  install script is allowed explicitly in `pnpm-workspace.yaml`, ADR-0001). Node's
-  built-in `crypto.argon2` (added in Node 24.7) is the replacement once it is clearly
-  stable — tracked, not used yet.
-- Policy: minimum 12 characters, maximum 128, no composition rules, rejected if on a
-  bundled list of common passwords.
+- **Parameters (task 7a, 2026-11-23): 46 MiB, 2 passes, 1 lane**, target 200–500 ms per
+  hash. Measured on the owner's laptop (i7-8565U): OWASP baseline 121 ms (below target),
+  19 MiB/t=4 193 ms, 32 MiB/t=3 268 ms, **46 MiB/t=2 274–327 ms**, 64 MiB/t=2 396 ms
+  (medians). More memory was preferred over more passes: memory is what makes guessing on
+  GPUs expensive. CI reports its own time as an annotation ("Argon2id timing" step,
+  journal 037).
+- **Implementation (amended 2026-11-23, task 7a): Node's built-in `crypto.argon2`**,
+  behind the `PasswordHasher` interface in `libs/shared/auth-server`. Checked: added in
+  Node 24.7.0, no "experimental" marker in the Node 24.22.3 documentation (the `crypto`
+  module is "Stability: 2 - Stable"), no `ExperimentalWarning` at run time on 24.11.0. It
+  returns raw bytes; the PHC string is built and parsed by our code (~40 lines, tested).
+  No native add-on and no install script. Fallback if a pinned Node marks it experimental:
+  `@node-rs/argon2` (prebuilt binaries, no install script). The `argon2` package is not
+  used: it needs an install script, and install scripts stay forbidden (owner).
+- Passwords are normalised to **Unicode NFC** before hashing and checking: "ü" typed as
+  U+00FC or as u + U+0308 is the same password.
+- **Policy (amended 2026-11-23): minimum 15 characters**, maximum 128, counted as
+  characters (code points after NFC), no composition rules. Why 15 and not 12: NIST SP
+  800-63B rev. 4 requires 15 for a password used as the only factor, and v1 has no 2FA.
+- **Rejected passwords:** (1) on a bundled list of common passwords — SecLists (MIT)
+  `xato-net-10-million-passwords-1000000`, `Pwdb_top-1000000` and
+  `100k-most-used-passwords-NCSC`, only entries of 15–128 characters (shorter ones fail the
+  length rule anyway; the usual 10k list has a single such entry), NFC lower case, about
+  16,000 entries, compared ignoring case; (2) containing the user's e-mail address or its
+  part before `@` (when that part has at least 3 characters); (3) containing a product
+  name (`signflow`, `belegscan`, `kontur`) — NIST "context-specific words".
+- Checking passwords against a breach database (Have I Been Pwned, k-anonymity) is an
+  idea for v2: it is an external service.
 - Login errors are generic ("e-mail or password wrong").
 - **Throttling** (counters in Postgres) is designed so that an attacker cannot lock the
   owner out of their own account:
