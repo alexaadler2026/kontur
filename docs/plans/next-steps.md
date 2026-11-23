@@ -1,6 +1,6 @@
 # Состояние работы и следующие шаги
 
-Снимок на **2026-11-22**: задачи 1–4 сделаны; следующая — задача 5 по `roadmap.md` (PostgreSQL и Prisma, сначала план). Этот файл нужен, чтобы продолжить без
+Снимок на **2026-11-22**: задачи 1–4 и 5a сделаны; следующая — 5b (`/health/ready` и ошибки базы без значений). Этот файл нужен, чтобы продолжить без
 старой переписки. Порядок задач задаёт [`roadmap.md`](roadmap.md); здесь — только где мы
 остановились.
 
@@ -29,9 +29,9 @@
 Затем задача 2: `api-check` в CI, теги `platform:*` у всех проектов, правило `type:e2e`,
 `pnpm check:project-tags` — журнал [026](../journal/026-api-check-boundaries.md).
 
-Затем 3a: Problem Details на сервере — журнал [027](../journal/027-problem-details-server.md); 3b: код ошибки → перевод — журнал [028](../journal/028-error-codes-translated.md); 4a: настройки API — журнал [029](../journal/029-api-settings.md); 4b: настройки на фронте — журнал [030](../journal/030-frontend-settings.md).
+Затем 3a: Problem Details на сервере — журнал [027](../journal/027-problem-details-server.md); 3b: код ошибки → перевод — журнал [028](../journal/028-error-codes-translated.md); 4a: настройки API — журнал [029](../journal/029-api-settings.md); 4b: настройки на фронте — журнал [030](../journal/030-frontend-settings.md); 5a: PostgreSQL и Prisma — журнал [031](../journal/031-postgres-prisma.md).
 
-Последний коммит работы: `docs(journal): record the translation loading fix in 021 and 030`.
+Последний коммит работы: `docs(journal): add entry 031 postgres and prisma`.
 
 **Проверки после журнала 026 (локально):**
 
@@ -46,8 +46,8 @@
 
 ## 2. Что не запушено
 
-Владелец пушит сам. Запушено всё до `f2568d3` (журнал 029 и правило PowerShell; CI зелёный, 2026-11-22).
-Не запушены: коммиты 4b (журнал 030) и исправление загрузки переводов.
+Владелец пушит сам. Запушено всё до `500a439` (исправление переводов; задача 4 принята 2026-11-22).
+Не запушены: коммиты 5a (журнал 031).
 
 После push: проверить CI — `gh run list --limit 3` (в PowerShell `curl` — псевдоним
 `Invoke-WebRequest`, поэтому не `curl`; без `gh` — `curl.exe -s "https://api.github.com/repos/alexaadler2026/kontur/actions/runs?per_page=3"`).
@@ -59,7 +59,20 @@
    `forms.signIn.*` остаются до задачи 8. Блокировка входа в задаче 8: `k-alert` warning
    **без заголовка**, один ключ `errors.auth.throttled` (ICU, `minutes`).
 3. **~~Задача 1~~ — сквозной срез, сделана (журналы 020–025); ~~задача 2~~ — `api-check` и
-   границы Nx, сделана (журнал 026); ~~задача 3~~ — ошибки RFC 9457, сделана (журналы 027, 028). ~~задача 4~~ — настройки, сделана (журналы 029, 030). Сейчас: задача 5** (сначала план).
+   границы Nx, сделана (журнал 026); ~~задача 3~~ — ошибки RFC 9457, сделана (журналы 027, 028). ~~задача 4~~ — настройки, сделана (журналы 029, 030). Сейчас: задача 5** (PostgreSQL и Prisma; план одобрен 2026-11-22).
+
+   **~~5a — база, Prisma, тесты на базе~~ — сделано (журнал 031).** `postgres:18.7-trixie`
+   (Debian, не alpine — сортировка), Prisma 7.10.1, `users` (id UUIDv7 от базы, `email`
+   citext), `DATABASE_URL` без умолчания, `compose.dev.yaml` (Postgres + Mailpit),
+   `test-integration` в CI, `migrate diff` пустой.
+
+   **5b — следующее.** `GET /api/v1/health/ready`: база отвечает и последняя миграция
+   репозитория применена → 200, иначе 503 `server.unavailable` (тексты утверждены: de
+   «Der Dienst ist vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut.»,
+   en «The service is temporarily unavailable. Please try again later.», ru «Сервис
+   временно недоступен. Попробуйте позже.»). Ошибки Prisma: в ответе и логе нет значений
+   из запроса (дубль e-mail — «секрет»). Проверку «хранилище доступно для записи»
+   (ADR-0020) добавит задача файлового хранилища.
    План задачи 4 одобрен 2026-11-22. Описание — [`architecture-wave1.md`](architecture-wave1.md),
    порядок — `roadmap.md`.
 

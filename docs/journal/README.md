@@ -39,3 +39,4 @@ German summary with a glossary (template: [TEMPLATE.md](TEMPLATE.md)).
 | [028](028-error-codes-translated.md)       | Task 3b: error code → translation in de/en/ru — problemMessage(), i18n-check requires errors.<code> for every contract code      | 2026-11-22 |
 | [029](029-api-settings.md)                 | Task 4a: API settings validated at start (PORT), process.env lint rule, .env.example = schema, GET /api/v1/config                | 2026-11-22 |
 | [030](030-frontend-settings.md)            | Task 4b: AppConfig loaded before the start, in parallel with translations (worst case 10 s); app starts without settings         | 2026-11-22 |
+| [031](031-postgres-prisma.md)              | Task 5a: PostgreSQL 18 (Debian) + Prisma 7, users with citext e-mail, Testcontainers integration tests, migrate diff check       | 2026-11-22 |

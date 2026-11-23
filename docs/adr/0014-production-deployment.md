@@ -106,6 +106,24 @@ applications, so tests cover them; Caddy enforces body size limits.
 - CI applies all migrations to an empty Testcontainers database on every run.
 - A backup is taken automatically right before migrating.
 
+#### Results (task 5a, 2026-11-22)
+
+- **PostgreSQL image `postgres:18.7-trixie`** (owner): Debian, not alpine — musl has no
+  real locales, so alpine sorts text by bytes (a test sorting German and Cyrillic words
+  fails there, recorded mutation). 18 for the built-in `uuidv7()` (ADR-0008). One constant
+  (`apps/signflow-api/src/database/postgres-image.ts`) for Testcontainers; a test keeps
+  `compose.dev.yaml` on the same tag; production takes it in task 23.
+- **Prisma 7.10.1** (pinned): `prisma-client` generator (ESM TypeScript, not committed,
+  target `prisma-generate`), `pg` driver adapter, no Rust query engine. No install
+  scripts are allowed (`allowBuilds: false`); the CLI fetches its schema engine on first
+  use.
+- **`test-integration`** (CI step, needs Docker): every test file gets a fresh database
+  with all migrations applied by `prisma migrate deploy`; a second test replays the
+  migrations in an empty shadow database and requires `prisma migrate diff` to be empty
+  (schema changed without a migration → red).
+- E-mail unique regardless of case via **`citext`** (owner's rule); the extension is
+  created by hand in the first migration, because Prisma does not manage extensions.
+
 ### Release — manual, of the tested image
 
 1. On every push to `main`, CI tests, **builds the images once**, runs the e2e suite

@@ -81,6 +81,16 @@ no separate build. The `demo` column below and the demo-only settings apply in t
   a child process). `apps/signflow-api/.env.example` lists exactly the schema's settings
   (test). `GET /api/v1/config` → `PublicConfigDto { version }`.
 
+#### Results (task 5a, 2026-11-22)
+
+- Second setting: **`DATABASE_URL`**, required, no default (it holds a password), must be a
+  `postgresql://` URL; never printed. `AppModule.forRoot(config)` puts the validated object
+  under the DI token `APP_CONFIG`. HTTP unit tests and the contract generator pass
+  `offlineConfig()`, whose address leads nowhere. Prisma connects only on the first
+  query, so they never touch a database.
+- `nx serve` sets the local `compose.dev.yaml` address for the dev target only;
+  `serve-e2e` sets the offline address until e2e needs data.
+
 ### Frontend configuration
 
 - The SPA bundle contains **no environment-specific values**. Before bootstrap it loads
