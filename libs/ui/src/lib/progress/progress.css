@@ -1,0 +1,27 @@
+/* Ported 1:1 from docs/design/components.css, section "Upload & Progress" and the
+   indeterminate bar of "Contract completion (v2)". Shared keyframes (k-spin,
+   k-indeterminate) and reduced motion are in styles/kontur-base.css. */
+
+.k-progress { width: 100%; height: 6px; border-radius: var(--radius-full); background: var(--bg-subtle); overflow: hidden; }
+.k-progress > span { display: block; height: 100%; border-radius: var(--radius-full); background: var(--brand); transition: width 200ms; }
+.k-progress--success > span { background: var(--success); }
+.k-progress--error > span { background: var(--error); }
+.k-progress.is-indeterminate > span { width: 40%; animation: k-indeterminate 1.2s ease-in-out infinite; }
+.k-spinner { width: 20px; height: 20px; border-radius: 50%; border: 2.5px solid var(--border-subtle); border-top-color: var(--brand); animation: k-spin 0.7s linear infinite; }
+.k-ring { transform: rotate(-90deg); }
+.k-ring circle { fill: none; stroke-width: 3; }
+.k-ring .k-ring-track { stroke: var(--bg-subtle); }
+.k-ring .k-ring-bar { stroke: var(--brand); stroke-linecap: round; }
+
+/* ---------- Layout of the mockup's inline styles (Progress.html), named here ----------
+   The label row above the bar: label left, percent right, space-1 below. In the mockup
+   the failed bar's label is in --error (the text itself says what failed, so the colour
+   is never the only signal). */
+k-progress { display: block; }
+.k-progress-head { display: flex; justify-content: space-between; gap: var(--space-2); margin-bottom: var(--space-1); }
+.k-progress-item--error .k-progress-label { color: var(--error); }
+k-spinner { display: inline-block; flex: none; }
+/* The ring with its value in the centre: the SVG is rotated, so the number is an HTML
+   overlay, not SVG text. */
+k-progress-ring { position: relative; display: inline-grid; place-items: center; }
+k-progress-ring > .k-ring-value { position: absolute; }

@@ -35,3 +35,6 @@ export {
   type AlertTone,
   type AlertVariant,
 } from './lib/alert/alert';
+export { SpinnerComponent } from './lib/progress/spinner';
+export { ProgressComponent, type ProgressTone } from './lib/progress/progress';
+export { ProgressRingComponent } from './lib/progress/progress-ring';
