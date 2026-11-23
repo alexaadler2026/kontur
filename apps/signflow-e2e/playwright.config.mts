@@ -42,10 +42,14 @@ export default defineConfig({
   // e2e ports. Nothing else listens there — the dev servers use 4200 and 3333.
   webServer: [
     {
-      // The built signflow-api (task 1d): e2e run against the real API, not a stub.
+      // The built signflow-api (task 1d) on a real PostgreSQL in Docker with the test
+      // account (task 8-1, src/e2e-server.ts): e2e run against the real API, not a stub.
       command: 'pnpm exec nx run signflow-api:serve-e2e',
       url: `http://localhost:${apiPort}/api/v1/health/live`,
       reuseExistingServer: true,
+      // Pulling the image the first time + migrations: more than the default 60 s
+      // (the integration tests allow 180 s for the same).
+      timeout: 180_000,
       cwd: workspaceRoot,
     },
     {

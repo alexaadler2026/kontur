@@ -7,6 +7,7 @@ import {
 } from '@testcontainers/postgresql';
 import { POSTGRES_IMAGE } from '../postgres-image.js';
 
+/** apps/signflow-api (prisma.config.ts, schema, migrations), found from this source file. */
 const appRoot = fileURLToPath(new URL('../../../', import.meta.url));
 const prismaCli = createRequire(import.meta.url).resolve(
   'prisma/build/index.js',
@@ -17,13 +18,18 @@ export interface TestDatabase {
   readonly container: StartedPostgreSqlContainer;
 }
 
-/** Runs the Prisma CLI of the repo in apps/signflow-api, with the given environment. */
+/**
+ * Runs the Prisma CLI of the repo in apps/signflow-api, with the given environment.
+ * `cwd`: the e2e server runs from dist/, where this file's own path does not lead to
+ * prisma.config.ts — it passes apps/signflow-api explicitly.
+ */
 export function prisma(
   args: string[],
   env: Record<string, string>,
+  cwd: string = appRoot,
 ): SpawnSyncReturns<string> {
   return spawnSync(process.execPath, [prismaCli, ...args], {
-    cwd: appRoot,
+    cwd,
     env: { ...process.env, ...env },
     encoding: 'utf8',
   });
@@ -40,9 +46,15 @@ export async function startEmptyDatabase(): Promise<TestDatabase> {
  * `prisma migrate deploy` — the same command production runs (ADR-0014). Each test file
  * gets its own database, so tests never see each other's rows.
  */
-export async function startTestDatabase(): Promise<TestDatabase> {
+export async function startTestDatabase(
+  projectRoot: string = appRoot,
+): Promise<TestDatabase> {
   const db = await startEmptyDatabase();
-  const migrate = prisma(['migrate', 'deploy'], { DATABASE_URL: db.url });
+  const migrate = prisma(
+    ['migrate', 'deploy'],
+    { DATABASE_URL: db.url },
+    projectRoot,
+  );
   if (migrate.status !== 0) {
     await db.container.stop();
     throw new Error(

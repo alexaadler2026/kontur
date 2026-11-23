@@ -1,0 +1,5 @@
+{
+  "//": "Test account of the e2e database (task 8-1). Not a secret: it exists only in the throw-away PostgreSQL that signflow-api:serve-e2e starts. The password follows the rules of 7a.",
+  "email": "e2e.nutzer@beispiel.de",
+  "password": "Kranich-Wolke-Tinte-2026"
+}

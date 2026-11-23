@@ -57,12 +57,10 @@
     "serve-e2e": {
       "continuous": true,
       "dependsOn": ["build"],
-      "command": "node dist/apps/signflow-api/src/main.js",
-      "options": {
-        "env": {
-          "PORT": "4310",
-          "DATABASE_URL": "postgresql://offline:offline@127.0.0.1:1/offline"
-        }
+      "command": "node dist/apps/signflow-api/src/e2e-server.js",
+      "readyWhen": {
+        "url": "http://localhost:4310/api/v1/health/live",
+        "timeout": 180000
       }
     },
     "prisma-migrate-dev": {
