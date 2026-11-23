@@ -198,6 +198,35 @@ Three kinds of numbers, three representations:
 - `number` with fractions is forbidden for money by a lint rule on the DTO layer and by
   the schema (`type: integer` / `type: string` with pattern).
 
+#### Results (task 6b, 2026-11-23)
+
+- **The table** is `libs/shared/api-kit/src/money/iso-4217.ts`, generated once by
+  `tools/generate-currency-table.mjs` from ISO 4217 List One (SIX), **published
+  2026-09-17**. The header records the source URL and the SHA-256 of the file. The script
+  reads a file downloaded by hand and never fetches anything itself.
+- **Which codes** (owner, 2026-11-23): every current code with a number of minor units,
+  **funds excluded** — 155 currencies.
+  - Dropped: metals (XAU, XAG, XPT, XPD), XDR, XXX, XTS, XSU, XUA, the bond-market units,
+    and the fund codes (CLF, UYW, BOV, COU, MXV, CHE, CHW, USN, UYI, XAD).
+  - Kept: real currencies with X codes (XAF, XOF, XPF).
+  - Tests: EUR 2, JPY 0, KWD 3, KGS 2, XAF 0; XAU, XDR, XXX, CLF absent.
+  - This replaces the "EUR, KGS, RUB, USD, …" example above and matches "any currency" in
+    `business-processes.md`.
+- **Building blocks** (`@adlersoft/api-kit`):
+  - `Money`, `addMoney` and `compareMoney`: different currencies throw
+    `CurrencyMismatchError`, and a sum beyond 2^53 − 1 throws `RangeError`;
+  - `toAmountMinor(bigint)`: refuses unsafe values instead of rounding them;
+  - `DecimalString` (branded) with `IsDecimalString()`: a JSON number is rejected;
+  - `CurrencyCode`, `CURRENCY_CODES`, `currencyExponent` and `IsCurrencyCode()`;
+  - `MoneyDto` (`amountMinor` integer within ±(2^53 − 1), `currency` enum `CurrencyCode`).
+- **Unknown currency → 422**: the rule `isCurrencyCode` maps to the field error code
+  `money.currency_unsupported` (new in the registry, translated de/en/ru). The response is
+  `validation.failed` with `errors[0].code = money.currency_unsupported`, like `isEmail` →
+  `validation.email`. Proven over HTTP with a test-only endpoint.
+- The `CurrencyCode` enum enters the contract with the first endpoint that uses
+  `MoneyDto`. The lint rule against fractional `number`s comes with the first money DTO
+  (owner, 2026-11-23).
+
 ### Consequences
 
 - Good: the frontend handles every error the same way and translates it itself.
