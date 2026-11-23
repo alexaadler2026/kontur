@@ -74,6 +74,7 @@
       "executor": "@angular/build:unit-test",
       "dependsOn": ["^generate"],
       "options": {
+        "runnerConfig": "vitest-base.config.mts",
         "watch": false,
         "setupFiles": ["apps/signflow/src/test-setup.ts"]
       }

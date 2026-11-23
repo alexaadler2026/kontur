@@ -71,6 +71,7 @@
     "test": {
       "executor": "@angular/build:unit-test",
       "options": {
+        "runnerConfig": "vitest-base.config.mts",
         "watch": false
       }
     },

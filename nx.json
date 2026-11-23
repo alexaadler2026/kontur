@@ -40,6 +40,7 @@
     }
   ],
   "analytics": false,
+  "parallel": 3,
   "targetDefaults": {
     "@angular/build:application": {
       "cache": true,

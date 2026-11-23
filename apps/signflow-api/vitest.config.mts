@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
+import { maxWorkers } from '../../vitest-base.config.mjs';
 import { tscWithSwaggerPlugin } from './vite-plugin-tsc.mjs';
 
 interface ProjectJson {
@@ -34,7 +35,12 @@ export function apiTestConfig(test: {
         swaggerOptions,
       ),
     ],
-    test: { environment: 'node', setupFiles: ['reflect-metadata'], ...test },
+    test: {
+      environment: 'node',
+      setupFiles: ['reflect-metadata'],
+      maxWorkers,
+      ...test,
+    },
   });
 }
 

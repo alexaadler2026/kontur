@@ -24,6 +24,7 @@
     "test": {
       "executor": "@angular/build:unit-test",
       "options": {
+        "runnerConfig": "vitest-base.config.mts",
         "tsConfig": "libs/ui/tsconfig.spec.json",
         "watch": false,
         "setupFiles": ["libs/ui/src/test-setup.ts"]

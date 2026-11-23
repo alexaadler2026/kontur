@@ -1,4 +1,5 @@
 import { defineConfig } from 'vitest/config';
+import { maxWorkers } from '../../../vitest-base.config.mjs';
 
 // Plain Node unit tests of the building blocks; no Nest application is started here.
 export default defineConfig({
@@ -8,6 +9,7 @@ export default defineConfig({
   oxc: { decorator: { legacy: true, emitDecoratorMetadata: true } },
   test: {
     name: 'api-kit',
+    maxWorkers,
     environment: 'node',
     include: ['src/**/*.spec.ts'],
   },
