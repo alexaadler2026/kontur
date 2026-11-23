@@ -13,8 +13,10 @@ import {
   Post,
   Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { AuthRateLimitGuard } from './auth-rate-limit.guard.js';
 import { CreateSessionDto, SessionDto } from './session.dto.js';
 import { SessionService } from './session.service.js';
 
@@ -54,10 +56,12 @@ export class SessionController {
 
   /**
    * Sign in. Sets the session cookie. Wrong e-mail or password: 401
-   * `auth.invalid_credentials` — the same answer for both.
+   * `auth.invalid_credentials` — the same answer for both. Too many attempts: 429
+   * `auth.throttled` with Retry-After (ADR-0010).
    */
   @ApiOperation({ operationId: 'createSession' })
   @Post()
+  @UseGuards(AuthRateLimitGuard)
   @HttpCode(204)
   async create(
     @Body() body: CreateSessionDto,

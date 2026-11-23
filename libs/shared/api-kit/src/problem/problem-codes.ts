@@ -19,6 +19,9 @@ export const PROBLEM_CODES = {
     title: 'E-mail address or password is incorrect',
   },
   'auth.unauthenticated': { status: 401, title: 'Not signed in' },
+  // ADR-0010: too many sign-in attempts; the answer carries Retry-After (seconds) and does
+  // not say which counter (pair, IP, request rate) was hit.
+  'auth.throttled': { status: 429, title: 'Too many sign-in attempts' },
   'request.malformed': {
     status: 400,
     title: 'The request could not be parsed',

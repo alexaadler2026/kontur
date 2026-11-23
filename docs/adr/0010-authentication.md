@@ -123,6 +123,34 @@ Second factor in v1: **no (prepared)** / TOTP for everyone / TOTP for admins.
     (distributed guessing), and only together with an **e-mail to the owner** saying what
     happened and offering a password-reset link, which also lifts the lock.
 - A general per-IP rate limit (in memory, one instance) protects all auth endpoints.
+- **Numbers and implementation (owner's defaults, 2026-11-23; built in task 7c).** All
+  numbers are settings (ADR-0009) with these defaults:
+
+  | Counter                | Rule                                                                                                                                                                                                                 | Setting (default)                                                  |
+  | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+  | (e-mail, IP) pair      | after 5 failures a delay of 1, 2, 4, 8 … minutes (doubling per further failure), at most 15, counted from the last failure; a successful sign-in deletes the pair's failures; failures older than 24 h are forgotten | `LOGIN_PAIR_FREE_FAILURES` (5), `LOGIN_PAIR_MAX_LOCK_MINUTES` (15) |
+  | IP across all accounts | 50 failures within a sliding 15-minute window → wait until the 50th most recent one leaves the window                                                                                                                | `LOGIN_IP_MAX_FAILURES` (50), `LOGIN_IP_WINDOW_MINUTES` (15)       |
+  | request rate           | 20 sign-in requests per minute per IP, in memory, fixed one-minute windows, checked before validation                                                                                                                | `AUTH_RATE_LIMIT_PER_MINUTE` (20)                                  |
+
+  Failures are rows of `login_failures` (e-mail as citext, IP, time; unknown e-mails are
+  counted too). The throttle is checked **before** the password: a waiting client gets
+  429 without an Argon2 run, and that attempt is not counted. The doubling curve is our
+  choice within the owner's "growing delay, at most 15 minutes": a person who mistyped
+  five times waits one minute; a guesser is at the 15-minute cap after nine failures.
+  Sign-out is not throttled. Concurrent attempts that pass the check at the same moment
+  are all verified (no row lock); the request-rate limit bounds how many that can be.
+  Old rows are deleted by a periodic job (task 27). The client IP comes from the
+  connection; behind the proxy, `trust proxy` is set in task 23.
+
+- **Argon2id concurrency (owner, 2026-11-23; task 7c):** at most `ARGON2_MAX_CONCURRENT`
+  (default **4**) hash or verify calls run at once; further calls wait in a
+  first-come-first-served queue (`ConcurrencyLimitedPasswordHasher`). One call takes
+  46 MiB, so 4 × 46 MiB ≈ 184 MiB at most on the 4 GB server (ADR-0014), instead of
+  memory growing with every parallel sign-in.
+- **"Last seen" is written at most every 5 minutes** (owner, 2026-11-23; task 7c): the SPA
+  polls every 30 s (ADR-0018), and a write per request would load the database for
+  nothing. Against a 7-day idle timeout, 5 minutes of inaccuracy does not matter. Expired
+  sessions are deleted when presented, and by a periodic job (task 27).
 - **Response while throttled:** HTTP **429** with Problem Details code
   **`auth.throttled`** (ADR-0008; one translation key `errors.auth.throttled`, no separate title, so
   the rule `errors.<code>` has no exception) and the standard **`Retry-After`** header in seconds. The

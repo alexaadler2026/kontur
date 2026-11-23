@@ -10,6 +10,8 @@ export class ProblemException extends Error {
   constructor(
     readonly code: ProblemCode,
     readonly errors?: ProblemFieldError[],
+    /** Extra answer details. retryAfterSeconds → the standard `Retry-After` header (429). */
+    readonly options: { retryAfterSeconds?: number } = {},
   ) {
     super(code);
   }

@@ -20,7 +20,8 @@
     },
     "auth": {
       "invalid_credentials": "E-Mail-Adresse oder Passwort ist falsch.",
-      "unauthenticated": "Bitte melden Sie sich an."
+      "unauthenticated": "Bitte melden Sie sich an.",
+      "throttled": "Zu viele Anmeldeversuche. Bitte versuchen Sie es in {minutes, plural, one {# Minute} other {# Minuten}} erneut."
     },
     "request": {
       "malformed": "Die Anfrage konnte nicht verarbeitet werden. Bitte laden Sie die Seite neu.",

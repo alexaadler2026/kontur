@@ -55,6 +55,7 @@
           "money.currency_unsupported",
           "auth.invalid_credentials",
           "auth.unauthenticated",
+          "auth.throttled",
           "request.malformed",
           "request.not_found",
           "request.cross_site",
@@ -388,7 +389,7 @@
             "description": "Error as Problem Details (RFC 9457, ADR-0008)"
           }
         },
-        "summary": "Sign in. Sets the session cookie. Wrong e-mail or password: 401\n`auth.invalid_credentials` — the same answer for both.",
+        "summary": "Sign in. Sets the session cookie. Wrong e-mail or password: 401\n`auth.invalid_credentials` — the same answer for both. Too many attempts: 429\n`auth.throttled` with Retry-After (ADR-0010).",
         "tags": [
           "session"
         ]

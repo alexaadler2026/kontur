@@ -20,7 +20,8 @@
     },
     "auth": {
       "invalid_credentials": "Неверный e-mail или пароль.",
-      "unauthenticated": "Войдите в систему."
+      "unauthenticated": "Войдите в систему.",
+      "throttled": "Слишком много попыток входа. Попробуйте снова через {minutes, plural, one {# минуту} few {# минуты} many {# минут} other {# минуты}}."
     },
     "request": {
       "malformed": "Запрос не удалось обработать. Обновите страницу.",

@@ -12,5 +12,11 @@ export function offlineConfig(): AppConfig {
     DATABASE_URL: 'postgresql://offline:offline@127.0.0.1:1/offline',
     SESSION_IDLE_DAYS: 7,
     SESSION_ABSOLUTE_DAYS: 30,
+    LOGIN_PAIR_FREE_FAILURES: 5,
+    LOGIN_PAIR_MAX_LOCK_MINUTES: 15,
+    LOGIN_IP_MAX_FAILURES: 50,
+    LOGIN_IP_WINDOW_MINUTES: 15,
+    AUTH_RATE_LIMIT_PER_MINUTE: 20,
+    ARGON2_MAX_CONCURRENT: 4,
   });
 }

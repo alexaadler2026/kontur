@@ -18,6 +18,7 @@ interface HttpRequest {
 interface HttpResponse {
   status(code: number): HttpResponse;
   type(contentType: string): HttpResponse;
+  setHeader(name: string, value: string): unknown;
   json(body: unknown): unknown;
 }
 
@@ -121,6 +122,18 @@ export class ProblemFilter implements ExceptionFilter {
       this.logger.error(
         `traceId=${body.traceId} ${request.method} ${path} ${status}`,
         describeForLog(exception),
+      );
+    }
+
+    const retryAfter =
+      exception instanceof ProblemException
+        ? exception.options.retryAfterSeconds
+        : undefined;
+    if (retryAfter !== undefined) {
+      // Whole seconds, at least 1: "Retry-After: 0" would invite an immediate retry.
+      response.setHeader(
+        'Retry-After',
+        String(Math.max(1, Math.ceil(retryAfter))),
       );
     }
 

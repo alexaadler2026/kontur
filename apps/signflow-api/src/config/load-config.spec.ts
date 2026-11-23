@@ -7,18 +7,28 @@ const DATABASE_URL = 'postgresql://signflow:local@127.0.0.1:5432/signflow';
 const DB = { DATABASE_URL };
 // Session lifetimes since task 7b (ADR-0010): defaults 7 and 30 days.
 const SESSION_DEFAULTS = { SESSION_IDLE_DAYS: 7, SESSION_ABSOLUTE_DAYS: 30 };
+// Throttling and the Argon2 queue since task 7c (ADR-0010, owner's numbers 2026-11-23).
+const THROTTLE_DEFAULTS = {
+  LOGIN_PAIR_FREE_FAILURES: 5,
+  LOGIN_PAIR_MAX_LOCK_MINUTES: 15,
+  LOGIN_IP_MAX_FAILURES: 50,
+  LOGIN_IP_WINDOW_MINUTES: 15,
+  AUTH_RATE_LIMIT_PER_MINUTE: 20,
+  ARGON2_MAX_CONCURRENT: 4,
+};
+const DEFAULTS = { ...SESSION_DEFAULTS, ...THROTTLE_DEFAULTS };
 
 describe('loadConfig (ADR-0009)', () => {
   it('reads PORT as a number', () => {
     expect(loadConfig({ ...DB, PORT: '4310' })).toEqual({
       ...DB,
-      ...SESSION_DEFAULTS,
+      ...DEFAULTS,
       PORT: 4310,
     });
   });
 
   it('PORT may be missing: its default 3333 is the same everywhere and harmless', () => {
-    expect(loadConfig(DB)).toEqual({ ...DB, ...SESSION_DEFAULTS, PORT: 3333 });
+    expect(loadConfig(DB)).toEqual({ ...DB, ...DEFAULTS, PORT: 3333 });
   });
 
   it('session lifetimes: defaults 7 and 30 days, both changeable (ADR-0010)', () => {
@@ -30,6 +40,23 @@ describe('loadConfig (ADR-0009)', () => {
         SESSION_ABSOLUTE_DAYS: '90',
       }),
     ).toMatchObject({ SESSION_IDLE_DAYS: 1, SESSION_ABSOLUTE_DAYS: 90 });
+  });
+
+  it('throttling defaults are the numbers of the owner, and each can be changed (ADR-0010)', () => {
+    expect(loadConfig(DB)).toMatchObject(THROTTLE_DEFAULTS);
+    expect(
+      loadConfig({
+        ...DB,
+        LOGIN_IP_MAX_FAILURES: '100',
+        ARGON2_MAX_CONCURRENT: '2',
+      }),
+    ).toMatchObject({ LOGIN_IP_MAX_FAILURES: 100, ARGON2_MAX_CONCURRENT: 2 });
+  });
+
+  it('ARGON2_MAX_CONCURRENT="0" stops the start (no hash could ever run)', () => {
+    expect(() => loadConfig({ ...DB, ARGON2_MAX_CONCURRENT: '0' })).toThrow(
+      'ARGON2_MAX_CONCURRENT must be an integer from 1 to 64',
+    );
   });
 
   for (const key of ['SESSION_IDLE_DAYS', 'SESSION_ABSOLUTE_DAYS']) {
@@ -49,7 +76,7 @@ describe('loadConfig (ADR-0009)', () => {
   it('reads only the settings of the schema, nothing else from the environment', () => {
     expect(
       loadConfig({ ...DB, PORT: '4310', PATH: '/usr/bin', SECRET_X: 's3cr3t' }),
-    ).toEqual({ ...DB, ...SESSION_DEFAULTS, PORT: 4310 });
+    ).toEqual({ ...DB, ...DEFAULTS, PORT: 4310 });
   });
 
   for (const value of ['abc', '', '0', '65536', '33.5']) {

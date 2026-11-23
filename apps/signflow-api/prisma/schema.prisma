@@ -47,3 +47,18 @@ model Session {
   @@index([userId])
   @@map("sessions")
 }
+
+/// One failed sign-in (ADR-0010 throttling). Counted per (e-mail, IP) pair and per IP;
+/// a successful sign-in deletes the pair's rows. Not linked to users: unknown e-mails are
+/// counted too. Old rows are removed by a periodic job (task 27).
+model LoginFailure {
+  id        String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  /// As typed, compared without case (citext).
+  email     String   @db.Citext
+  ip        String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@index([ip, createdAt])
+  @@index([email, ip, createdAt])
+  @@map("login_failures")
+}

@@ -9,6 +9,20 @@ import {
 } from 'class-validator';
 
 /**
+ * An integer setting from `min` to `max`: converted from text, and on a wrong value the
+ * message names the variable and the range (never the value).
+ */
+function IntSetting(min: number, max: number): PropertyDecorator {
+  return (target, key) => {
+    const message = `${String(key)} must be an integer from ${min} to ${max}`;
+    Type(() => Number)(target, key);
+    IsInt({ message })(target, key);
+    Min(min, { message })(target, key);
+    Max(max, { message })(target, key);
+  };
+}
+
+/**
  * Every setting of signflow-api (ADR-0009). Rules for adding one:
  * - read once at start, here — nowhere else reads process.env (lint rule);
  * - **a secret never has a default**;
@@ -48,6 +62,32 @@ class ConfigSchema {
     message: 'SESSION_ABSOLUTE_DAYS must be an integer from 1 to 365',
   })
   SESSION_ABSOLUTE_DAYS = 30;
+
+  // Sign-in throttling (ADR-0010; defaults by the owner, 2026-11-23).
+
+  /** Failures of one (e-mail, IP) pair before the delay starts (1, 2, 4 … minutes). */
+  @IntSetting(1, 100)
+  LOGIN_PAIR_FREE_FAILURES = 5;
+
+  /** The longest delay of one (e-mail, IP) pair, in minutes. */
+  @IntSetting(1, 1440)
+  LOGIN_PAIR_MAX_LOCK_MINUTES = 15;
+
+  /** Failures of one IP across all accounts that make it wait (password spraying) … */
+  @IntSetting(1, 100_000)
+  LOGIN_IP_MAX_FAILURES = 50;
+
+  /** … within this sliding window, in minutes. */
+  @IntSetting(1, 1440)
+  LOGIN_IP_WINDOW_MINUTES = 15;
+
+  /** Requests per minute per IP on the sign-in endpoint, counted in memory. */
+  @IntSetting(1, 100_000)
+  AUTH_RATE_LIMIT_PER_MINUTE = 20;
+
+  /** Argon2id hashes running at once (46 MiB each); the rest wait in a queue. */
+  @IntSetting(1, 64)
+  ARGON2_MAX_CONCURRENT = 4;
 }
 
 /** The validated, immutable settings. Code gets this object, never process.env. */

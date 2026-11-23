@@ -20,7 +20,8 @@
     },
     "auth": {
       "invalid_credentials": "Email address or password is incorrect.",
-      "unauthenticated": "Please sign in."
+      "unauthenticated": "Please sign in.",
+      "throttled": "Too many sign-in attempts. Please try again in {minutes, plural, one {# minute} other {# minutes}}."
     },
     "request": {
       "malformed": "The request could not be processed. Please reload the page.",

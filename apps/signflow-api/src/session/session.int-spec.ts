@@ -3,10 +3,12 @@ import {
   hashSessionToken,
   SESSION_COOKIE,
 } from '@adlersoft/auth-server';
+import type { ProblemException } from '@adlersoft/api-kit';
 import type { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { PrismaService } from '../database/prisma.service.js';
+import { SessionService } from './session.service.js';
 import {
   startTestDatabase,
   type TestDatabase,
@@ -42,7 +44,11 @@ describe('sessions on a real PostgreSQL (ADR-0010)', () => {
 
   beforeAll(async () => {
     db = await startTestDatabase();
-    ({ app } = await startApiOn(db.url));
+    // This file signs in far more than 20 times a minute from one address: the request
+    // rate limit has its own test (session-rate-limit.http.spec.ts).
+    ({ app } = await startApiOn(db.url, [], {
+      AUTH_RATE_LIMIT_PER_MINUTE: 10_000,
+    }));
     prisma = app.get(PrismaService).client;
   });
 
@@ -53,6 +59,7 @@ describe('sessions on a real PostgreSQL (ADR-0010)', () => {
 
   beforeEach(async () => {
     await prisma.session.deleteMany();
+    await prisma.loginFailure.deleteMany();
     await prisma.user.deleteMany();
     const user = await prisma.user.create({
       data: {
@@ -253,5 +260,137 @@ describe('sessions on a real PostgreSQL (ADR-0010)', () => {
     const user = await prisma.user.findUniqueOrThrow({ where: { id: userId } });
     expect(hasher.needsRehash(user.passwordHash ?? '')).toBe(false);
     expect(await hasher.verify(user.passwordHash ?? '', PASSWORD)).toBe(true);
+  });
+
+  it('"last seen" is written at most every 5 minutes: polling every 30 s does not write each time', async () => {
+    const token = sessionToken(
+      await signIn('Aigul.Sadykova@Firma.kg', PASSWORD),
+    );
+    const oneMinuteAgo = new Date(Date.now() - 60_000);
+    await prisma.session.updateMany({ data: { lastSeenAt: oneMinuteAgo } });
+
+    await http()
+      .get('/api/v1/session')
+      .set('Cookie', withCookie(token))
+      .expect(200);
+
+    const [session] = await prisma.session.findMany();
+    expect(session.lastSeenAt).toEqual(oneMinuteAgo);
+  });
+
+  describe('throttling (ADR-0010; owner 2026-11-23: 5 → growing delay up to 15 min, IP 50 / 15 min)', () => {
+    const OWNER = 'Aigul.Sadykova@Firma.kg';
+    const ATTACKER_IP = '203.0.113.66';
+    const OWNER_IP = '198.51.100.7';
+    const sessions = () => app.get(SessionService);
+    const attempt = (email: string, password: string, ip: string) =>
+      sessions().signIn(email, password, { ip });
+
+    it('5 wrong passwords → the 6th attempt: 429 auth.throttled with Retry-After 60, even with the right password', async () => {
+      for (let i = 0; i < 5; i++) {
+        await signIn(OWNER, 'wrong-password-12345').expect(401);
+      }
+
+      const response = await signIn(OWNER, PASSWORD).expect(429);
+
+      expect(response.body.code).toBe('auth.throttled');
+      expect(Number(response.headers['retry-after'])).toBeGreaterThan(55);
+      expect(Number(response.headers['retry-after'])).toBeLessThanOrEqual(60);
+      expect(response.headers['set-cookie']).toBeUndefined();
+    });
+
+    it('guessing from one IP does not lock the owner out: the owner signs in from another IP', async () => {
+      for (let i = 0; i < 5; i++) {
+        await expect(
+          attempt(OWNER, 'wrong-password-12345', ATTACKER_IP),
+        ).rejects.toMatchObject({ code: 'auth.invalid_credentials' });
+      }
+      await expect(attempt(OWNER, PASSWORD, ATTACKER_IP)).rejects.toMatchObject(
+        { code: 'auth.throttled' },
+      );
+
+      await expect(attempt(OWNER, PASSWORD, OWNER_IP)).resolves.toMatch(
+        /^[A-Za-z0-9_-]{43}$/,
+      );
+    });
+
+    it('the delay grows: 6 failures → 2 minutes', async () => {
+      await prisma.loginFailure.createMany({
+        data: Array.from({ length: 6 }, () => ({
+          email: OWNER,
+          ip: ATTACKER_IP,
+          createdAt: new Date(),
+        })),
+      });
+
+      const error: unknown = await attempt(OWNER, PASSWORD, ATTACKER_IP).catch(
+        (rejection: unknown) => rejection,
+      );
+
+      expect(error).toMatchObject({
+        code: 'auth.throttled',
+        options: { retryAfterSeconds: expect.any(Number) },
+      });
+      const { retryAfterSeconds } = (error as ProblemException).options;
+      expect(retryAfterSeconds).toBeGreaterThan(115);
+      expect(retryAfterSeconds).toBeLessThanOrEqual(120);
+    });
+
+    it('a successful sign-in resets the pair: 4 failures, success, 4 failures → still no delay', async () => {
+      for (let i = 0; i < 4; i++) {
+        await attempt(OWNER, 'wrong-password-12345', OWNER_IP).catch(() => 0);
+      }
+      await attempt(OWNER, PASSWORD, OWNER_IP);
+      for (let i = 0; i < 4; i++) {
+        await attempt(OWNER, 'wrong-password-12345', OWNER_IP).catch(() => 0);
+      }
+
+      await expect(attempt(OWNER, PASSWORD, OWNER_IP)).resolves.toBeTruthy();
+    });
+
+    it('a rejected (throttled) attempt is not counted as a failure and checks no password', async () => {
+      for (let i = 0; i < 5; i++) {
+        await attempt(OWNER, 'wrong-password-12345', ATTACKER_IP).catch(
+          () => 0,
+        );
+      }
+      const before = await prisma.loginFailure.count();
+
+      await attempt(OWNER, 'wrong-password-12345', ATTACKER_IP).catch(() => 0);
+
+      expect(await prisma.loginFailure.count()).toBe(before);
+    });
+
+    it('password spraying: 50 failures from one IP across accounts → that IP gets 429 for any account; another IP does not', async () => {
+      // 49 earlier failures against other accounts within the last 15 minutes …
+      await prisma.loginFailure.createMany({
+        data: Array.from({ length: 49 }, (_, i) => ({
+          email: `user${i}@firma.kg`,
+          ip: ATTACKER_IP,
+          createdAt: new Date(Date.now() - 60_000),
+        })),
+      });
+      // … and the 50th now.
+      await expect(
+        attempt('someone@firma.kg', 'wrong-password-12345', ATTACKER_IP),
+      ).rejects.toMatchObject({ code: 'auth.invalid_credentials' });
+
+      await expect(attempt(OWNER, PASSWORD, ATTACKER_IP)).rejects.toMatchObject(
+        { code: 'auth.throttled' },
+      );
+      await expect(attempt(OWNER, PASSWORD, OWNER_IP)).resolves.toBeTruthy();
+    });
+
+    it('failures older than the 15-minute window do not count for the IP', async () => {
+      await prisma.loginFailure.createMany({
+        data: Array.from({ length: 60 }, (_, i) => ({
+          email: `user${i}@firma.kg`,
+          ip: ATTACKER_IP,
+          createdAt: new Date(Date.now() - 16 * 60_000),
+        })),
+      });
+
+      await expect(attempt(OWNER, PASSWORD, ATTACKER_IP)).resolves.toBeTruthy();
+    });
   });
 });

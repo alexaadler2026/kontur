@@ -11,6 +11,7 @@ import {
 import {
   MoneyDto,
   PageQueryDto,
+  ProblemException,
   ParseIdPipe,
   parseSort,
 } from '@adlersoft/api-kit';
@@ -84,6 +85,13 @@ class ProbeController {
   @Get('items/:id')
   one(@Param('id', ParseIdPipe) id: string) {
     return { id };
+  }
+
+  @Post('throttled')
+  throttled(): never {
+    throw new ProblemException('auth.throttled', undefined, {
+      retryAfterSeconds: 125,
+    });
   }
 
   @Post('crash')
@@ -201,6 +209,23 @@ describe('Problem Details (RFC 9457, ADR-0008) over HTTP', () => {
       instance: '/api/v1/does-not-exist',
     });
     expect(JSON.stringify(response.body)).not.toContain('someone@example.com');
+  });
+
+  it('throttled: 429 auth.throttled with the standard Retry-After header in seconds (ADR-0010)', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/api/v1/probe/throttled')
+      .expect(429)
+      .expect('Retry-After', '125');
+
+    expect(response.body.code).toBe('auth.throttled');
+  });
+
+  it('other errors carry no Retry-After', async () => {
+    const response = await request(app.getHttpServer())
+      .get('/api/v1/does-not-exist')
+      .expect(404);
+
+    expect(response.headers['retry-after']).toBeUndefined();
   });
 
   it('unexpected error: 500 server.internal, no internals in the body, traceId in the log line', async () => {
