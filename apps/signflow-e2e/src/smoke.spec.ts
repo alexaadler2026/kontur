@@ -88,9 +88,15 @@ test.describe('SignFlow smoke', () => {
           );
         }
       });
+      // The app starts as soon as ru.json arrives; de.json keeps loading in the background
+      // (provide-i18n.ts). Wait for it before comparing, or the list races the request.
+      const german = page.waitForResponse((r) =>
+        r.url().endsWith('/i18n/de.json'),
+      );
       await page.goto('/');
 
       await expect(page.locator('html')).toHaveAttribute('lang', 'ru');
+      await german;
       // e2e runs the production build: a key missing in ru shows German (ADR-0006),
       // so Transloco fetches de.json too. Other languages are fetched only on demand.
       expect(loaded.sort()).toEqual(['/i18n/de.json 200', '/i18n/ru.json 200']);
