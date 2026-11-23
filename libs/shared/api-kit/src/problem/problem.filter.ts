@@ -60,8 +60,8 @@ function codeOf(exception: unknown): ProblemCode {
  *   secret (journal 032). The code (e.g. P2002 = unique constraint) and the traceId are
  *   enough to find the cause.
  * - Everything else: the stack, which is our own code's message and call chain.
- * Recognised by name, not by import: this filter moves to libs/shared/api-kit (task 6),
- * which must not depend on one app's generated client.
+ * Recognised by name, not by import: this filter lives in libs/shared/api-kit, shared by
+ * both APIs, and must not depend on one app's generated Prisma client.
  */
 function describeForLog(exception: unknown): string {
   if (exception instanceof Error && exception.name.startsWith('PrismaClient')) {

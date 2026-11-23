@@ -1,6 +1,6 @@
 import type { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ProblemDetailsDto } from '../problem/problem-details.dto.js';
+import { ProblemDetailsDto } from '@adlersoft/api-kit';
 import { readAppVersion } from './app-version.js';
 
 /** Builds the OpenAPI document from the controllers and DTOs of a configured app. */

@@ -1,0 +1,30 @@
+{
+  "name": "api-kit",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/shared/api-kit/src",
+  "tags": ["scope:shared", "type:util", "platform:server"],
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "libs/shared/api-kit/dist",
+        "rootDir": "libs/shared/api-kit/src",
+        "main": "libs/shared/api-kit/src/index.ts",
+        "tsConfig": "libs/shared/api-kit/tsconfig.lib.json",
+        "generatePackageJson": false,
+        "transformers": [
+          {
+            "name": "@nestjs/swagger/plugin",
+            "options": {
+              "introspectComments": true
+            }
+          }
+        ]
+      },
+      "cache": true,
+      "inputs": ["production", "^production"]
+    }
+  }
+}

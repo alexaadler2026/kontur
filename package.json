@@ -7,13 +7,15 @@
     "prepare": "husky",
     "check:agents-md": "node tools/check-agents-md.mjs",
     "check:angular-builders": "node tools/check-angular-builders.mjs",
-    "check:project-tags": "node tools/check-project-tags.mjs"
+    "check:project-tags": "node tools/check-project-tags.mjs",
+    "check:module-boundaries": "node tools/check-module-boundaries.mjs"
   },
   "engines": {
     "node": ">=24 <25"
   },
   "packageManager": "pnpm@12.18.0",
   "dependencies": {
+    "@adlersoft/api-kit": "workspace:*",
     "@angular/common": "~22.2.0",
     "@angular/compiler": "~22.2.0",
     "@angular/core": "~22.2.0",

@@ -1,7 +1,7 @@
 import { Controller, Get, Inject } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { APP_VERSION } from '../app/app-version.js';
-import { ProblemException } from '../problem/problem.exception.js';
+import { ProblemException } from '@adlersoft/api-kit';
 import { HealthDto } from './health.dto.js';
 import { Readiness } from './readiness.js';
 

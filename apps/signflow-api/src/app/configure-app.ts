@@ -1,7 +1,9 @@
 import { type INestApplication, ValidationPipe } from '@nestjs/common';
-import { toFieldErrors } from '../problem/field-errors.js';
-import { ProblemException } from '../problem/problem.exception.js';
-import { ProblemFilter } from '../problem/problem.filter.js';
+import {
+  ProblemException,
+  ProblemFilter,
+  toFieldErrors,
+} from '@adlersoft/api-kit';
 
 /**
  * Settings shared by the running server, the OpenAPI script and the HTTP tests,

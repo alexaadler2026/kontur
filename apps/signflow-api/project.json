@@ -42,7 +42,7 @@
           }
         ]
       },
-      "dependsOn": ["prisma-generate"]
+      "dependsOn": ["^build", "prisma-generate"]
     },
     "serve": {
       "continuous": true,
@@ -92,7 +92,7 @@
       },
       "cache": true,
       "inputs": ["default", "^production", "{projectRoot}/.env.example"],
-      "dependsOn": ["build"]
+      "dependsOn": ["^build", "build"]
     },
     "test-integration": {
       "command": "vitest run --config vitest.integration.config.mts",
@@ -100,13 +100,13 @@
         "cwd": "apps/signflow-api"
       },
       "cache": false,
-      "dependsOn": ["prisma-generate"]
+      "dependsOn": ["^build", "prisma-generate"]
     },
     "typecheck": {
       "command": "tsc -p apps/signflow-api/tsconfig.spec.json --noEmit",
       "cache": true,
       "inputs": ["default", "{workspaceRoot}/tsconfig.base.json"],
-      "dependsOn": ["prisma-generate"]
+      "dependsOn": ["^build", "prisma-generate"]
     },
     "openapi": {
       "command": "node dist/apps/signflow-api/src/openapi.js libs/signflow/api-contract/openapi.json",

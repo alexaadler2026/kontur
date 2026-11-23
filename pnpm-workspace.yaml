@@ -1,3 +1,8 @@
+# Workspace packages: server libraries that the APIs import by package name, linked by pnpm
+# into node_modules (buildable libraries, ADR-0007). Everything else uses tsconfig paths.
+packages:
+  - 'libs/shared/*'
+
 allowBuilds:
   '@swc/core': true
   nx: true
