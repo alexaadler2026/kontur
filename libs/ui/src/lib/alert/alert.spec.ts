@@ -209,6 +209,7 @@ describe('k-alert', () => {
         readonly removeLabel = signal('Entfernen').asReadonly();
         readonly label = signal('Schließen');
         readonly closeLabel = this.label.asReadonly();
+        readonly locale = signal('de-DE').asReadonly();
       }
       const { fixture } = await render(`<k-alert dismissible>Text</k-alert>`, {
         imports: [AlertComponent],

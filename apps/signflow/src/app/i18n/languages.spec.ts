@@ -1,4 +1,18 @@
-import { LANGS, SOURCE_LANG, startLang } from './languages';
+import { LANGS, localeOf, SOURCE_LANG, startLang } from './languages';
+
+describe('localeOf (the Intl locale of a UI language, from languages.json)', () => {
+  it('de → de-DE, en → en-GB (European date order), ru → ru-RU', () => {
+    expect(['de', 'en', 'ru'].map(localeOf)).toEqual([
+      'de-DE',
+      'en-GB',
+      'ru-RU',
+    ]);
+  });
+
+  it('an unknown language → the locale of German', () => {
+    expect(localeOf('fr')).toBe('de-DE');
+  });
+});
 
 describe('languages', () => {
   it('reads the languages from public/i18n/languages.json, German as source', () => {

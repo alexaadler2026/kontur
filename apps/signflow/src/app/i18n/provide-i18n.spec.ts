@@ -106,6 +106,20 @@ describe('provideI18n (Transloco in SignFlow, ADR-0006)', () => {
     expect(intl.closeLabel()).toBe('Close');
   });
 
+  it('gives libs/ui the locale of the active language, also after a switch', async () => {
+    setUp(['ru-RU']);
+    await startWith({ 'i18n/ru.json': RU, 'i18n/de.json': DE });
+    const intl = TestBed.inject(KonturIntl);
+    expect(intl.locale()).toBe('ru-RU');
+
+    TestBed.inject(TranslocoService).setActiveLang('en');
+    TestBed.tick();
+    TestBed.inject(HttpTestingController).expectOne('i18n/en.json').flush(EN);
+    TestBed.tick();
+
+    expect(intl.locale()).toBe('en-GB');
+  });
+
   it('reports a missing key as an error and shows the key itself', async () => {
     setUp(['de-DE']);
     await startWith({ 'i18n/de.json': DE });

@@ -21,7 +21,8 @@ export function isLang(value: unknown): value is Lang {
   return typeof value === 'string' && LOCALES.has(value);
 }
 
-function localeOf(lang: Lang): string {
+/** The Intl locale of a UI language (en → en-GB); unknown → German's. */
+export function localeOf(lang: Lang): string {
   return LOCALES.get(lang) ?? (LOCALES.get(SOURCE_LANG) as string);
 }
 
