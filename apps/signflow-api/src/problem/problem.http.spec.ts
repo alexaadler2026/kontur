@@ -2,15 +2,25 @@ import {
   Body,
   Controller,
   type INestApplication,
+  Get,
   Module,
+  Param,
   Post,
+  Query,
 } from '@nestjs/common';
-import { MoneyDto } from '@adlersoft/api-kit';
+import {
+  MoneyDto,
+  PageQueryDto,
+  ParseIdPipe,
+  parseSort,
+} from '@adlersoft/api-kit';
 import { Test } from '@nestjs/testing';
 import { Type } from 'class-transformer';
 import {
   IsEmail,
   IsNotEmpty,
+  IsOptional,
+  IsString,
   MinLength,
   ValidateNested,
 } from 'class-validator';
@@ -47,6 +57,12 @@ class ProbePriceDto {
   price!: MoneyDto;
 }
 
+class ProbeListQueryDto extends PageQueryDto {
+  @IsOptional()
+  @IsString()
+  sort?: string;
+}
+
 @Controller('probe')
 class ProbeController {
   @Post()
@@ -57,6 +73,17 @@ class ProbeController {
   @Post('price')
   price(@Body() body: ProbePriceDto) {
     return body.price;
+  }
+
+  @Get('items')
+  list(@Query() query: ProbeListQueryDto) {
+    const sort = parseSort(query.sort, ['title', 'updatedAt'] as const);
+    return { page: query.page, pageSize: query.pageSize, sort };
+  }
+
+  @Get('items/:id')
+  one(@Param('id', ParseIdPipe) id: string) {
+    return { id };
   }
 
   @Post('crash')
@@ -213,5 +240,41 @@ describe('Problem Details (RFC 9457, ADR-0008) over HTTP', () => {
       .post('/api/v1/probe/price')
       .send({ price: { amountMinor: 1586, currency: 'EUR' } })
       .expect(201, { amountMinor: 1586, currency: 'EUR' });
+  });
+
+  it('lists: page and pageSize from the query, sort parsed against the allowed fields', async () => {
+    await request(app.getHttpServer())
+      .get('/api/v1/probe/items?page=2&sort=-title')
+      .expect(200, {
+        page: 2,
+        pageSize: 25,
+        sort: [{ field: 'title', direction: 'desc' }],
+      });
+  });
+
+  it('lists: pageSize over 100 is 422; an unknown sort field is 400 request.malformed', async () => {
+    const tooBig = await request(app.getHttpServer())
+      .get('/api/v1/probe/items?pageSize=101')
+      .expect(422);
+    expect(tooBig.body.errors).toEqual([
+      { pointer: '/pageSize', code: 'validation.invalid', params: {} },
+    ]);
+
+    const unknown = await request(app.getHttpServer())
+      .get('/api/v1/probe/items?sort=password')
+      .expect(400);
+    expect(unknown.body.code).toBe('request.malformed');
+  });
+
+  it('an id in the path that is not a UUID is 404 request.not_found', async () => {
+    const response = await request(app.getHttpServer())
+      .get('/api/v1/probe/items/not-a-uuid')
+      .expect(404);
+    expect(response.body.code).toBe('request.not_found');
+
+    const id = '019a7f3c-5b2e-7c41-9d3a-2f6e8b1c4d50';
+    await request(app.getHttpServer())
+      .get(`/api/v1/probe/items/${id}`)
+      .expect(200, { id });
   });
 });
