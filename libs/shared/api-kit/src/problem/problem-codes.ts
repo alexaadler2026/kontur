@@ -9,6 +9,10 @@ export const PROBLEM_CODES = {
   'validation.invalid': { status: 422, title: 'A value is not valid' },
   'validation.required': { status: 422, title: 'A required value is missing' },
   'validation.email': { status: 422, title: 'Not a valid e-mail address' },
+  'money.currency_unsupported': {
+    status: 422,
+    title: 'The currency is not supported',
+  },
   'request.malformed': {
     status: 400,
     title: 'The request could not be parsed',

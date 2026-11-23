@@ -5,3 +5,8 @@ export * from './problem/problem-codes.js';
 export * from './problem/problem-details.dto.js';
 export * from './problem/problem.exception.js';
 export * from './problem/problem.filter.js';
+// Money (ADR-0008): ISO 4217 table, integer amounts in minor units, exact decimal strings.
+export * from './money/currency.js';
+export * from './money/decimal-string.js';
+export * from './money/money.dto.js';
+export * from './money/money.js';

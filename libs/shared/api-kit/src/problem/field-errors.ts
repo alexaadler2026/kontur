@@ -13,6 +13,7 @@ const RULE_CODES: Record<string, ProblemCode> = {
   isDefined: 'validation.required',
   isNotEmpty: 'validation.required',
   isEmail: 'validation.email',
+  isCurrencyCode: 'money.currency_unsupported',
 };
 
 /** RFC 6901: "~" → "~0", "/" → "~1" inside one path segment. */

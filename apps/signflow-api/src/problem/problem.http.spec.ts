@@ -5,6 +5,7 @@ import {
   Module,
   Post,
 } from '@nestjs/common';
+import { MoneyDto } from '@adlersoft/api-kit';
 import { Test } from '@nestjs/testing';
 import { Type } from 'class-transformer';
 import {
@@ -40,11 +41,22 @@ class ProbeDto {
   signers: ProbeSignerDto[] = [];
 }
 
+class ProbePriceDto {
+  @ValidateNested()
+  @Type(() => MoneyDto)
+  price!: MoneyDto;
+}
+
 @Controller('probe')
 class ProbeController {
   @Post()
   create(@Body() body: ProbeDto) {
     return { received: Boolean(body) };
+  }
+
+  @Post('price')
+  price(@Body() body: ProbePriceDto) {
+    return body.price;
   }
 
   @Post('crash')
@@ -182,5 +194,24 @@ describe('Problem Details (RFC 9457, ADR-0008) over HTTP', () => {
     expect(
       logger.lines.some((line) => line.includes(response.body.traceId)),
     ).toBe(true);
+  });
+
+  it('money: an unsupported currency is 422 with money.currency_unsupported; a supported one passes', async () => {
+    const response = await request(app.getHttpServer())
+      .post('/api/v1/probe/price')
+      .send({ price: { amountMinor: 1586, currency: 'XAU' } })
+      .expect(422);
+    expect(response.body.errors).toEqual([
+      {
+        pointer: '/price/currency',
+        code: 'money.currency_unsupported',
+        params: {},
+      },
+    ]);
+
+    await request(app.getHttpServer())
+      .post('/api/v1/probe/price')
+      .send({ price: { amountMinor: 1586, currency: 'EUR' } })
+      .expect(201, { amountMinor: 1586, currency: 'EUR' });
   });
 });

@@ -15,6 +15,9 @@
       "required": "Please fill in this field.",
       "email": "Please enter a valid email address."
     },
+    "money": {
+      "currency_unsupported": "This currency is not supported."
+    },
     "request": {
       "malformed": "The request could not be processed. Please reload the page.",
       "not_found": "The requested item was not found."

@@ -15,6 +15,9 @@
       "required": "Bitte füllen Sie dieses Feld aus.",
       "email": "Bitte geben Sie eine gültige E-Mail-Adresse ein."
     },
+    "money": {
+      "currency_unsupported": "Diese Währung wird nicht unterstützt."
+    },
     "request": {
       "malformed": "Die Anfrage konnte nicht verarbeitet werden. Bitte laden Sie die Seite neu.",
       "not_found": "Der angeforderte Eintrag wurde nicht gefunden."

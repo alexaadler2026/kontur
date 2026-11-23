@@ -25,6 +25,19 @@
       },
       "cache": true,
       "inputs": ["production", "^production"]
+    },
+    "test": {
+      "command": "vitest run",
+      "options": {
+        "cwd": "libs/shared/api-kit"
+      },
+      "cache": true,
+      "inputs": ["default", "^production"]
+    },
+    "typecheck": {
+      "command": "tsc -p libs/shared/api-kit/tsconfig.spec.json --noEmit",
+      "cache": true,
+      "inputs": ["default", "{workspaceRoot}/tsconfig.base.json"]
     }
   }
 }

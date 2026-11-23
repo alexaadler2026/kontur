@@ -30,6 +30,7 @@
           "validation.invalid",
           "validation.required",
           "validation.email",
+          "money.currency_unsupported",
           "request.malformed",
           "request.not_found",
           "server.internal",
