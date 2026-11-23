@@ -32,7 +32,8 @@
           "validation.email",
           "request.malformed",
           "request.not_found",
-          "server.internal"
+          "server.internal",
+          "server.unavailable"
         ],
         "type": "string"
       },
@@ -213,7 +214,39 @@
             "description": "Error as Problem Details (RFC 9457, ADR-0008)"
           }
         },
-        "summary": "Liveness: the process answers.",
+        "summary": "Liveness: the process answers. Never touches the database.",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/api/v1/health/ready": {
+      "get": {
+        "operationId": "getHealthReady",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            },
+            "description": "Error as Problem Details (RFC 9457, ADR-0008)"
+          }
+        },
+        "summary": "Readiness: the database answers and every migration of this build is applied.\nOtherwise 503 `server.unavailable` (ADR-0020); the reason is in the log.",
         "tags": [
           "health"
         ]

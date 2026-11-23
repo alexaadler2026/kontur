@@ -20,7 +20,8 @@
       "not_found": "The requested item was not found."
     },
     "server": {
-      "internal": "An unexpected error occurred. Please try again later."
+      "internal": "An unexpected error occurred. Please try again later.",
+      "unavailable": "The service is temporarily unavailable. Please try again later."
     },
     "generic": {
       "client": "The action could not be completed. Please try again.",

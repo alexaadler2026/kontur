@@ -20,7 +20,8 @@
       "not_found": "Der angeforderte Eintrag wurde nicht gefunden."
     },
     "server": {
-      "internal": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut."
+      "internal": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.",
+      "unavailable": "Der Dienst ist vorübergehend nicht verfügbar. Bitte versuchen Sie es später erneut."
     },
     "generic": {
       "client": "Die Aktion konnte nicht ausgeführt werden. Bitte versuchen Sie es erneut.",

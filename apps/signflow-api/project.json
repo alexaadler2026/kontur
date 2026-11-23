@@ -33,6 +33,13 @@
               "introspectComments": true
             }
           }
+        ],
+        "assets": [
+          {
+            "input": "apps/signflow-api/prisma/migrations",
+            "glob": "**/*",
+            "output": "prisma/migrations"
+          }
         ]
       },
       "dependsOn": ["prisma-generate"]

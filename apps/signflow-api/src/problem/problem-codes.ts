@@ -15,6 +15,10 @@ export const PROBLEM_CODES = {
   },
   'request.not_found': { status: 404, title: 'Not found' },
   'server.internal': { status: 500, title: 'Unexpected server error' },
+  'server.unavailable': {
+    status: 503,
+    title: 'The service is temporarily unavailable',
+  },
 } as const satisfies Record<string, { status: number; title: string }>;
 
 export type ProblemCode = keyof typeof PROBLEM_CODES;
