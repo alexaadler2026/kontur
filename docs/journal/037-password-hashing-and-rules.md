@@ -63,6 +63,11 @@ Date: 2026-11-23 · Task: roadmap 7, part 7a, [ADR-0010](../adr/0010-authenticat
 проходов: именно память дорога для видеокарт. В CI время печатает шаг «Argon2id timing»
 как аннотацию (`::notice`), её видно на странице прогона и через публичный API GitHub.
 
+**Время в CI (после push, коммит `4b5c447`): медиана 84 ms** (min 82, max 102, 7 замеров)
+на раннере `ubuntu-latest` — ниже цели; раннер примерно в 3,5 раза быстрее ноутбука. Цифра
+вписана в ADR-0010 как есть. Для какой машины цель 200–500 ms (ноутбук, CI или будущий
+сервер ADR-0014) — вопрос владельцу; сервер замеряем тем же `measure-hash` в задаче 23.
+
 **Почему список частых паролей такой.** Одобренный сначала «10 000 частых» при длине
 ≥ 15 содержал **одну** подходящую запись — остальные и так отсекает правило длины.
 Поэтому (решение владельца) — объединение трёх больших списков SecLists (MIT), только
@@ -156,7 +161,10 @@ product name.
 **Parameters.** Measured on the owner's laptop (medians): OWASP baseline 19 MiB/t=2 121 ms
 (below the 200–500 ms target), 32 MiB/t=3 268 ms, 46 MiB/t=2 274–327 ms (chosen), 64 MiB/t=2
 396 ms. More memory rather than more passes: memory is what GPUs lack. CI prints its time as
-an annotation.
+an annotation: after the push (commit `4b5c447`) the GitHub runner took a median of 84 ms
+(min 82, max 102) — below the target, the runner being about 3.5× faster than the laptop.
+Which machine the target refers to is an open question for the owner; the production server
+gets measured with the same `measure-hash` in task 23.
 
 **Common-password list.** The originally approved 10k list had a single entry of 15+
 characters. Owner's decision: the union of three large SecLists (MIT) lists, only 15–128
