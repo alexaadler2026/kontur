@@ -65,8 +65,9 @@ Second factor in v1: **no (prepared)** / TOTP for everyone / TOTP for admins.
   GPUs expensive. CI reports its own time as an annotation ("Argon2id timing" step,
   journal 037): **GitHub runner (`ubuntu-latest`), commit `4b5c447`: median 84 ms** (min 82,
   max 102, 7 runs) — below the target; the runner is about 3.5× faster than the laptop.
-  Which machine the target refers to is open (owner, next-steps); the production server
-  (ADR-0014) will be measured with `pnpm nx run auth-server:measure-hash` in task 23.
+  **The target refers to the production server** (owner, 2026-11-23): parameters stay; the
+  server (ADR-0014) is measured with `pnpm nx run auth-server:measure-hash` in task 23 and
+  the parameters are adjusted there if it falls outside 200–500 ms.
 - **Implementation (amended 2026-11-23, task 7a): Node's built-in `crypto.argon2`**,
   behind the `PasswordHasher` interface in `libs/shared/auth-server`. Checked: added in
   Node 24.7.0, no "experimental" marker in the Node 24.22.3 documentation (the `crypto`

@@ -46,7 +46,10 @@ Date: 2026-11-23 · Task: "Node version" (before 7b), [ADR-0001](../adr/0001-nx-
   версию не смотрел вообще (код 0) — поэтому настройка нужна;
 - `pnpm nx …` при этом работает: `engineStrict` касается только установки.
 
-Зелёный — после установки 24.22.3 локально и после push в CI (аннотация «Node version»).
+Зелёный: владелец поставил 24.22.3 (MSI) — `node -v` → `v24.22.3`, `pnpm
+check:node-version` → ok, `pnpm install --frozen-lockfile` → Done. CI на коммите `847e9f1`
+— аннотация **«Node version: v24.22.3»**, шаги проверки и установки зелёные, весь прогон
+зелёный.
 
 **Установка 24.22.3 на машине владельца (PowerShell, нужен UAC).** Особенность машины:
 `C:\Program Files\nodejs` — символическая ссылка в папку nvm из Laravel Herd
@@ -115,8 +118,9 @@ as an annotation readable without logging in.
 
 **Testing (red first).** On Node 24.11.0 the check exits 1 with a clear message; `pnpm
 install --frozen-lockfile` with `engineStrict` exits 1 (`Unsupported engine`), without it
-pnpm ignored `engines` (exit 0). `pnpm nx` still runs. Green after installing 24.22.3 locally
-and in CI after the push.
+pnpm ignored `engines` (exit 0). `pnpm nx` still runs. Green: the owner installed 24.22.3
+(MSI; `node -v` → `v24.22.3`, check ok, frozen install done), and CI on `847e9f1` printed the
+annotation "Node version: v24.22.3" with every step green.
 
 **Alternatives considered and why rejected.** `check-latest` (environments still drift), a
 range like `>=24.20 <25` (no single version), two unchecked copies of the number (they drift),
