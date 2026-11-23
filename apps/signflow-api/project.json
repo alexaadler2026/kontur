@@ -105,14 +105,18 @@
     "typecheck": {
       "command": "tsc -p apps/signflow-api/tsconfig.spec.json --noEmit",
       "cache": true,
-      "inputs": ["default", "{workspaceRoot}/tsconfig.base.json"],
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/tsconfig.base.json"
+      ],
       "dependsOn": ["^build", "prisma-generate"]
     },
     "openapi": {
       "command": "node dist/apps/signflow-api/src/openapi.js libs/signflow/api-contract/openapi.json",
       "dependsOn": ["build"],
       "cache": true,
-      "inputs": ["production"],
+      "inputs": ["production", "^production"],
       "outputs": ["{workspaceRoot}/libs/signflow/api-contract/openapi.json"]
     },
     "api-check": {
@@ -121,6 +125,7 @@
       "cache": true,
       "inputs": [
         "production",
+        "^production",
         "{workspaceRoot}/libs/signflow/api-contract/openapi.json"
       ]
     }
