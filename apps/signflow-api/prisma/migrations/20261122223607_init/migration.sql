@@ -1,0 +1,16 @@
+-- citext: case-insensitive text for e-mail (Anna@Beispiel.de = anna@beispiel.de).
+-- Added by hand: Prisma does not create extensions (journal 031).
+CREATE EXTENSION IF NOT EXISTS citext;
+
+-- CreateTable
+CREATE TABLE "users" (
+    "id" UUID NOT NULL DEFAULT uuidv7(),
+    "email" CITEXT NOT NULL,
+    "created_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");

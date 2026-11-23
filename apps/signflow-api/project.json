@@ -6,6 +6,18 @@
   "tags": ["scope:signflow", "type:app", "platform:server"],
   "implicitDependencies": ["signflow-api-contract"],
   "targets": {
+    "prisma-generate": {
+      "command": "prisma generate",
+      "options": {
+        "cwd": "apps/signflow-api"
+      },
+      "cache": true,
+      "inputs": [
+        "{projectRoot}/prisma/schema.prisma",
+        "{projectRoot}/prisma.config.ts"
+      ],
+      "outputs": ["{projectRoot}/src/generated/prisma"]
+    },
     "build": {
       "executor": "@nx/js:tsc",
       "outputs": ["{options.outputPath}"],
@@ -22,13 +34,17 @@
             }
           }
         ]
-      }
+      },
+      "dependsOn": ["prisma-generate"]
     },
     "serve": {
       "continuous": true,
       "executor": "@nx/js:node",
       "options": {
-        "buildTarget": "signflow-api:build"
+        "buildTarget": "signflow-api:build",
+        "env": {
+          "DATABASE_URL": "postgresql://signflow:signflow-local@127.0.0.1:5432/signflow"
+        }
       }
     },
     "serve-e2e": {
@@ -37,9 +53,30 @@
       "command": "node dist/apps/signflow-api/src/main.js",
       "options": {
         "env": {
-          "PORT": "4310"
+          "PORT": "4310",
+          "DATABASE_URL": "postgresql://offline:offline@127.0.0.1:1/offline"
         }
       }
+    },
+    "prisma-migrate-dev": {
+      "command": "prisma migrate dev",
+      "options": {
+        "cwd": "apps/signflow-api",
+        "env": {
+          "DATABASE_URL": "postgresql://signflow:signflow-local@127.0.0.1:5432/signflow"
+        }
+      },
+      "cache": false
+    },
+    "prisma-migrate-deploy": {
+      "command": "prisma migrate deploy",
+      "options": {
+        "cwd": "apps/signflow-api",
+        "env": {
+          "DATABASE_URL": "postgresql://signflow:signflow-local@127.0.0.1:5432/signflow"
+        }
+      },
+      "cache": false
     },
     "test": {
       "command": "vitest run",
@@ -50,10 +87,19 @@
       "inputs": ["default", "^production", "{projectRoot}/.env.example"],
       "dependsOn": ["build"]
     },
+    "test-integration": {
+      "command": "vitest run --config vitest.integration.config.mts",
+      "options": {
+        "cwd": "apps/signflow-api"
+      },
+      "cache": false,
+      "dependsOn": ["prisma-generate"]
+    },
     "typecheck": {
       "command": "tsc -p apps/signflow-api/tsconfig.spec.json --noEmit",
       "cache": true,
-      "inputs": ["default", "{workspaceRoot}/tsconfig.base.json"]
+      "inputs": ["default", "{workspaceRoot}/tsconfig.base.json"],
+      "dependsOn": ["prisma-generate"]
     },
     "openapi": {
       "command": "node dist/apps/signflow-api/src/openapi.js libs/signflow/api-contract/openapi.json",

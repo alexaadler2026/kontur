@@ -2,6 +2,7 @@ import { plainToInstance, Type } from 'class-transformer';
 import {
   getMetadataStorage,
   IsInt,
+  Matches,
   Max,
   Min,
   validateSync,
@@ -22,6 +23,15 @@ class ConfigSchema {
   @Min(1, { message: 'PORT must be an integer from 1 to 65535' })
   @Max(65535, { message: 'PORT must be an integer from 1 to 65535' })
   PORT = 3333;
+
+  /**
+   * PostgreSQL connection, `postgresql://user:password@host:port/database`. Holds a
+   * password, so: required, no default, never printed.
+   */
+  @Matches(/^postgres(ql)?:\/\/\S+$/, {
+    message: 'DATABASE_URL must be a postgresql:// URL',
+  })
+  DATABASE_URL!: string;
 }
 
 /** The validated, immutable settings. Code gets this object, never process.env. */

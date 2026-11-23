@@ -17,6 +17,7 @@ import {
 import request from 'supertest';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { AppModule } from '../app/app.module.js';
+import { offlineConfig } from '../config/offline-config.js';
 import { configureApp } from '../app/configure-app.js';
 
 // A controller and DTOs that exist only in this test: SignFlow has no endpoint with input
@@ -79,7 +80,7 @@ describe('Problem Details (RFC 9457, ADR-0008) over HTTP', () => {
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [AppModule, ProbeModule],
+      imports: [AppModule.forRoot(offlineConfig()), ProbeModule],
     }).compile();
     app = configureApp(moduleRef.createNestApplication({ logger }));
     await app.init();

@@ -3,6 +3,7 @@ import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { AppModule } from '../app/app.module.js';
+import { offlineConfig } from '../config/offline-config.js';
 import { configureApp } from '../app/configure-app.js';
 import { createOpenApiDocument } from '../app/openapi-document.js';
 
@@ -11,7 +12,7 @@ describe('GET /api/v1/config (public settings for the SPA, ADR-0009)', () => {
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [AppModule.forRoot(offlineConfig())],
     }).compile();
     app = configureApp(moduleRef.createNestApplication({ logger: false }));
     await app.init();

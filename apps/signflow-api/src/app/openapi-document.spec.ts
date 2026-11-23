@@ -3,6 +3,7 @@ import { ApiOkResponse, ApiProperty } from '@nestjs/swagger';
 import { Test } from '@nestjs/testing';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { AppModule } from './app.module.js';
+import { offlineConfig } from '../config/offline-config.js';
 import { configureApp } from './configure-app.js';
 import { createOpenApiDocument } from './openapi-document.js';
 import { PROBLEM_CODE_LIST } from '../problem/problem-codes.js';
@@ -13,7 +14,7 @@ describe('OpenAPI document of signflow-api', () => {
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [AppModule.forRoot(offlineConfig())],
     }).compile();
     app = configureApp(moduleRef.createNestApplication({ logger: false }));
     document = createOpenApiDocument(app);

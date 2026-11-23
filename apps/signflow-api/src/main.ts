@@ -20,7 +20,7 @@ try {
   process.exit(1);
 }
 
-const app = configureApp(await NestFactory.create(AppModule));
+const app = configureApp(await NestFactory.create(AppModule.forRoot(config)));
 await app.listen(config.PORT);
 Logger.log(
   `SignFlow API on http://localhost:${config.PORT}/api/v1`,

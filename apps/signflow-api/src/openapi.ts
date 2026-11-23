@@ -4,6 +4,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module.js';
 import { configureApp } from './app/configure-app.js';
 import { createOpenApiDocument, sortKeys } from './app/openapi-document.js';
+import { offlineConfig } from './config/offline-config.js';
 
 // Usage: node dist/apps/signflow-api/src/openapi.js <contract file> [--check]
 // Run through `nx run signflow-api:openapi` (writes) or `nx run signflow-api:api-check`
@@ -13,9 +14,11 @@ if (!contractFile || (mode !== undefined && mode !== '--check')) {
   throw new Error('Usage: openapi.js <contract file> [--check]');
 }
 
-// The app is created but never listens: no port, no network.
+// The app is created but never listens and never queries: no port, no database.
 const app = configureApp(
-  await NestFactory.create(AppModule, { logger: ['error'] }),
+  await NestFactory.create(AppModule.forRoot(offlineConfig()), {
+    logger: ['error'],
+  }),
 );
 const document = sortKeys(createOpenApiDocument(app));
 await app.close();

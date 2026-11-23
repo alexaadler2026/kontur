@@ -2,41 +2,77 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { ConfigError, configKeys, loadConfig } from './load-config.js';
 
+// DATABASE_URL is required since task 5 (a secret: no default), so every case below has one.
+const DATABASE_URL = 'postgresql://signflow:local@127.0.0.1:5432/signflow';
+const DB = { DATABASE_URL };
+
 describe('loadConfig (ADR-0009)', () => {
   it('reads PORT as a number', () => {
-    expect(loadConfig({ PORT: '4310' })).toEqual({ PORT: 4310 });
+    expect(loadConfig({ ...DB, PORT: '4310' })).toEqual({ ...DB, PORT: 4310 });
   });
 
   it('PORT may be missing: its default 3333 is the same everywhere and harmless', () => {
-    expect(loadConfig({})).toEqual({ PORT: 3333 });
+    expect(loadConfig(DB)).toEqual({ ...DB, PORT: 3333 });
   });
 
   it('returns a frozen object: nobody changes the settings after the start', () => {
-    expect(Object.isFrozen(loadConfig({}))).toBe(true);
+    expect(Object.isFrozen(loadConfig(DB))).toBe(true);
   });
 
   it('reads only the settings of the schema, nothing else from the environment', () => {
     expect(
-      loadConfig({ PORT: '4310', PATH: '/usr/bin', SECRET_X: 's3cr3t' }),
-    ).toEqual({
-      PORT: 4310,
-    });
+      loadConfig({ ...DB, PORT: '4310', PATH: '/usr/bin', SECRET_X: 's3cr3t' }),
+    ).toEqual({ ...DB, PORT: 4310 });
   });
 
   for (const value of ['abc', '', '0', '65536', '33.5']) {
     it(`PORT="${value}" stops the start with a message naming the variable, not the value`, () => {
-      expect(() => loadConfig({ PORT: value })).toThrow(ConfigError);
-      expect(() => loadConfig({ PORT: value })).toThrow(
+      expect(() => loadConfig({ ...DB, PORT: value })).toThrow(ConfigError);
+      expect(() => loadConfig({ ...DB, PORT: value })).toThrow(
         /PORT must be an integer from 1 to 65535/,
       );
       try {
-        loadConfig({ PORT: value });
+        loadConfig({ ...DB, PORT: value });
       } catch (error) {
         // The value is not repeated: another setting's value could be a secret.
         if (value) expect((error as Error).message).not.toContain(`"${value}"`);
       }
     });
   }
+
+  const DATABASE_URL_RULE = 'DATABASE_URL must be a postgresql:// URL';
+
+  it('DATABASE_URL missing: the start stops — a secret never has a default', () => {
+    expect(() => loadConfig({})).toThrow(DATABASE_URL_RULE);
+  });
+
+  it('DATABASE_URL not a PostgreSQL URL: the message names it, never its value (it holds a password)', () => {
+    const wrong = 'mysql://root:Geheim-Pass@db/signflow';
+    expect(() => loadConfig({ DATABASE_URL: wrong })).toThrow(
+      DATABASE_URL_RULE,
+    );
+    try {
+      loadConfig({ DATABASE_URL: wrong });
+    } catch (error) {
+      expect((error as Error).message).not.toContain('Geheim');
+    }
+  });
+
+  it('two wrong settings: one line each', () => {
+    try {
+      loadConfig({ PORT: 'abc' });
+      expect.unreachable();
+    } catch (error) {
+      const lines = (error as Error).message.split('\n').slice(1);
+      expect(lines).toEqual(
+        expect.arrayContaining([
+          '  PORT must be an integer from 1 to 65535',
+          `  ${DATABASE_URL_RULE}`,
+        ]),
+      );
+      expect(lines).toHaveLength(2);
+    }
+  });
 });
 
 describe('.env.example (ADR-0009: lists exactly the settings of the schema)', () => {

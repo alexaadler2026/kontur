@@ -1,0 +1,38 @@
+# Local services for development only (task 5). Production has its own compose.yaml
+# (task 23). Start:  docker compose -f compose.dev.yaml up -d
+# Stop:   docker compose -f compose.dev.yaml down     (add -v to delete the data)
+#
+# The password below is a harmless local value, the same as in apps/signflow-api/.env.example;
+# ports listen on 127.0.0.1 only, so nothing outside this machine can connect.
+
+name: kontur-dev
+
+services:
+  postgres:
+    # Exactly the image of the integration tests (src/database/postgres-image.ts, checked
+    # by a test): Debian, not alpine — real locales for sorting German and Russian text.
+    image: postgres:18.7-trixie
+    environment:
+      POSTGRES_USER: signflow
+      POSTGRES_PASSWORD: signflow-local
+      POSTGRES_DB: signflow
+    ports:
+      - '127.0.0.1:5432:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U signflow -d signflow']
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  mailpit:
+    # Catches every e-mail the API sends; web inbox on http://127.0.0.1:8025 (used from
+    # task 10/27 on, ADR-0015).
+    image: axllent/mailpit:v1.34.0
+    ports:
+      - '127.0.0.1:1025:1025'
+      - '127.0.0.1:8025:8025'
+
+volumes:
+  postgres-data:
