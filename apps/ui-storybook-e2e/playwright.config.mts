@@ -16,9 +16,15 @@ export default defineConfig({
     baseURL,
     trace: 'on-first-retry',
   },
+  // Hard limits (owner, 2026-11-24): a hang becomes a quick red run, not a 65-minute wait.
+  // The whole run: the suites take 0.5–3 min. Each webServer below: 2 minutes, the same as
+  // the readyWhen timeout of its Nx target.
+  globalTimeout: 10 * 60_000,
   webServer: {
+    name: 'static Storybook',
     command: 'pnpm exec nx run ui-storybook:static-storybook',
     url: baseURL,
+    timeout: 120_000,
     // true: when run via `nx e2e`, Nx has already built Storybook (build-storybook, cached) and
     // started static-storybook on 4402. The dev Storybook (`nx storybook`) uses 4400.
     reuseExistingServer: true,

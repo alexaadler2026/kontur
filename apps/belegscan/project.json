@@ -78,7 +78,8 @@
     "serve-static": {
       "continuous": true,
       "readyWhen": {
-        "signal": true
+        "signal": true,
+        "timeout": 120000
       },
       "dependsOn": ["build"],
       "executor": "@nx/web:file-server",

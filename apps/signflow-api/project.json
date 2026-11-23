@@ -60,7 +60,7 @@
       "command": "node dist/apps/signflow-api/src/e2e-server.js",
       "readyWhen": {
         "url": "http://localhost:4310/api/v1/health/live",
-        "timeout": 180000
+        "timeout": 120000
       }
     },
     "prisma-migrate-dev": {

@@ -36,9 +36,15 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },
+  // Hard limits (owner, 2026-11-24): a hang becomes a quick red run, not a 65-minute wait.
+  // The whole run: the suites take 0.5–3 min. Each webServer below: 2 minutes, the same as
+  // the readyWhen timeout of its Nx target.
+  globalTimeout: 10 * 60_000,
   webServer: {
+    name: 'belegscan static build',
     command: 'pnpm exec nx run belegscan:serve-static',
     url: baseURL,
+    timeout: 120_000,
     // true: when run via `nx e2e`, Nx has already started serve-static on the e2e port.
     // Nothing else listens there — the dev server uses 4201.
     reuseExistingServer: true,

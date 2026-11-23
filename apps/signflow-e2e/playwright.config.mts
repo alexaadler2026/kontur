@@ -40,6 +40,10 @@ export default defineConfig({
   },
   // reuseExistingServer true: when run via `nx e2e`, Nx has already started both on the
   // e2e ports. Nothing else listens there — the dev servers use 4200 and 3333.
+  // Hard limits (owner, 2026-11-24): a hang becomes a quick red run, not a 65-minute wait.
+  // The whole run: the suites take 0.5–3 min. Each webServer below: 2 minutes, the same as
+  // the readyWhen timeout of its Nx target.
+  globalTimeout: 10 * 60_000,
   webServer: [
     {
       // The built signflow-api (task 1d) on a real PostgreSQL in Docker with the test
@@ -47,15 +51,19 @@ export default defineConfig({
       command: 'pnpm exec nx run signflow-api:serve-e2e',
       url: `http://localhost:${apiPort}/api/v1/health/live`,
       reuseExistingServer: true,
-      // Pulling the image the first time + migrations: more than the default 60 s
-      // (the integration tests allow 180 s for the same).
-      timeout: 180_000,
+      name: 'signflow-api (PostgreSQL in Docker + API)',
+      // Docker start + migrations take ~10 s; 2 min also covers the first image pull on a
+      // normal connection. A timeout says "Timed out waiting 120000ms from config.webServer"
+      // with this name: check that Docker Desktop runs.
+      timeout: 120_000,
       cwd: workspaceRoot,
     },
     {
       // Static build + /api proxy to the API (apps/signflow-e2e/static-server.mjs).
+      name: 'signflow static build',
       command: 'pnpm exec nx run signflow:serve-static',
       url: baseURL,
+      timeout: 120_000,
       reuseExistingServer: true,
       cwd: workspaceRoot,
     },
