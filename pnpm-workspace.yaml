@@ -2,6 +2,8 @@
 # into node_modules (buildable libraries, ADR-0007). Everything else uses tsconfig paths.
 packages:
   - 'libs/shared/*'
+  # A browser library (tsconfig paths): its package.json only exists for ng-packagr.
+  - '!libs/shared/auth-client'
 
 allowBuilds:
   '@swc/core': true

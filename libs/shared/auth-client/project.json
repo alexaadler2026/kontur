@@ -1,0 +1,37 @@
+{
+  "name": "auth-client",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/shared/auth-client/src",
+  "projectType": "library",
+  "tags": ["scope:shared", "type:data-access", "platform:web"],
+  "targets": {
+    "build": {
+      "executor": "@angular/build:ng-packagr",
+      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "project": "libs/shared/auth-client/ng-package.json",
+        "tsConfig": "libs/shared/auth-client/tsconfig.lib.json"
+      },
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/shared/auth-client/tsconfig.lib.prod.json"
+        },
+        "development": {}
+      }
+    },
+    "test": {
+      "executor": "@angular/build:unit-test",
+      "options": {
+        "runnerConfig": "vitest-base.config.mts",
+        "tsConfig": "libs/shared/auth-client/tsconfig.spec.json",
+        "watch": false
+      }
+    },
+    "typecheck": {
+      "command": "tsc -p libs/shared/auth-client/tsconfig.lib.json --noEmit",
+      "cache": true,
+      "inputs": ["default", "{workspaceRoot}/tsconfig.base.json"]
+    }
+  }
+}

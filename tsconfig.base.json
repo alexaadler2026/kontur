@@ -24,7 +24,8 @@
       ],
       "@adlersoft/signflow-api-client/mocks": [
         "./libs/signflow/api-client/src/mocks.ts"
-      ]
+      ],
+      "@adlersoft/auth-client": ["./libs/shared/auth-client/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
