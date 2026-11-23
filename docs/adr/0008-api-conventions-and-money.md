@@ -136,9 +136,14 @@ GET /api/v1/envelopes?page=2&pageSize=25&sort=-updatedAt,title&status=waiting&st
 - Personal or secret values travel in the **request body** (or a header). A token that must
   arrive by link goes in the **URL fragment** `#…`, which the browser never sends to the
   server — already so for the signing link (ADR-0016).
-- **Open (owner to decide):** free-text search `q` in the list example above can carry a
-  name (`q=Müller`). Either it is allowed as an explicit exception (with the query kept
-  out of every log), or search moves to a request body.
+- **The one exception: free-text search `q`** (owner, 2026-11-23). It can carry a name
+  (`q=Müller`), but a search must stay bookmarkable and shareable as a link. In return,
+  **the query string is written to no log**:
+  - the API's error log has the path without the query (`ProblemFilter`);
+  - Caddy's access log drops the query string (task 23);
+  - error reports have the query cut from every URL by the Bugsink SDK (task 54).
+
+  What remains is the browser's own history on the user's device.
 
 ### Versioning
 
