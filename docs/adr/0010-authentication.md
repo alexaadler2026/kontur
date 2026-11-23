@@ -181,6 +181,15 @@ Second factor in v1: **no (prepared)** / TOTP for everyone / TOTP for admins.
   the password. Accepting an invitation proves ownership of the e-mail address.
 - **First admin:** created by a command run on the server; it prints a one-time set-up
   link. There is no default password.
+  **Temporary deviation (owner, 2026-11-23; task 7d, until task 10):** set-up links need
+  invitations (task 10), so for now `pnpm nx run signflow-api:create-admin <e-mail>`
+  (server: `node dist/apps/signflow-api/src/create-admin.js <e-mail>`, via
+  `docker compose run` in task 23) asks for the password **interactively, twice, never
+  shown**, checks it with the password rules and stores the Argon2id hash. The password
+  is never accepted as an argument, an environment variable or from a pipe (stdin must
+  be a terminal) — those end up in the shell history or logs. An existing e-mail is
+  refused, never overwritten. The admin flag is set from task 9; with task 10 the command
+  switches to printing a one-time link.
 - **Recovery:** "forgot password" always answers the same way (no account enumeration) and
   mails a link (token hash stored, valid 1 hour, consumed on POST). Success ends all
   sessions.

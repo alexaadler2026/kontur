@@ -85,6 +85,17 @@
       },
       "cache": false
     },
+    "create-admin": {
+      "command": "node dist/apps/signflow-api/src/create-admin.js",
+      "options": {
+        "tty": true,
+        "env": {
+          "DATABASE_URL": "postgresql://signflow:signflow-local@127.0.0.1:5432/signflow"
+        }
+      },
+      "dependsOn": ["build"],
+      "cache": false
+    },
     "test": {
       "command": "vitest run",
       "options": {

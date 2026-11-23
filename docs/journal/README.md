@@ -49,3 +49,4 @@ German summary with a glossary (template: [TEMPLATE.md](TEMPLATE.md)).
 | [038](038-node-version.md)                  | Node version pinned exactly in .nvmrc (24.22.3) = engines.node; engineStrict, pnpm check:node-version, CI annotation                                               | 2026-11-23 |
 | [039](039-sessions.md)                      | Task 7b: sessions — POST/GET/DELETE /api/v1/session, __Host-sid cookie, SHA-256 of the token, 7/30 days, global CSRF guard (403 request.cross_site)                | 2026-11-23 |
 | [040](040-login-throttling.md)              | Task 7c: throttling — pair e-mail+IP (5 → 1…15 min), IP 50/15 min, 20 req/min in memory, 429 auth.throttled + Retry-After; Argon2 queue (4); last_seen every 5 min | 2026-11-23 |
+| [041](041-create-admin.md)                  | Task 7d: create-admin (e-mail argument, password typed twice and hidden, TTY only, never overwrites); Argon2 queue limit → 503 + Retry-After; task 7 complete      | 2026-11-23 |
