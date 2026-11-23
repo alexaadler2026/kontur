@@ -31,7 +31,7 @@
 
 Затем 3a: Problem Details на сервере — журнал [027](../journal/027-problem-details-server.md); 3b: код ошибки → перевод — журнал [028](../journal/028-error-codes-translated.md); 4a: настройки API — журнал [029](../journal/029-api-settings.md); 4b: настройки на фронте — журнал [030](../journal/030-frontend-settings.md); 5a: PostgreSQL и Prisma — журнал [031](../journal/031-postgres-prisma.md); 5b: готовность и ошибки базы — журнал [032](../journal/032-readiness-and-database-errors.md).
 
-Последний коммит работы: `docs(journal): add entry 033 api-kit library`.
+Последний коммит работы: `docs: warn against non-ascii clone paths, plan the vitest worker investigation`.
 
 **Проверки после журнала 026 (локально):**
 
@@ -47,7 +47,7 @@
 ## 2. Что не запушено
 
 Владелец пушит сам. Запушено всё до `0de5f5d` (журнал 032; задача 5 принята 2026-11-23).
-Не запушены: правило о URL (`f5e972d`), решения по задаче 6 (`8772b97`) и 6a (журнал 033).
+Не запушены: правило о URL (`f5e972d`), решения по задаче 6 (`8772b97`), 6a (журнал 033), исправление e2e (`466eda9`).
 
 После push: проверить CI — `gh run list --limit 3` (в PowerShell `curl` — псевдоним
 `Invoke-WebRequest`, поэтому не `curl`; без `gh` — `curl.exe -s "https://api.github.com/repos/alexaadler2026/kontur/actions/runs?per_page=3"`).
@@ -266,6 +266,11 @@
   Локально повторился 2026-11-23 дважды: `Failed to start forks worker` (`signflow:test`,
   журнал 032) и `Worker exited unexpectedly` (`ui:test`, журнал 033; отдельно 106/106).
   Логи в `tmp/logs`. В CI пока не было.
+  **Решение владельца 2026-11-23: три раза в разных проектах — закономерность.** После
+  задачи 6, до задачи 7 — короткое расследование отдельной задачей:
+  - воспроизвести на полном параллельном прогоне (`run-many -t lint test …`);
+  - по сохранённым логам найти причину (вероятно, число воркеров или память на Windows);
+  - предложить исправление.
 - Не обходить правило минимального возраста пакетов pnpm (`minimumReleaseAgeExclude` не
   добавлять).
 - **Полный вывод каждого прогона проверок — в файл** `tmp/logs/<ГГГГ-ММ-ДД_ЧЧ-ММ>-<цель>.log`

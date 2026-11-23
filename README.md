@@ -34,6 +34,13 @@ pnpm nx serve belegscan     # http://localhost:4201
 pnpm nx storybook ui-storybook  # http://localhost:4400
 ```
 
+### Clone into a path without non-ASCII characters
+
+Clone the repository into a folder whose full path is plain ASCII, for example
+`C:\dev\kontur`. **Do not use a path with Cyrillic or other non-ASCII letters** (such as
+`C:\Users\Александр\...`). The `@nestjs/swagger` compiler plugin mangles such paths, and the
+API tests fail with `Cannot find module '…/u0410/u043B…'` (journal 033).
+
 ### Known issue: Kaspersky and nx.js
 
 - **Symptom:** any `nx` command (also Playwright's `webServer`) fails with
