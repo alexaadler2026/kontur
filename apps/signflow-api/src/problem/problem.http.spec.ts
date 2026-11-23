@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   type INestApplication,
-  type LoggerService,
   Module,
   Post,
 } from '@nestjs/common';
@@ -19,6 +18,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { AppModule } from '../app/app.module.js';
 import { offlineConfig } from '../config/offline-config.js';
 import { configureApp } from '../app/configure-app.js';
+import { CapturingLogger } from '../testing/capturing-logger.js';
 
 // A controller and DTOs that exist only in this test: SignFlow has no endpoint with input
 // yet (the first is sign-in, task 8), and we do not invent one (AGENTS.md).
@@ -55,19 +55,6 @@ class ProbeController {
 
 @Module({ controllers: [ProbeController] })
 class ProbeModule {}
-
-/** Keeps every log line, so a test can assert what is (not) written. */
-class CapturingLogger implements LoggerService {
-  readonly lines: string[] = [];
-  private keep(...parts: unknown[]) {
-    this.lines.push(parts.map((part) => String(part)).join(' '));
-  }
-  log = (...parts: unknown[]) => this.keep(...parts);
-  error = (...parts: unknown[]) => this.keep(...parts);
-  warn = (...parts: unknown[]) => this.keep(...parts);
-  debug = (...parts: unknown[]) => this.keep(...parts);
-  verbose = (...parts: unknown[]) => this.keep(...parts);
-}
 
 const SECRET = 'Geheim-Passwort-42!';
 /** Error messages quote only a slice of the input; this part is always in the slice. */

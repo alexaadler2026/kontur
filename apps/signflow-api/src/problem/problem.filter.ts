@@ -53,6 +53,39 @@ function codeOf(exception: unknown): ProblemCode {
 }
 
 /**
+ * What the log says about an unexpected error.
+ * - Database errors (Prisma's `PrismaClient…Error`): name, error code and model only.
+ *   Their message and stack quote what was sent — PostgreSQL says
+ *   `invalid input syntax for type uuid: "<value>"` — and that may be personal data or a
+ *   secret (journal 032). The code (e.g. P2002 = unique constraint) and the traceId are
+ *   enough to find the cause.
+ * - Everything else: the stack, which is our own code's message and call chain.
+ * Recognised by name, not by import: this filter moves to libs/shared/api-kit (task 6),
+ * which must not depend on one app's generated client.
+ */
+function describeForLog(exception: unknown): string {
+  if (exception instanceof Error && exception.name.startsWith('PrismaClient')) {
+    const { code, meta } = exception as Error & {
+      code?: unknown;
+      meta?: { modelName?: unknown };
+    };
+    return [
+      exception.name,
+      typeof code === 'string' ? code : undefined,
+      typeof meta?.modelName === 'string'
+        ? `model=${meta.modelName}`
+        : undefined,
+      '(message withheld: database errors quote sent values)',
+    ]
+      .filter(Boolean)
+      .join(' ');
+  }
+  return exception instanceof Error
+    ? (exception.stack ?? exception.name)
+    : String(exception);
+}
+
+/**
  * Every error leaves the API as application/problem+json (ADR-0008). The body is built
  * from the registry only: no exception message, no stack, no sent value. Only a 500 is
  * logged — with the traceId of the response, so a user can quote it; request bodies and
@@ -82,12 +115,12 @@ export class ProblemFilter implements ExceptionFilter {
       body.errors = exception.errors;
     }
 
-    if (status >= 500) {
-      const stack =
-        exception instanceof Error ? exception.stack : String(exception);
+    // A ProblemException is a deliberate answer (e.g. 503 "not ready", which explains itself
+    // in its own log line); only unexpected errors are logged here.
+    if (status >= 500 && !(exception instanceof ProblemException)) {
       this.logger.error(
         `traceId=${body.traceId} ${request.method} ${path} ${status}`,
-        stack,
+        describeForLog(exception),
       );
     }
 
