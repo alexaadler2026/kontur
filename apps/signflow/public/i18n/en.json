@@ -18,9 +18,14 @@
     "money": {
       "currency_unsupported": "This currency is not supported."
     },
+    "auth": {
+      "invalid_credentials": "Email address or password is incorrect.",
+      "unauthenticated": "Please sign in."
+    },
     "request": {
       "malformed": "The request could not be processed. Please reload the page.",
-      "not_found": "The requested item was not found."
+      "not_found": "The requested item was not found.",
+      "cross_site": "The request was rejected for security reasons."
     },
     "server": {
       "internal": "An unexpected error occurred. Please try again later.",

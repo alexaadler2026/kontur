@@ -2,6 +2,7 @@ import type { INestApplication, ModuleMetadata } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AppModule } from '../app/app.module.js';
 import { configureApp } from '../app/configure-app.js';
+import { offlineConfig } from '../config/offline-config.js';
 import { CapturingLogger } from './capturing-logger.js';
 
 /** The whole API, as main.ts builds it, on the given database; its log is captured. */
@@ -12,7 +13,13 @@ export async function startApiOn(
   const logger = new CapturingLogger();
   const moduleRef = await Test.createTestingModule({
     imports: [
-      AppModule.forRoot(Object.freeze({ PORT: 0, DATABASE_URL: databaseUrl })),
+      AppModule.forRoot(
+        Object.freeze({
+          ...offlineConfig(),
+          PORT: 0,
+          DATABASE_URL: databaseUrl,
+        }),
+      ),
       ...extra,
     ],
   }).compile();

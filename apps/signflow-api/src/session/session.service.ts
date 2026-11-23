@@ -1,0 +1,130 @@
+import { randomBytes } from 'node:crypto';
+import {
+  createSessionToken,
+  hashSessionToken,
+  isSessionActive,
+  type PasswordHasher,
+} from '@adlersoft/auth-server';
+import { ProblemException } from '@adlersoft/api-kit';
+import { Inject, Injectable } from '@nestjs/common';
+import { APP_CONFIG } from '../config/app-config.token.js';
+import type { AppConfig } from '../config/load-config.js';
+import { PrismaService } from '../database/prisma.service.js';
+
+/** DI token of the password hasher (an interface has no runtime value to inject by). */
+export const PASSWORD_HASHER = Symbol('PASSWORD_HASHER');
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+/** Where a sign-in came from: stored with the session, shown later in "my sessions". */
+export interface ClientInfo {
+  userAgent?: string;
+  ip?: string;
+}
+
+/** Signing in and out, and finding the user of a session token (ADR-0010). */
+@Injectable()
+export class SessionService {
+  /** A real Argon2id hash of a random password, made once, for unknown e-mails. */
+  private dummyHash?: Promise<string>;
+
+  constructor(
+    private readonly prisma: PrismaService,
+    @Inject(PASSWORD_HASHER) private readonly hasher: PasswordHasher,
+    @Inject(APP_CONFIG) private readonly config: AppConfig,
+  ) {}
+
+  /**
+   * Checks e-mail and password; on success creates a session and returns its token (for
+   * the cookie). Any failure is the same `auth.invalid_credentials`, and takes about the
+   * same time: an unknown e-mail is still checked against a dummy hash, so the answer time
+   * does not reveal which e-mails have an account.
+   */
+  async signIn(
+    email: string,
+    password: string,
+    client: ClientInfo,
+  ): Promise<string> {
+    const user = await this.prisma.client.user.findUnique({ where: { email } });
+    const stored = user?.passwordHash ?? (await this.getDummyHash());
+    const valid = await this.hasher.verify(stored, password);
+    if (!user?.passwordHash || !valid) {
+      throw new ProblemException('auth.invalid_credentials');
+    }
+
+    // Parameters were raised since this hash was made: the password is known right now,
+    // so store a new hash with today's parameters (ADR-0010).
+    if (this.hasher.needsRehash(user.passwordHash)) {
+      await this.prisma.client.user.update({
+        where: { id: user.id },
+        data: { passwordHash: await this.hasher.hash(password) },
+      });
+    }
+
+    // Always a new token: a token known before sign-in is never upgraded (no fixation).
+    const { token, tokenHash } = createSessionToken();
+    const now = new Date();
+    await this.prisma.client.session.create({
+      data: {
+        tokenHash,
+        userId: user.id,
+        createdAt: now,
+        lastSeenAt: now,
+        expiresAt: new Date(
+          now.getTime() + this.config.SESSION_ABSOLUTE_DAYS * DAY_MS,
+        ),
+        userAgent: client.userAgent?.slice(0, 512),
+        ip: client.ip,
+      },
+    });
+    return token;
+  }
+
+  /**
+   * The user of an active session, or undefined. An ended session is deleted; an active
+   * one gets "last seen" moved to now (the idle time is sliding).
+   */
+  async findUser(
+    token: string | undefined,
+  ): Promise<{ id: string; email: string } | undefined> {
+    if (!token) return undefined;
+    const session = await this.prisma.client.session.findUnique({
+      where: { tokenHash: hashSessionToken(token) },
+      include: { user: true },
+    });
+    if (!session) return undefined;
+
+    const now = new Date();
+    if (
+      !isSessionActive(session, now, this.config.SESSION_IDLE_DAYS * DAY_MS)
+    ) {
+      await this.prisma.client.session.deleteMany({
+        where: { id: session.id },
+      });
+      return undefined;
+    }
+    await this.prisma.client.session.update({
+      where: { id: session.id },
+      data: { lastSeenAt: now },
+    });
+    return { id: session.user.id, email: session.user.email };
+  }
+
+  /** Signs out: deletes the session of this token. Unknown or missing token: nothing to do. */
+  async signOut(token: string | undefined): Promise<void> {
+    if (!token) return;
+    await this.prisma.client.session.deleteMany({
+      where: { tokenHash: hashSessionToken(token) },
+    });
+  }
+
+  /** How long the browser keeps the cookie: until the absolute end of the session. */
+  get cookieMaxAgeMs(): number {
+    return this.config.SESSION_ABSOLUTE_DAYS * DAY_MS;
+  }
+
+  private getDummyHash(): Promise<string> {
+    this.dummyHash ??= this.hasher.hash(randomBytes(32).toString('base64url'));
+    return this.dummyHash;
+  }
+}

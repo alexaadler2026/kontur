@@ -32,6 +32,22 @@ class ConfigSchema {
     message: 'DATABASE_URL must be a postgresql:// URL',
   })
   DATABASE_URL!: string;
+
+  /** A session ends after this many days without a request (sliding). ADR-0010: 7. */
+  @Type(() => Number)
+  @IsInt({ message: 'SESSION_IDLE_DAYS must be an integer from 1 to 365' })
+  @Min(1, { message: 'SESSION_IDLE_DAYS must be an integer from 1 to 365' })
+  @Max(365, { message: 'SESSION_IDLE_DAYS must be an integer from 1 to 365' })
+  SESSION_IDLE_DAYS = 7;
+
+  /** A session ends this many days after sign-in, however active. ADR-0010: 30. */
+  @Type(() => Number)
+  @IsInt({ message: 'SESSION_ABSOLUTE_DAYS must be an integer from 1 to 365' })
+  @Min(1, { message: 'SESSION_ABSOLUTE_DAYS must be an integer from 1 to 365' })
+  @Max(365, {
+    message: 'SESSION_ABSOLUTE_DAYS must be an integer from 1 to 365',
+  })
+  SESSION_ABSOLUTE_DAYS = 30;
 }
 
 /** The validated, immutable settings. Code gets this object, never process.env. */

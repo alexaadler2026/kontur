@@ -13,11 +13,22 @@ export const PROBLEM_CODES = {
     status: 422,
     title: 'The currency is not supported',
   },
+  // ADR-0010: one answer for wrong e-mail and wrong password — it never says which.
+  'auth.invalid_credentials': {
+    status: 401,
+    title: 'E-mail address or password is incorrect',
+  },
+  'auth.unauthenticated': { status: 401, title: 'Not signed in' },
   'request.malformed': {
     status: 400,
     title: 'The request could not be parsed',
   },
   'request.not_found': { status: 404, title: 'Not found' },
+  // ADR-0010, CSRF: a state-changing request from another site.
+  'request.cross_site': {
+    status: 403,
+    title: 'Cross-site request rejected',
+  },
   'server.internal': { status: 500, title: 'Unexpected server error' },
   'server.unavailable': {
     status: 503,

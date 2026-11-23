@@ -10,5 +10,7 @@ export function offlineConfig(): AppConfig {
   return Object.freeze({
     PORT: 3333,
     DATABASE_URL: 'postgresql://offline:offline@127.0.0.1:1/offline',
+    SESSION_IDLE_DAYS: 7,
+    SESSION_ABSOLUTE_DAYS: 30,
   });
 }

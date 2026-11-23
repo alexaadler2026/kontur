@@ -3,3 +3,7 @@
 export * from './password/argon2id-password-hasher.js';
 export * from './password/password-hasher.js';
 export * from './password/password-rules.js';
+// Sessions: token, its hash, the cookie, the lifetime rule.
+export * from './session/session.js';
+// CSRF: is a state-changing request from another site?
+export * from './session/cross-site.js';

@@ -50,8 +50,29 @@ Second factor in v1: **no (prepared)** / TOTP for everyone / TOTP for admins.
 - **CSRF:** the API is same-origin only. For every state-changing method the server checks
   `Origin` / `Sec-Fetch-Site` and rejects cross-site requests; `SameSite=Lax` is the
   second layer. The API accepts JSON and multipart only.
-- The SPA never sees a token. It learns who is signed in from
-  (illustrative) `GET /api/v1/session`; a 401 anywhere sends the user to the login screen.
+  **Exact rule (task 7b, OWASP Fetch Metadata):** GET/HEAD/OPTIONS are never blocked.
+  For POST/PUT/PATCH/DELETE: if `Sec-Fetch-Site` is present, only `same-origin` and `none`
+  pass — `same-site` is rejected too (beleg.\* must not act on sign.\*); otherwise, if
+  `Origin` is present, its host must equal the `Host` header (`null` → rejected); neither
+  header → not a browser, allowed (a foreign page cannot make a browser send such a
+  request). Rejection: 403 `request.cross_site`. Implemented as a global guard
+  (`APP_GUARD`), so it covers every route; the check itself is `isCrossSiteRequest` in
+  `libs/shared/auth-server`. The reverse proxy must pass `Host` unchanged (task 23).
+- The SPA never sees a token. It learns who is signed in from `GET /api/v1/session`; a 401
+  anywhere sends the user to the login screen.
+- **Endpoints (owner, 2026-11-23; built in task 7b): one resource, the session.**
+  `POST /api/v1/session` `{ email, password }` → 204 + cookie, or 401
+  `auth.invalid_credentials`; `GET /api/v1/session` → 200 `{ user: { id, email } }` or 401
+  `auth.unauthenticated`; `DELETE /api/v1/session` → 204, the row deleted and the cookie
+  cleared (also without a session: signing out twice is not an error).
+- **Settings:** `SESSION_IDLE_DAYS` (default 7) and `SESSION_ABSOLUTE_DAYS` (default 30),
+  integers 1–365 (ADR-0009). The cookie's `Max-Age` is the absolute lifetime; the idle
+  timeout is enforced by the server through `last_seen_at`, moved on every
+  `GET /session`. An ended session is deleted when it is next presented.
+- **Same answer, same time:** wrong password, unknown e-mail and an account without a
+  password (invited, task 10) all give the same 401 body, and an unknown e-mail is still
+  verified against a dummy Argon2id hash, so the response time does not reveal which
+  e-mails have an account.
 
 ### Passwords
 

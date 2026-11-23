@@ -18,9 +18,14 @@
     "money": {
       "currency_unsupported": "Diese Währung wird nicht unterstützt."
     },
+    "auth": {
+      "invalid_credentials": "E-Mail-Adresse oder Passwort ist falsch.",
+      "unauthenticated": "Bitte melden Sie sich an."
+    },
     "request": {
       "malformed": "Die Anfrage konnte nicht verarbeitet werden. Bitte laden Sie die Seite neu.",
-      "not_found": "Der angeforderte Eintrag wurde nicht gefunden."
+      "not_found": "Der angeforderte Eintrag wurde nicht gefunden.",
+      "cross_site": "Die Anfrage wurde aus Sicherheitsgründen abgelehnt."
     },
     "server": {
       "internal": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.",

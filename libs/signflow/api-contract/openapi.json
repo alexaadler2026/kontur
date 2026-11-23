@@ -1,6 +1,28 @@
 {
   "components": {
     "schemas": {
+      "CreateSessionDto": {
+        "properties": {
+          "email": {
+            "description": "The account's e-mail; case does not matter.",
+            "example": "aigul.sadykova@firma.kg",
+            "format": "email",
+            "maxLength": 254,
+            "type": "string"
+          },
+          "password": {
+            "description": "At most 128 characters (NFC code points, as in the password rules). Longer input is\nrejected here, before Argon2 spends time and memory on it.",
+            "example": "Grüne Berge über Bischkek",
+            "pattern": "^[\\s\\S]{1,128}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ],
+        "type": "object"
+      },
       "HealthDto": {
         "properties": {
           "status": {
@@ -31,8 +53,11 @@
           "validation.required",
           "validation.email",
           "money.currency_unsupported",
+          "auth.invalid_credentials",
+          "auth.unauthenticated",
           "request.malformed",
           "request.not_found",
+          "request.cross_site",
           "server.internal",
           "server.unavailable"
         ],
@@ -146,6 +171,34 @@
           "version"
         ],
         "type": "object"
+      },
+      "SessionDto": {
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/SessionUserDto"
+          }
+        },
+        "required": [
+          "user"
+        ],
+        "type": "object"
+      },
+      "SessionUserDto": {
+        "properties": {
+          "email": {
+            "example": "Aigul.Sadykova@Firma.kg",
+            "type": "string"
+          },
+          "id": {
+            "example": "01936b2e-8f3a-7c4d-9e1f-2a3b4c5d6e7f",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "email"
+        ],
+        "type": "object"
       }
     }
   },
@@ -250,6 +303,94 @@
         "summary": "Readiness: the database answers and every migration of this build is applied.\nOtherwise 503 `server.unavailable` (ADR-0020); the reason is in the log.",
         "tags": [
           "health"
+        ]
+      }
+    },
+    "/api/v1/session": {
+      "delete": {
+        "operationId": "deleteSession",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            },
+            "description": "Error as Problem Details (RFC 9457, ADR-0008)"
+          }
+        },
+        "summary": "Sign out: the session ends on the server and the cookie is cleared. Always 204.",
+        "tags": [
+          "session"
+        ]
+      },
+      "get": {
+        "operationId": "getSession",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionDto"
+                }
+              }
+            },
+            "description": ""
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            },
+            "description": "Error as Problem Details (RFC 9457, ADR-0008)"
+          }
+        },
+        "summary": "Who is signed in with this cookie. No or ended session: 401 `auth.unauthenticated`.",
+        "tags": [
+          "session"
+        ]
+      },
+      "post": {
+        "operationId": "createSession",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSessionDto"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "default": {
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetailsDto"
+                }
+              }
+            },
+            "description": "Error as Problem Details (RFC 9457, ADR-0008)"
+          }
+        },
+        "summary": "Sign in. Sets the session cookie. Wrong e-mail or password: 401\n`auth.invalid_credentials` — the same answer for both.",
+        "tags": [
+          "session"
         ]
       }
     }

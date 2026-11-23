@@ -17,6 +17,7 @@
   "packageManager": "pnpm@12.18.0",
   "dependencies": {
     "@adlersoft/api-kit": "workspace:*",
+    "@adlersoft/auth-server": "workspace:*",
     "@angular/common": "~22.2.0",
     "@angular/compiler": "~22.2.0",
     "@angular/core": "~22.2.0",

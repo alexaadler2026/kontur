@@ -5,6 +5,7 @@ import type { AppConfig } from '../config/load-config.js';
 import { PrismaService } from '../database/prisma.service.js';
 import { HealthController } from '../health/health.controller.js';
 import { Readiness } from '../health/readiness.js';
+import { SessionModule } from '../session/session.module.js';
 import { APP_VERSION, readAppVersion } from './app-version.js';
 
 @Module({})
@@ -19,6 +20,7 @@ export class AppModule {
       // The root of the app: its settings and database client are visible in every
       // feature module without importing AppModule again.
       global: true,
+      imports: [SessionModule],
       controllers: [HealthController, ConfigController],
       providers: [
         { provide: APP_CONFIG, useValue: config },
