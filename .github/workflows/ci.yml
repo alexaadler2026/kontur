@@ -70,6 +70,10 @@ jobs:
       - name: Every project has scope, type and platform tags
         run: pnpm check:project-tags
 
+      # The platform rule itself: a frontend importing @adlersoft/api-kit is a lint error.
+      - name: The browser never imports server code
+        run: pnpm check:module-boundaries
+
       # The step name shows the real mode: "run-many" on main, "affected" in PRs.
       # api-check: the committed openapi.json must match the API's DTOs (ADR-0007).
       - name: Lint, test, typecheck, build, Storybook, api-check (nx ${{ env.NX_RUN }})
