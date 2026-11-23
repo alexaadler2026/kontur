@@ -77,6 +77,17 @@ Date: 2026-11-23 · Task: roadmap 6, part 6b, [ADR-0008](../adr/0008-api-convent
 файлы зависимостей». Теперь с кэшем красный, как и должен. В CI ошибки не было, там кэш
 каждый раз пустой. Исправление — отдельный коммит `fix(signflow-api):`.
 
+**История: «кэш прячет ошибку, если не описаны входы».** Это второй такой случай; первый
+был в журнале 005 со Storybook. Как работает кэш Nx: он считает хэш (отпечаток) **входов**
+задачи и, если отпечаток уже встречался, просто восстанавливает старый результат, ничего
+не запуская. Если файл, от которого задача на самом деле зависит, не входит во входы, его
+изменение отпечаток не меняет, и Nx честно отдаёт старый «зелёный». В 005 Storybook
+подключал story глобом, и Nx не видел связи `ui-storybook → ui`. Здесь реестр кодов
+переехал в библиотеку, а входы `api-check` остались прежними. Урок: когда код переезжает
+или задача начинает читать новый файл, нужно проверить её `inputs`. Быстрый способ
+поймать такое — прогнать задачу с кэшем и с `--skip-nx-cache` и сравнить. CI такие ошибки
+не ловит: там кэш всегда пустой.
+
 **Красный первым и мутации.**
 
 - Тесты `api-kit` (16) сначала были красными: модулей ещё не было. Потом остался один
@@ -160,6 +171,13 @@ something", so mixing currencies throws.
 `api-kit`, but `openapi`, `api-check` and `typecheck` hashed only the app's own files. A
 new code left a cached `api-check` green. Adding `^production` fixes it. CI was not affected,
 because it starts with an empty cache.
+
+**Story: "the cache hides a bug when inputs are not declared".** This is the second case,
+after the stale Storybook of journal 005. Nx hashes a task's **inputs** and, on a known
+hash, restores the old result without running anything. A file the task really depends on
+but does not declare cannot change that hash. Lesson: when code moves or a task starts
+reading a new file, check its `inputs`. To catch it, run the task with and without
+`--skip-nx-cache` and compare. CI never sees it, because its cache is always empty.
 
 **Red first and mutations.**
 
