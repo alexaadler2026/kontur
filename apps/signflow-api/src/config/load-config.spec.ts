@@ -15,6 +15,8 @@ const THROTTLE_DEFAULTS = {
   LOGIN_IP_WINDOW_MINUTES: 15,
   AUTH_RATE_LIMIT_PER_MINUTE: 20,
   ARGON2_MAX_CONCURRENT: 4,
+  // Since task 7d (owner, 2026-11-23): a full queue answers 503 at once.
+  ARGON2_MAX_QUEUE: 16,
 };
 const DEFAULTS = { ...SESSION_DEFAULTS, ...THROTTLE_DEFAULTS };
 

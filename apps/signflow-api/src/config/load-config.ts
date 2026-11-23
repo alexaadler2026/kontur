@@ -88,6 +88,13 @@ class ConfigSchema {
   /** Argon2id hashes running at once (46 MiB each); the rest wait in a queue. */
   @IntSetting(1, 64)
   ARGON2_MAX_CONCURRENT = 4;
+
+  /**
+   * Calls that may wait for a place; one more gets 503 at once (owner, 2026-11-23).
+   * 16 = four rounds of 4: with ~0.3 s per hash on the server, at most ~1.2 s of waiting.
+   */
+  @IntSetting(0, 10_000)
+  ARGON2_MAX_QUEUE = 16;
 }
 
 /** The validated, immutable settings. Code gets this object, never process.env. */

@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { ConcurrencyLimitedPasswordHasher } from './concurrency-limited-password-hasher.js';
+import {
+  ConcurrencyLimitedPasswordHasher,
+  PasswordHasherBusyError,
+} from './concurrency-limited-password-hasher.js';
 import type { PasswordHasher } from './password-hasher.js';
 
 // Owner, 2026-11-23: one Argon2id hash takes 46 MiB; the server has 4 GB (ADR-0014). A burst
@@ -127,6 +130,62 @@ describe('ConcurrencyLimitedPasswordHasher', () => {
       1,
     );
     expect(limited.needsRehash('anything')).toBe(true);
+  });
+
+  // Owner, 2026-11-23: a full queue answers at once instead of making everyone wait —
+  // otherwise a flood from many IPs delays real users' sign-ins without bound.
+  it('queue full: the next call fails at once with PasswordHasherBusyError, nothing is started', async () => {
+    const slow = slowHasher();
+    const limited = new ConcurrencyLimitedPasswordHasher(slow.hasher, 1, 2);
+
+    const accepted = [1, 2, 3].map(() => limited.verify('hash:pw', 'pw'));
+    await flush();
+    expect(slow.running).toBe(1); // 1 running, 2 waiting
+
+    await expect(limited.verify('hash:pw', 'pw')).rejects.toBeInstanceOf(
+      PasswordHasherBusyError,
+    );
+    await expect(limited.hash('pw')).rejects.toBeInstanceOf(
+      PasswordHasherBusyError,
+    );
+
+    for (let round = 0; round < 3; round++) {
+      slow.releaseAll();
+      await flush();
+    }
+    expect(await Promise.all(accepted)).toEqual([true, true, true]);
+    expect(slow.maxRunning).toBe(1);
+  });
+
+  it('once the queue has room again, calls are accepted again', async () => {
+    const slow = slowHasher();
+    const limited = new ConcurrencyLimitedPasswordHasher(slow.hasher, 1, 0);
+
+    const first = limited.verify('hash:pw', 'pw');
+    await flush();
+    await expect(limited.verify('hash:pw', 'pw')).rejects.toBeInstanceOf(
+      PasswordHasherBusyError,
+    );
+    slow.releaseAll();
+    await first;
+
+    const second = limited.verify('hash:pw', 'pw');
+    await flush();
+    slow.releaseAll();
+    expect(await second).toBe(true);
+  });
+
+  it('the queue length must be an integer of at least 0', () => {
+    for (const maxQueue of [-1, 2.5]) {
+      expect(
+        () =>
+          new ConcurrencyLimitedPasswordHasher(
+            slowHasher().hasher,
+            1,
+            maxQueue,
+          ),
+      ).toThrow(RangeError);
+    }
   });
 
   it('the limit must be a positive integer', () => {

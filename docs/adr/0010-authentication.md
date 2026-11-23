@@ -137,8 +137,16 @@ Second factor in v1: **no (prepared)** / TOTP for everyone / TOTP for admins.
   429 without an Argon2 run, and that attempt is not counted. The doubling curve is our
   choice within the owner's "growing delay, at most 15 minutes": a person who mistyped
   five times waits one minute; a guesser is at the 15-minute cap after nine failures.
-  Sign-out is not throttled. Concurrent attempts that pass the check at the same moment
-  are all verified (no row lock); the request-rate limit bounds how many that can be.
+  Sign-out is not throttled.
+
+- **Accepted limitation (owner, 2026-11-23): parallel attempts are not serialised.**
+  Attempts of one pair that pass the throttle check at the same moment are all verified;
+  there is no row lock, so a burst can get a few more guesses than the counters allow
+  (bounded by 20 requests per minute per IP and the Argon2 queue). Accepted on purpose:
+  with at least 15 characters and the common-password list (16,051 entries), the
+  passwords that remain are far beyond online guessing — a few extra guesses per minute
+  change nothing — while a lock per pair would add a transaction and contention on every
+  sign-in.
   Old rows are deleted by a periodic job (task 27). The client IP comes from the
   connection; behind the proxy, `trust proxy` is set in task 23.
 
@@ -147,6 +155,13 @@ Second factor in v1: **no (prepared)** / TOTP for everyone / TOTP for admins.
   first-come-first-served queue (`ConcurrencyLimitedPasswordHasher`). One call takes
   46 MiB, so 4 × 46 MiB ≈ 184 MiB at most on the 4 GB server (ADR-0014), instead of
   memory growing with every parallel sign-in.
+  **Queue length (owner, 2026-11-23; task 7d):** at most `ARGON2_MAX_QUEUE` (default
+  **16**) calls wait; one more is refused at once with **503 `server.unavailable`** and
+  `Retry-After: 5`, instead of waiting without bound — a flood from many IPs would
+  otherwise delay every real user's sign-in. 16 = four rounds of 4: with ~0.3 s per hash
+  on the server, at most ~1.2 s of waiting. A refused attempt is not counted as a failure.
+  A rehash at sign-in that finds the queue full is skipped (the user is already verified;
+  it happens at the next sign-in).
 - **"Last seen" is written at most every 5 minutes** (owner, 2026-11-23; task 7c): the SPA
   polls every 30 s (ADR-0018), and a write per request would load the database for
   nothing. Against a 7-day idle timeout, 5 minutes of inaccuracy does not matter. Expired

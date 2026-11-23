@@ -4,6 +4,7 @@ import {
   hashSessionToken,
   isSessionActive,
   type PasswordHasher,
+  PasswordHasherBusyError,
 } from '@adlersoft/auth-server';
 import { ProblemException } from '@adlersoft/api-kit';
 import { Inject, Injectable } from '@nestjs/common';
@@ -12,8 +13,20 @@ import type { AppConfig } from '../config/load-config.js';
 import { PrismaService } from '../database/prisma.service.js';
 import { LoginThrottle } from './login-throttle.js';
 
-/** DI token of the password hasher (an interface has no runtime value to inject by). */
+/**
+ * DI token of the password hasher the service uses: Argon2id behind the queue (an
+ * interface has no runtime value to inject by).
+ */
 export const PASSWORD_HASHER = Symbol('PASSWORD_HASHER');
+
+/** DI token of the bare Argon2id hasher inside the queue (tests replace it). */
+export const ARGON2_HASHER = Symbol('ARGON2_HASHER');
+
+/**
+ * Retry-After when the Argon2 queue is full: a few seconds — the queue empties in about a
+ * second (ADR-0010), and clients should not all come back at the same moment.
+ */
+export const HASHER_BUSY_RETRY_AFTER_SECONDS = 5;
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -71,8 +84,19 @@ export class SessionService {
     }
 
     const user = await this.prisma.client.user.findUnique({ where: { email } });
-    const stored = user?.passwordHash ?? (await this.getDummyHash());
-    const valid = await this.hasher.verify(stored, password);
+    let valid: boolean;
+    try {
+      const stored = user?.passwordHash ?? (await this.getDummyHash());
+      valid = await this.hasher.verify(stored, password);
+    } catch (error) {
+      // Queue full (owner, 2026-11-23): 503 at once. Not a failure — nothing is counted.
+      if (error instanceof PasswordHasherBusyError) {
+        throw new ProblemException('server.unavailable', undefined, {
+          retryAfterSeconds: HASHER_BUSY_RETRY_AFTER_SECONDS,
+        });
+      }
+      throw error;
+    }
     if (!user?.passwordHash || !valid) {
       await this.throttle.recordFailure(email, ip);
       throw new ProblemException('auth.invalid_credentials');
@@ -81,11 +105,18 @@ export class SessionService {
 
     // Parameters were raised since this hash was made: the password is known right now,
     // so store a new hash with today's parameters (ADR-0010).
+    // If the queue is full right now, the rehash waits for the next sign-in: the user is
+    // already verified and must not fail because of it.
     if (this.hasher.needsRehash(user.passwordHash)) {
-      await this.prisma.client.user.update({
-        where: { id: user.id },
-        data: { passwordHash: await this.hasher.hash(password) },
-      });
+      try {
+        const passwordHash = await this.hasher.hash(password);
+        await this.prisma.client.user.update({
+          where: { id: user.id },
+          data: { passwordHash },
+        });
+      } catch (error) {
+        if (!(error instanceof PasswordHasherBusyError)) throw error;
+      }
     }
 
     // Always a new token: a token known before sign-in is never upgraded (no fixation).
@@ -156,7 +187,13 @@ export class SessionService {
   }
 
   private getDummyHash(): Promise<string> {
-    this.dummyHash ??= this.hasher.hash(randomBytes(32).toString('base64url'));
+    // Only a success is kept: a refusal (queue full) must not stick until the next restart.
+    this.dummyHash ??= this.hasher
+      .hash(randomBytes(32).toString('base64url'))
+      .catch((error: unknown) => {
+        this.dummyHash = undefined;
+        throw error;
+      });
     return this.dummyHash;
   }
 }

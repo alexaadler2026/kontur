@@ -1,6 +1,7 @@
 import {
   Argon2idPasswordHasher,
   hashSessionToken,
+  type PasswordHasher,
   SESSION_COOKIE,
 } from '@adlersoft/auth-server';
 import type { ProblemException } from '@adlersoft/api-kit';
@@ -8,7 +9,7 @@ import type { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { PrismaService } from '../database/prisma.service.js';
-import { SessionService } from './session.service.js';
+import { ARGON2_HASHER, SessionService } from './session.service.js';
 import {
   startTestDatabase,
   type TestDatabase,
@@ -391,6 +392,80 @@ describe('sessions on a real PostgreSQL (ADR-0010)', () => {
       });
 
       await expect(attempt(OWNER, PASSWORD, ATTACKER_IP)).resolves.toBeTruthy();
+    });
+  });
+
+  // Owner, 2026-11-23: a full Argon2 queue answers 503 at once instead of making everyone
+  // wait. A hasher the test controls makes this deterministic: no timing involved.
+  describe('Argon2 queue full → 503 server.unavailable with Retry-After', () => {
+    let busyApp: INestApplication;
+    let release: () => void = () => undefined;
+    let verifying: Promise<void>;
+    let calls = 0;
+
+    beforeAll(async () => {
+      let started: () => void = () => undefined;
+      verifying = new Promise((resolve) => (started = resolve));
+      const gated: PasswordHasher = {
+        hash: async () => 'not-used',
+        // Only the first call is held until the test releases it.
+        verify: async () => {
+          calls++;
+          if (calls === 1) {
+            started();
+            await new Promise<void>((resolve) => (release = resolve));
+          }
+          return true;
+        },
+        needsRehash: () => false,
+      };
+      ({ app: busyApp } = await startApiOn(
+        db.url,
+        [],
+        { ARGON2_MAX_CONCURRENT: 1, ARGON2_MAX_QUEUE: 0 },
+        (builder) => builder.overrideProvider(ARGON2_HASHER).useValue(gated),
+      ));
+    });
+
+    afterAll(async () => {
+      release();
+      await busyApp?.close();
+    });
+
+    it('one sign-in is hashing, the queue holds 0 → the next gets 503 at once; the first still succeeds', async () => {
+      const busyHttp = () => request(busyApp.getHttpServer());
+      const first = busyHttp()
+        .post('/api/v1/session')
+        .send({ email: 'Aigul.Sadykova@Firma.kg', password: PASSWORD })
+        .then((response) => response);
+      await verifying;
+
+      const second = await busyHttp()
+        .post('/api/v1/session')
+        .send({ email: 'Aigul.Sadykova@Firma.kg', password: PASSWORD })
+        .expect(503);
+
+      expect(second.body.code).toBe('server.unavailable');
+      expect(second.headers['retry-after']).toBe('5');
+      expect(calls).toBe(1); // the refused one never reached the hasher
+      // An overloaded server is not a wrong password: nothing counted.
+      expect(await prisma.loginFailure.count()).toBe(0);
+
+      // The dummy hash for unknown e-mails is refused too while the queue is full …
+      await busyHttp()
+        .post('/api/v1/session')
+        .send({ email: 'nobody@firma.kg', password: PASSWORD })
+        .expect(503);
+
+      release();
+      expect((await first).status).toBe(204);
+
+      // … and that refusal is not remembered: with room again, an unknown e-mail is the
+      // usual 401, not 503 until the next restart.
+      await busyHttp()
+        .post('/api/v1/session')
+        .send({ email: 'nobody@firma.kg', password: PASSWORD })
+        .expect(401);
     });
   });
 });

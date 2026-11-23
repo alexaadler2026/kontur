@@ -18,5 +18,6 @@ export function offlineConfig(): AppConfig {
     LOGIN_IP_WINDOW_MINUTES: 15,
     AUTH_RATE_LIMIT_PER_MINUTE: 20,
     ARGON2_MAX_CONCURRENT: 4,
+    ARGON2_MAX_QUEUE: 16,
   });
 }
