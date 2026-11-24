@@ -104,13 +104,41 @@ Date: 2026-11-24 · Task: 8-2 (plan `docs/plans/044-sign-in.md`) · PR: — · C
 - Симптом: 401 на вход показывает «сессия истекла». → Причина: путь сессии в
   `provideAuthClient` не совпадает с API. → Что делать: проверить `sessionPath`.
 
-**Вопрос с собеседования по этой теме.**
+**Почему `api-kit` — pnpm-пакет, а `auth-client` исключён из workspace.**
+Всё решает, _кто и когда_ ищет импорт `@adlersoft/…`:
+
+- **Серверный код** (`api-kit`, `auth-server`) импортирует собранный API, и запускается он
+  обычным `node dist/…/main.js`. `tsc` не переписывает `import '@adlersoft/api-kit'`, а
+  Node во время работы ищет пакет только в `node_modules`. Пути из `tsconfig` в этот
+  момент уже никто не читает. Поэтому серверная библиотека — пакет рабочей области pnpm:
+  pnpm кладёт в `node_modules` ссылку на её собранную папку (ADR-0007).
+- **Браузерный код** (`kontur-ui`, `signflow-api-client`, `auth-client`) никогда не
+  запускается сам по себе: Angular-сборщик (esbuild) ещё при сборке находит импорт по путям
+  `tsconfig.base.json` и вклеивает код в бандл. Когда браузер выполняет бандл, импортов там
+  уже нет. Пакет в `node_modules` не нужен.
+- `package.json` у `auth-client` нужен только ng-packagr (он без него не собирает), а шаблон
+  `libs/shared/*` в `pnpm-workspace.yaml` превратил бы его в пакет рабочей области. Отсюда
+  исключение `!libs/shared/auth-client`.
+
+Аналогия: письмо внутри офиса передают из рук в руки по списку сотрудников (пути tsconfig
+при сборке). Письмо, которое уходит почтой, должно иметь настоящий адрес, по которому
+почтальон найдёт дом сам (пакет в `node_modules` во время работы).
+
+**Вопросы с собеседования по этой теме.**
 
 - В: Что такое открытый редирект и почему `startsWith('/')` недостаточно?
 - О: Это когда приложение после действия перенаправляет на адрес из параметра, не
   проверив его, и злоумышленник подсовывает свой сайт. `//evil.example` и
   `/\evil.example` начинаются с `/`, но браузер читает их как адрес другого хоста. Поэтому
   нужен разрешённый формат (внутренний путь), а не запрет «плохих» строк по одной.
+- В: Почему в одном монорепо одни библиотеки подключены как pnpm-пакеты, а другие — через
+  пути tsconfig?
+- О: Пути tsconfig работают только для того, кто их читает, то есть для компилятора и
+  сборщика. Браузерный код проходит через сборщик, который заменяет импорт кодом, так что
+  путей достаточно. Серверный код после `tsc` запускает Node, который ищет импорт в
+  `node_modules` во время работы, поэтому библиотека должна быть настоящим пакетом.
+  Альтернатива — собирать сервер бандлером, но тогда стектрейсы и отладка хуже, а ADR-0007
+  выбрал собираемые пакеты.
 
 ## 🇬🇧 What and why (full)
 
@@ -168,10 +196,28 @@ Date: 2026-11-24 · Task: 8-2 (plan `docs/plans/044-sign-in.md`) · PR: — · C
 - The workspace glob catching the library's `package.json` → keep the exclusion.
 - A wrong `sessionPath` → sign-in failures look like expiries.
 
-**Interview question on this topic.** Q: What is an open redirect, and why is
-`startsWith('/')` not enough? A: Redirecting to an unchecked address from a parameter.
-`//evil.example` and `/\evil.example` start with `/` but are read as another host, so
-allow a known-good format instead of blocking bad strings one by one.
+**Why `api-kit` is a pnpm package and `auth-client` is excluded from the workspace.**
+What matters is who resolves `@adlersoft/…`, and when.
+
+- Server code runs as `node dist/…/main.js`. `tsc` leaves the import as it is, and Node
+  resolves it at runtime from `node_modules`; nobody reads the tsconfig paths then. So
+  server libraries are pnpm workspace packages, linked into `node_modules` (ADR-0007).
+- Browser code is bundled: esbuild resolves the import through the `tsconfig.base.json`
+  paths at build time and inlines the code, so no package is needed.
+- `auth-client` has a `package.json` only for ng-packagr. The `libs/shared/*` glob would
+  turn it into a workspace package, hence the exclusion.
+
+**Interview questions on this topic.**
+
+- Q: What is an open redirect, and why is `startsWith('/')` not enough? A: Redirecting to
+  an unchecked address from a parameter. `//evil.example` and `/\evil.example` start with
+  `/` but are read as another host, so allow a known-good format instead of blocking bad
+  strings one by one.
+- Q: Why are some libraries in one monorepo pnpm packages and others tsconfig paths?
+  A: Paths only work for whoever reads them, that is the compiler and the bundler. Browser
+  code is bundled, so the import is gone at runtime. Server code compiled by `tsc` is run
+  by Node, which resolves imports from `node_modules` at runtime, so the library must be a
+  real package. The alternative is bundling the server; ADR-0007 chose buildable packages.
 
 ## 🇩🇪 Kurzfassung (Niveau B1)
 
