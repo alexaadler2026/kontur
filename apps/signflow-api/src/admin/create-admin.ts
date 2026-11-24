@@ -19,7 +19,7 @@ import { openConsole, type ConsoleWriter } from './open-console.js';
 
 /**
  * The first user (task 7d, owner 2026-11-23). Run on the machine with the database:
- *   pnpm nx run signflow-api:create-admin <e-mail>
+ *   pnpm signflow:create-admin <e-mail> [--generate-password]   (tools/signflow-create-admin.mjs)
  *   (server, task 23: docker compose run --rm api node dist/.../create-admin.js <e-mail>)
  * The password is typed twice in the terminal and never shown, never taken from an
  * argument, a variable or a pipe — those end up in the shell history or in logs. An
@@ -30,7 +30,7 @@ import { openConsole, type ConsoleWriter } from './open-console.js';
 const ROUNDS = 3;
 
 const USAGE = [
-  'Usage: pnpm nx run signflow-api:create-admin <e-mail> [--generate-password]',
+  'Usage: pnpm signflow:create-admin <e-mail> [--generate-password]',
   '  Without the option, the password is asked for interactively (twice) and never shown.',
   '  --generate-password: a random password is made and shown ONCE on this terminal.',
 ].join('\n');

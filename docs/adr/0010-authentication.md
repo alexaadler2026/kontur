@@ -182,7 +182,7 @@ Second factor in v1: **no (prepared)** / TOTP for everyone / TOTP for admins.
 - **First admin:** created by a command run on the server; it prints a one-time set-up
   link. There is no default password.
   **Temporary deviation (owner, 2026-11-23; task 7d, until task 10):** set-up links need
-  invitations (task 10), so for now `pnpm nx run signflow-api:create-admin <e-mail>`
+  invitations (task 10), so for now `pnpm signflow:create-admin <e-mail>`
   (server: `node dist/apps/signflow-api/src/create-admin.js <e-mail>`, via
   `docker compose run` in task 23) asks for the password **interactively, twice, never
   shown**, checks it with the password rules and stores the Argon2id hash. The password
