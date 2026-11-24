@@ -1,3 +1,4 @@
+import config from '../../../public/i18n/languages.json';
 import { LANGS, localeOf, SOURCE_LANG, startLang } from './languages';
 
 describe('localeOf (the Intl locale of a UI language, from languages.json)', () => {
@@ -18,6 +19,19 @@ describe('languages', () => {
   it('reads the languages from public/i18n/languages.json, German as source', () => {
     expect(SOURCE_LANG).toBe('de');
     expect(LANGS).toEqual(['de', 'en', 'ru']);
+  });
+
+  // Owner, 2026-11-24: the switch shows each language's own name (nativeName), never the
+  // region code — "English", not "English (en-GB)". The locale stays a separate field.
+  it('each language has a self-name without a region code', () => {
+    expect(config.languages.map((l) => l.nativeName)).toEqual([
+      'Deutsch',
+      'English',
+      'Русский',
+    ]);
+    for (const language of config.languages) {
+      expect(language.nativeName).not.toContain(language.locale);
+    }
   });
 
   describe('startLang (ADR-0006: browser languages, then German)', () => {

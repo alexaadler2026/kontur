@@ -1,8 +1,8 @@
 {
   "source": "de",
   "languages": [
-    { "code": "de", "locale": "de-DE", "name": "Deutsch" },
-    { "code": "en", "locale": "en-GB", "name": "English (en-GB)" },
-    { "code": "ru", "locale": "ru-RU", "name": "Русский" }
+    { "code": "de", "locale": "de-DE", "nativeName": "Deutsch" },
+    { "code": "en", "locale": "en-GB", "nativeName": "English" },
+    { "code": "ru", "locale": "ru-RU", "nativeName": "Русский" }
   ]
 }

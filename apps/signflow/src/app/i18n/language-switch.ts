@@ -32,7 +32,7 @@ import { saveLang } from './saved-language';
             [attr.lang]="language.code"
             [selected]="language.code === transloco.activeLang()"
           >
-            {{ language.name }}
+            {{ language.nativeName }}
           </option>
         }
       </select>

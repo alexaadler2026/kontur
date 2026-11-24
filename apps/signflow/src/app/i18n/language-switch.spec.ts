@@ -59,7 +59,8 @@ describe('LanguageSwitch', () => {
     const options = screen.getAllByRole('option');
     expect(options.map((option) => option.textContent?.trim())).toEqual([
       'Deutsch',
-      'English (en-GB)',
+      'English', // owner, 2026-11-24: the self-name only, no region code
+
       'Русский',
     ]);
     // WCAG 3.1.2: a screen reader reads each name with its own language's voice.
