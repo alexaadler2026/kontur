@@ -74,6 +74,9 @@ truth for what the products do and by which rules. What is not there, ask.
 - Run e2e locally with CI=true so Playwright starts its own fresh server; never reuse the owner's running dev server.
 - Never modify or delete a test just to make it pass. If a test seems wrong, stop and explain.
 - A test may change only when the requirement it encodes changed — in the same commit as that change, with the reason in the commit message and journal. Never change a test to make broken code pass.
+- A fix is verified with the real command the owner uses (same command, same terminal
+  path), judged by what the person sees — not by a probe script or only by exit codes.
+- The owner's GUI, keyboard and clipboard: only after his explicit "yes" for that run.
 - Never run git push, never commit .env or secrets.
 - Use conventional commits (feat:, fix:, refactor:, test:, docs:, chore:).
 
