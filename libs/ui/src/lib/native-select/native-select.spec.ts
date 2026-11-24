@@ -57,6 +57,19 @@ describe('k-select-wrap + select[k-select]', () => {
     expect(screen.getByRole('combobox')).toHaveClass('k-select', cls);
   });
 
+  // A static size="sm" would also stay on the element as the native HTML attribute
+  // (number of visible rows): the select would no longer be a combobox (found in 8-3).
+  it('a static size="sm" sets the class, not the native size attribute', async () => {
+    await render(
+      `<k-select-wrap><select k-select size="sm" aria-label="Sprache">${languages}</select></k-select-wrap>`,
+      { imports },
+    );
+
+    const select = screen.getByRole('combobox', { name: 'Sprache' });
+    expect(select).toHaveClass('k-select--sm');
+    expect(select).not.toHaveAttribute('size');
+  });
+
   it('md (default) adds no size class', async () => {
     await render(
       `<k-select-wrap><select k-select aria-label="Sprache">${languages}</select></k-select-wrap>`,

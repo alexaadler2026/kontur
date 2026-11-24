@@ -49,6 +49,9 @@ export class SelectWrapComponent {}
   host: {
     '[class]': 'hostClass()',
     '[attr.id]': 'id',
+    // `size` is the Kontur size here. A static size="sm" would otherwise stay as the native
+    // attribute (visible rows) and turn the select into a list box.
+    '[attr.size]': 'null',
     '[attr.aria-describedby]': 'field?.describedBy() ?? null',
     '[attr.aria-invalid]': 'field?.invalid() ? "true" : null',
     '[attr.aria-required]': 'field?.required() ? "true" : null',
