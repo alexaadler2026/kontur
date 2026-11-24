@@ -126,6 +126,24 @@ describe('HiddenLineReader (both prompts from one terminal session)', () => {
     reader.close();
   });
 
+  // Owner, 2026-11-24, reproduced with the real command on Windows: a copied line already
+  // ends in a line break (= Enter); the extra Enter the person presses gave the next prompt
+  // an empty answer → "do not match". A password is never empty: an empty Enter is ignored.
+  it('paste ending in a line break + an extra Enter: the extra Enter is ignored', async () => {
+    const t = terminal();
+    const reader = new HiddenLineReader(t.input, t.output);
+
+    const first = reader.read('Password: ');
+    t.input.write(`${PASTED}\r\n`);
+    t.input.write('\r');
+    expect(await first).toBe(PASTED);
+
+    const second = reader.read('Repeat: ');
+    t.input.write(`${PASTED}\r\n\r`);
+    expect(await second).toBe(PASTED); // not "" from the extra Enter
+    reader.close();
+  });
+
   it('raw mode stays on between the prompts (nothing is echoed), off at close', async () => {
     const t = terminal();
     const reader = new HiddenLineReader(t.input, t.output);

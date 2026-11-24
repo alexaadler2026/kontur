@@ -89,6 +89,9 @@ export class HiddenLineReader {
 
       if (key === '\r' || key === '\n') {
         this.afterCarriageReturn = key === '\r';
+        // An empty Enter is ignored: a copied line already ends in a line break, and the
+        // Enter pressed after the paste must not become the next prompt's empty answer.
+        if (this.waiting.typed.length === 0) continue;
         this.finish(this.waiting.typed.join(''));
       } else if (key === CTRL_C || key === CTRL_D) {
         this.finish(new InputAbortedError());
