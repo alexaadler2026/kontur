@@ -34,6 +34,21 @@ pnpm nx serve belegscan     # http://localhost:4201
 pnpm nx storybook ui-storybook  # http://localhost:4400
 ```
 
+### First SignFlow user
+
+With the local database running (`docker compose -f compose.dev.yaml up -d`):
+
+```sh
+pnpm nx run signflow-api:create-admin you@example.com --generate-password
+```
+
+The command makes a random 27-character password, creates the user and shows the
+password **once**, straight on the console (not through stdout, so Nx and logs never
+see it). Save it, for example in a password manager. Without `--generate-password` the
+password is typed twice (hidden). Changing the password after signing in comes with
+task 11 (password reset, `docs/plans/roadmap.md`); until then a forgotten password means
+a new user.
+
 ### Clone into a path without non-ASCII characters
 
 Clone the repository into a folder whose full path is plain ASCII, for example

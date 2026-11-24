@@ -80,6 +80,29 @@ describe('runCreateAdmin: arguments and terminal', () => {
     expect(t.err()).toMatch(/interactive terminal/);
   });
 
+  // Owner, 2026-11-24: --generate-password — the command makes the password and shows it
+  // once — straight on the console, never through stdout (under `nx run` on Windows stdout
+  // is Nx's pipe, measured 2026-11-24). No console to show it on → nothing is created.
+  it('--generate-password without a console to show it on → refused, exit 2', async () => {
+    const t = io({ tty: true });
+
+    expect(
+      await runCreateAdmin(['aigul@firma.kg', '--generate-password'], {
+        ...t,
+        openConsole: () => null,
+      }),
+    ).toBe(2);
+    expect(t.err()).toMatch(/shown only on a terminal/);
+  });
+
+  it('an unknown option → usage, exit 2', async () => {
+    const t = io({ tty: true });
+
+    expect(await runCreateAdmin(['aigul@firma.kg', '--password=x'], t)).toBe(2);
+    expect(t.err()).toMatch(/Usage/);
+    expect(t.err()).not.toContain('--password=x');
+  });
+
   it('a wrong setting stops it with the message naming the variable, exit 1', async () => {
     const t = io({ tty: true });
 

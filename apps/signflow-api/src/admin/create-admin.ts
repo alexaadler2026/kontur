@@ -14,6 +14,8 @@ import {
   InputAbortedError,
   type TerminalInput,
 } from './read-hidden-line.js';
+import { generatePassword } from './generate-password.js';
+import { openConsole, type ConsoleWriter } from './open-console.js';
 
 /**
  * The first user (task 7d, owner 2026-11-23). Run on the machine with the database:
@@ -28,9 +30,12 @@ import {
 const ROUNDS = 3;
 
 const USAGE = [
-  'Usage: pnpm nx run signflow-api:create-admin <e-mail>',
-  '  The password is asked for interactively (twice) and never shown.',
+  'Usage: pnpm nx run signflow-api:create-admin <e-mail> [--generate-password]',
+  '  Without the option, the password is asked for interactively (twice) and never shown.',
+  '  --generate-password: a random password is made and shown ONCE on this terminal.',
 ].join('\n');
+
+const GENERATE = '--generate-password';
 
 /** What each rule violation means, for the person at the terminal. */
 const PROBLEM_TEXT: Record<PasswordProblem, string> = {
@@ -48,6 +53,15 @@ export interface CreateAdminDeps {
   askPassword(prompt: string): Promise<string>;
   /** One line for the person at the terminal. Never given the password. */
   print(line: string): void;
+  /**
+   * --generate-password (owner, 2026-11-24): the password is made here instead of asked,
+   * and shown once with `showSecret` — straight on the console, never through `print`
+   * (stdout may be a pipe into Nx or a log). Left out: asked twice.
+   */
+  generated?: {
+    generatePassword(email: string): string;
+    showSecret(line: string): void;
+  };
 }
 
 export type CreateAdminResult = 'created' | 'exists' | 'gave_up';
@@ -68,7 +82,9 @@ export async function createAdmin(
   };
   if (await deps.prisma.user.findUnique({ where: { email } })) return exists();
 
-  const password = await askNewPassword(email, deps);
+  const password = deps.generated
+    ? deps.generated.generatePassword(email)
+    : await askNewPassword(email, deps);
   if (password === undefined) {
     deps.print(`No user created: no valid password after ${ROUNDS} tries.`);
     return 'gave_up';
@@ -89,6 +105,12 @@ export async function createAdmin(
     throw error;
   }
   deps.print(`Created ${email}. Sign in with this e-mail and the password.`);
+  if (deps.generated) {
+    // The only place a password is ever shown: once, on the console itself, only after
+    // the user really exists.
+    deps.generated.showSecret('Save it now — it will not be shown again:');
+    deps.generated.showSecret(`Password: ${password}`);
+  }
   return 'created';
 }
 
@@ -125,6 +147,8 @@ export interface CommandIo {
    * own, as in main.ts (ADR-0009: nothing else reads it).
    */
   env?: Record<string, string | undefined>;
+  /** The console itself, for the generated password (tests). Left out: open-console.ts. */
+  openConsole?: () => ConsoleWriter | null;
 }
 
 /** The command around createAdmin: arguments, terminal, settings, database. Exit code. */
@@ -136,14 +160,31 @@ export async function runCreateAdmin(
     io.stderr.write(`${message}\n`);
     return code;
   };
-  // Exactly one argument: a password typed after the e-mail must not be accepted (and is
-  // not repeated in the message).
-  if (args.length !== 1) return fail(USAGE, 2);
-  const [email] = args;
-  if (!isEmail(email)) {
-    return fail(`"${email}" is not a valid e-mail address.\n${USAGE}`, 2);
+  // The e-mail and at most the one known option: a password typed after the e-mail must not
+  // be accepted (and is not repeated in the message).
+  const generate = args.includes(GENERATE);
+  const rest = args.filter((arg) => arg !== GENERATE);
+  if (rest.length !== 1 || args.length !== rest.length + (generate ? 1 : 0)) {
+    return fail(USAGE, 2);
   }
-  if (!io.stdin.isTTY) {
+  const [email] = rest;
+  if (email.startsWith('-') || !isEmail(email)) {
+    return fail(
+      email.startsWith('-')
+        ? USAGE
+        : `"${email}" is not a valid e-mail address.\n${USAGE}`,
+      2,
+    );
+  }
+  const showOnConsole = generate ? (io.openConsole ?? openConsole)() : null;
+  if (generate && !showOnConsole) {
+    return fail(
+      'create-admin --generate-password: the password is shown only on a terminal, ' +
+        'never into a pipe or file (it would stay in a log).',
+      2,
+    );
+  }
+  if (!generate && !io.stdin.isTTY) {
     return fail(
       'create-admin needs an interactive terminal: the password is typed, never piped in ' +
         '(a pipe like "echo … |" keeps it in the shell history).',
@@ -162,13 +203,25 @@ export async function runCreateAdmin(
   const prisma = createPrismaClient(config.DATABASE_URL);
   // One reader for every prompt: keys that arrive after an Enter (a merged paste) belong to
   // the next prompt and must not be lost (read-hidden-line.ts).
-  const terminal = new HiddenLineReader(io.stdin, io.stdout);
+  // With --generate-password nothing is read: stdin stays untouched.
+  const terminal = generate ? null : new HiddenLineReader(io.stdin, io.stdout);
   try {
     const result = await createAdmin(email, {
       prisma,
       hasher: new Argon2idPasswordHasher(),
-      askPassword: (prompt) => terminal.read(prompt),
+      askPassword: (prompt) =>
+        terminal
+          ? terminal.read(prompt)
+          : Promise.reject(new InputAbortedError()),
       print: (line) => io.stdout.write(`${line}\n`),
+      ...(showOnConsole
+        ? {
+            generated: {
+              generatePassword,
+              showSecret: (line: string) => showOnConsole(`${line}\n`),
+            },
+          }
+        : {}),
     });
     return result === 'created' ? 0 : 1;
   } catch (error) {
@@ -179,7 +232,7 @@ export async function runCreateAdmin(
       1,
     );
   } finally {
-    terminal.close();
+    terminal?.close();
     await prisma.$disconnect();
   }
 }

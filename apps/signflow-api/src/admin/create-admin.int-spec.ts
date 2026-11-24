@@ -97,6 +97,45 @@ describe('createAdmin on a real PostgreSQL', () => {
     expect(shown).not.toContain('do not match');
   });
 
+  it('--generate-password: nothing typed; the user signs in with the password shown once', async () => {
+    let logged = ''; // stdout + stderr: what Nx or a log may keep
+    let onConsole = ''; // the console itself, past Nx and any log
+    const stdin = Object.assign(new PassThrough(), {
+      isTTY: false, // not read at all: nothing has to be typed
+      setRawMode: () => {
+        throw new Error('stdin must not be read');
+      },
+    });
+    const stdout = new PassThrough().on('data', (c: Buffer) => (logged += c));
+    const stderr = new PassThrough().on('data', (c: Buffer) => (logged += c));
+
+    const code = await runCreateAdmin(
+      ['aigul@firma.kg', '--generate-password'],
+      {
+        stdin,
+        stdout,
+        stderr,
+        env: { DATABASE_URL: db.url },
+        openConsole: () => (text: string) => (onConsole += text),
+      },
+    );
+
+    expect(code).toBe(0);
+    const line = onConsole
+      .split('\n')
+      .find((l) => l.startsWith('Password: ')) as string;
+    const password = line.slice('Password: '.length);
+    expect(password.length).toBeGreaterThanOrEqual(24);
+    expect(onConsole.split(password)).toHaveLength(2); // shown exactly once
+    expect(onConsole).toMatch(/save it now.*will not be shown again/i);
+    expect(logged).toMatch(/Created aigul@firma\.kg/);
+    expect(logged).not.toContain(password); // never through stdout/stderr
+    const user = await prisma.user.findUniqueOrThrow({
+      where: { email: 'aigul@firma.kg' },
+    });
+    expect(await hasher.verify(user.passwordHash ?? '', password)).toBe(true);
+  });
+
   it('the password is never printed', async () => {
     const { deps } = typing('kurz', PASSWORD, 'falsch', PASSWORD, PASSWORD);
 
