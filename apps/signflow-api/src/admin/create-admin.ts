@@ -10,8 +10,8 @@ import { ConfigError, loadConfig } from '../config/load-config.js';
 import { createPrismaClient } from '../database/prisma.service.js';
 import { Prisma, type PrismaClient } from '../generated/prisma/client.js';
 import {
+  HiddenLineReader,
   InputAbortedError,
-  readHiddenLine,
   type TerminalInput,
 } from './read-hidden-line.js';
 
@@ -160,11 +160,14 @@ export async function runCreateAdmin(
   }
 
   const prisma = createPrismaClient(config.DATABASE_URL);
+  // One reader for every prompt: keys that arrive after an Enter (a merged paste) belong to
+  // the next prompt and must not be lost (read-hidden-line.ts).
+  const terminal = new HiddenLineReader(io.stdin, io.stdout);
   try {
     const result = await createAdmin(email, {
       prisma,
       hasher: new Argon2idPasswordHasher(),
-      askPassword: (prompt) => readHiddenLine(prompt, io.stdin, io.stdout),
+      askPassword: (prompt) => terminal.read(prompt),
       print: (line) => io.stdout.write(`${line}\n`),
     });
     return result === 'created' ? 0 : 1;
@@ -176,6 +179,7 @@ export async function runCreateAdmin(
       1,
     );
   } finally {
+    terminal.close();
     await prisma.$disconnect();
   }
 }

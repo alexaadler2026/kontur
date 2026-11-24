@@ -1,6 +1,7 @@
 import { PassThrough } from 'node:stream';
 import { describe, expect, it, vi } from 'vitest';
 import {
+  HiddenLineReader,
   InputAbortedError,
   readHiddenLine,
   type TerminalInput,
@@ -77,5 +78,90 @@ describe('readHiddenLine', () => {
     t.input.end();
 
     await expect(line).rejects.toBeInstanceOf(InputAbortedError);
+  });
+});
+
+// Owner, 2026-11-24: pasting the password twice (Ctrl+V) in Windows PowerShell gave "the two
+// entries do not match". Measured on Windows: under `pnpm nx run … create-admin` (Nx's own
+// pseudo-terminal) the input arrives merged — "first paste, Enter, second paste, Enter" in
+// ONE chunk. Each prompt read its own line and threw the rest of the chunk away. Pastes may
+// also end in "\r\n" (a copied line). One reader now serves both prompts and keeps the rest.
+describe('HiddenLineReader (both prompts from one terminal session)', () => {
+  const PASTED = 'Grüne Berge über Bischkek';
+
+  it('a whole pasted line with spaces and ü, ending in \r\n, in one chunk', async () => {
+    const t = terminal();
+    const reader = new HiddenLineReader(t.input, t.output);
+    const line = reader.read('Password: ');
+
+    t.input.write(`${PASTED}\r\n`);
+
+    expect(await line).toBe(PASTED);
+    reader.close();
+  });
+
+  it('two pastes with Enter arriving merged in ONE chunk: both prompts get the line', async () => {
+    const t = terminal();
+    const reader = new HiddenLineReader(t.input, t.output);
+
+    const first = reader.read('Password: ');
+    t.input.write(`${PASTED}\r${PASTED}\r`);
+    expect(await first).toBe(PASTED);
+    expect(await reader.read('Repeat: ')).toBe(PASTED);
+    reader.close();
+  });
+
+  it('"\r\n" counts as ONE Enter, also when the \n comes in the next chunk', async () => {
+    const t = terminal();
+    const reader = new HiddenLineReader(t.input, t.output);
+
+    const first = reader.read('Password: ');
+    t.input.write(`${PASTED}\r`);
+    expect(await first).toBe(PASTED);
+
+    const second = reader.read('Repeat: ');
+    t.input.write('\n');
+    t.input.write(`${PASTED}\r\n`);
+    expect(await second).toBe(PASTED); // not "" from the leftover \n
+    reader.close();
+  });
+
+  it('raw mode stays on between the prompts (nothing is echoed), off at close', async () => {
+    const t = terminal();
+    const reader = new HiddenLineReader(t.input, t.output);
+    const first = reader.read('Password: ');
+    t.input.write('a b\r');
+    await first;
+    const second = reader.read('Repeat: ');
+    t.input.write('a b\r');
+    await second;
+
+    expect(t.input.setRawMode.mock.calls).toEqual([[true]]);
+    reader.close();
+    expect(t.input.setRawMode.mock.calls).toEqual([[true], [false]]);
+  });
+
+  it('the screen shows only the prompts and line breaks — never the password', async () => {
+    const t = terminal();
+    const reader = new HiddenLineReader(t.input, t.output);
+    const first = reader.read('Password: ');
+    t.input.write(`${PASTED}\r\n${PASTED}\r\n`);
+    await first;
+    await reader.read('Repeat: ');
+    reader.close();
+
+    expect(t.shown()).toBe('Password: \nRepeat: \n');
+  });
+
+  it('the input ends while a prompt waits → aborted', async () => {
+    const t = terminal();
+    const reader = new HiddenLineReader(t.input, t.output);
+    const line = reader.read('Password: ');
+
+    t.input.write('half');
+    t.input.end();
+
+    await expect(line).rejects.toBeInstanceOf(InputAbortedError);
+    reader.close();
   });
 });

@@ -5,7 +5,8 @@ import {
   startTestDatabase,
   type TestDatabase,
 } from '../database/testing/test-database.js';
-import { createAdmin } from './create-admin.js';
+import { PassThrough } from 'node:stream';
+import { createAdmin, runCreateAdmin } from './create-admin.js';
 
 // Task 7d, owner 2026-11-23: the first user is created by a command; the password is typed
 // twice, checked by the password rules, stored only as an Argon2id hash; an existing user
@@ -65,6 +66,35 @@ describe('createAdmin on a real PostgreSQL', () => {
     expect(user.passwordHash).toMatch(/^\$argon2id\$/);
     expect(await hasher.verify(user.passwordHash ?? '', PASSWORD)).toBe(true);
     expect(printed.join('\n')).toMatch(/Created Aigul\.Sadykova@Firma\.kg/);
+  });
+
+  // Owner, 2026-11-24: two Ctrl+V pastes gave "do not match" on Windows. Under
+  // `pnpm nx run … create-admin` the terminal input arrives merged: both pastes and both
+  // Enters (here as \r\n, a copied line) in one chunk. The whole command must take it.
+  it('the whole command: both pastes merged in one chunk, ending in \\r\\n → created', async () => {
+    let shown = '';
+    const stdin = Object.assign(new PassThrough(), {
+      isTTY: true,
+      setRawMode: () => stdin,
+    });
+    const stdout = new PassThrough().on('data', (c: Buffer) => (shown += c));
+    const stderr = new PassThrough().on('data', (c: Buffer) => (shown += c));
+
+    const run = runCreateAdmin(['aigul@firma.kg'], {
+      stdin,
+      stdout,
+      stderr,
+      env: { DATABASE_URL: db.url },
+    });
+    stdin.write(`${PASSWORD}\r\n${PASSWORD}\r\n`);
+
+    expect(await run).toBe(0);
+    const user = await prisma.user.findUniqueOrThrow({
+      where: { email: 'aigul@firma.kg' },
+    });
+    expect(await hasher.verify(user.passwordHash ?? '', PASSWORD)).toBe(true);
+    expect(shown).not.toContain('Grüne');
+    expect(shown).not.toContain('do not match');
   });
 
   it('the password is never printed', async () => {
