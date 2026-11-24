@@ -4,6 +4,7 @@
   },
   "auth": {
     "title": "Вход",
+    "pageTitle": "Вход – SignFlow",
     "subtitle": "Войдите в свою учётную запись SignFlow.",
     "email": "E-mail",
     "password": "Пароль",

@@ -4,7 +4,7 @@ import { authGuard, guestGuard } from '@adlersoft/auth-client';
 export const appRoutes: Route[] = [
   {
     path: 'login',
-    // The page sets the translated title itself ("Anmelden – SignFlow"); this one is
+    // The page sets the translated title itself (auth.pageTitle); this one is
     // only a fallback until its texts are there.
     title: 'SignFlow',
     canActivate: [guestGuard],

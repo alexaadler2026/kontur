@@ -19,12 +19,15 @@ import {
   provideTransloco,
   type Translation,
   type TranslocoLoader,
+  TranslocoService,
 } from '@jsverse/transloco';
 import { provideTranslocoMessageformat } from '@jsverse/transloco-messageformat';
 import { screen } from '@testing-library/angular';
 import { userEvent } from '@testing-library/user-event';
 import { of } from 'rxjs';
 import de from '../../../public/i18n/de.json';
+import en from '../../../public/i18n/en.json';
+import ru from '../../../public/i18n/ru.json';
 import { provideKonturIntl } from '@adlersoft/kontur-ui';
 import { SignflowSessionApi } from '../auth/signflow-session-api';
 import { TranslocoKonturIntl } from '../i18n/kontur-intl';
@@ -43,9 +46,9 @@ class HomeStub {}
 class DocumentStub {}
 
 @Injectable()
-class GermanLoader implements TranslocoLoader {
-  getTranslation() {
-    return of(de as Translation);
+class FileLoader implements TranslocoLoader {
+  getTranslation(lang: string) {
+    return of(({ de, en, ru } as Record<string, Translation>)[lang]);
   }
 }
 
@@ -119,11 +122,11 @@ beforeEach(() => {
       provideAuthClient({ api: SignflowSessionApi }),
       provideTransloco({
         config: {
-          availableLangs: ['de'],
+          availableLangs: ['de', 'en', 'ru'],
           defaultLang: 'de',
           reRenderOnLangChange: true,
         },
-        loader: GermanLoader,
+        loader: FileLoader,
       }),
       provideTranslocoMessageformat(),
       provideKonturIntl(TranslocoKonturIntl),
@@ -167,6 +170,19 @@ describe('SignInPage — layout (Anmelden.md)', () => {
     await openSignIn();
 
     expect(TestBed.inject(Title).getTitle()).toBe('Anmelden – SignFlow');
+  });
+
+  // Owner, 2026-11-24: the whole title comes from i18n and follows a language switch.
+  it.each([
+    ['en', 'Sign in – SignFlow'],
+    ['ru', 'Вход – SignFlow'],
+  ])('switched to %s → the tab title is "%s"', async (lang, expected) => {
+    await openSignIn();
+
+    TestBed.inject(TranslocoService).setActiveLang(lang);
+    await settle();
+
+    expect(TestBed.inject(Title).getTitle()).toBe(expected);
   });
 });
 

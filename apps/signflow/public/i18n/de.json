@@ -4,6 +4,7 @@
   },
   "auth": {
     "title": "Anmelden",
+    "pageTitle": "Anmelden – SignFlow",
     "subtitle": "Melden Sie sich mit Ihrem SignFlow-Konto an.",
     "email": "E-Mail-Adresse",
     "password": "Passwort",

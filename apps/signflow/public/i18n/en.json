@@ -4,6 +4,7 @@
   },
   "auth": {
     "title": "Sign in",
+    "pageTitle": "Sign in – SignFlow",
     "subtitle": "Sign in with your SignFlow account.",
     "email": "Email address",
     "password": "Password",

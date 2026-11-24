@@ -104,8 +104,9 @@ export class SignInPage {
 
     // WCAG 2.4.2: the tab names the page, in the active language.
     const title = inject(Title);
-    const pageTitle = translateSignal('auth.title');
-    effect(() => title.setTitle(`${pageTitle()} – SignFlow`));
+    // The whole tab title is a translation ("Anmelden – SignFlow"), not glued in code.
+    const pageTitle = translateSignal('auth.pageTitle');
+    effect(() => title.setTitle(pageTitle()));
   }
 
   protected fieldError(error: ValidationError | null): string | null {
