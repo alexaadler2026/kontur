@@ -46,12 +46,16 @@
     },
     "serve": {
       "continuous": true,
-      "executor": "@nx/js:node",
+      "dependsOn": ["build"],
+      "command": "node dist/apps/signflow-api/src/main.js",
       "options": {
-        "buildTarget": "signflow-api:build",
         "env": {
           "DATABASE_URL": "postgresql://signflow:signflow-local@127.0.0.1:5432/signflow"
         }
+      },
+      "readyWhen": {
+        "url": "http://localhost:3333/api/v1/health/live",
+        "timeout": 120000
       }
     },
     "serve-e2e": {
