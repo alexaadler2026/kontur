@@ -1,4 +1,18 @@
 {
+  "app": {
+    "language": "Language"
+  },
+  "auth": {
+    "title": "Sign in",
+    "subtitle": "Sign in with your SignFlow account.",
+    "email": "Email address",
+    "password": "Password",
+    "submit": "Sign in",
+    "inviteOnly": "Accounts are available by invitation only.",
+    "sessionExpired": "Your session has expired. Please sign in again.",
+    "signedInAs": "Signed in as {email}",
+    "signOut": "Sign out"
+  },
   "apiStatus": {
     "loading": "Checking the API …",
     "ok": "API: OK, version {version}",

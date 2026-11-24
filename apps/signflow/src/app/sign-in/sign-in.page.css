@@ -1,0 +1,110 @@
+/* Sign-in screen — layout from docs/design/screens/signflow/Anmelden.html (wide) and
+   AnmeldenMobil.html (narrow). Tokens where the mockup value is one; the mockup's own
+   pixel values (20px, 40px, 10px, 400px card) have no token and are
+   taken as they are. One breakpoint: 960px (docs/design/README.md, rule 7). */
+
+.sf-sign-in {
+  min-height: 100dvh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+}
+
+.sf-sign-in-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 20px var(--space-8);
+}
+
+.sf-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.sf-brand--header {
+  display: none;
+}
+
+.sf-sign-in-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  padding-bottom: 40px;
+}
+
+.sf-sign-in-card {
+  width: 400px;
+  box-sizing: border-box;
+  padding: var(--space-8);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.sf-sign-in-title {
+  margin: 0;
+}
+.sf-sign-in-subtitle {
+  margin: var(--space-1) 0 0;
+}
+
+.sf-sign-in-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* The mockup widens the form items to the card (style="max-width:none"). */
+.sf-sign-in-field {
+  max-width: none;
+}
+
+.sf-sign-in-submit {
+  width: 100%;
+  margin-top: var(--space-1);
+}
+
+.sf-sign-in-note {
+  margin: 0;
+  text-align: center;
+}
+
+/* Narrow (AnmeldenMobil): no card, surface background full screen, logo in the header. */
+@media (max-width: 959.98px) {
+  .sf-sign-in {
+    background: var(--bg-surface);
+  }
+  .sf-sign-in-header {
+    justify-content: space-between;
+    padding: var(--space-4) var(--space-6);
+  }
+  .sf-brand--header {
+    display: flex;
+    gap: 10px;
+  }
+  .sf-brand--main {
+    display: none;
+  }
+  .sf-sign-in-main {
+    justify-content: flex-start;
+    align-items: stretch;
+    padding: var(--space-8) var(--space-6) 0;
+  }
+  .sf-sign-in-card {
+    width: auto;
+    padding: 0;
+    background: none;
+    border: none;
+    border-radius: 0;
+  }
+}

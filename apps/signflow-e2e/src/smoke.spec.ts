@@ -1,19 +1,14 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect, type Page, test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { get } from 'node:http';
 import { join } from 'node:path';
+import { consoleErrors, signIn } from './support/app';
 
-/** Collects console errors: a missing key or a failed load is reported there (ADR-0006). */
-function consoleErrors(page: Page): string[] {
-  const errors: string[] = [];
-  page.on('console', (message) => {
-    if (message.type() === 'error') {
-      errors.push(message.text());
-    }
-  });
-  return errors;
-}
+// Task 8-3 changed the requirement: the start page is for signed-in people only; a visit to
+// "/" without a session shows the sign-in screen. The checks of the start language and of
+// missing translation files therefore read the sign-in heading instead of the API status
+// line, and the start page itself is checked after signing in.
 
 /**
  * Since task 1d these tests run against the real, built signflow-api (port 4310, behind
@@ -46,30 +41,35 @@ test.describe('SignFlow smoke', () => {
     // fallback. Playwright's default locale en-US would now start in English.
     test.use({ locale: 'fr-FR' });
 
-    test('starts in German, with the product title and no console errors', async ({
+    test('starts in German on the sign-in screen, with its title and no console errors', async ({
       page,
     }) => {
       const errors = consoleErrors(page);
       await page.goto('/');
 
-      await expect(page).toHaveTitle('SignFlow');
+      await expect(page).toHaveTitle('Anmelden – SignFlow');
       await expect(page.locator('html')).toHaveAttribute('lang', 'de');
-      await expect(page.locator('sf-root router-outlet')).toBeAttached();
-      await expect(page.getByRole('status')).toHaveText(
-        `API: OK, Version ${apiVersion}`,
-      );
+      await expect(
+        page.getByRole('heading', { level: 1, name: 'Anmelden' }),
+      ).toBeVisible();
       expect(errors).toEqual([]);
     });
 
-    test('start page: main landmark and the product name as h1', async ({
+    test('start page after signing in: main landmark, product name as h1, API status', async ({
       page,
     }) => {
-      await page.goto('/');
+      const errors = consoleErrors(page);
+      await signIn(page);
 
+      await expect(page).toHaveTitle('SignFlow');
       await expect(page.getByRole('main')).toBeVisible();
       await expect(
         page.getByRole('heading', { level: 1, name: 'SignFlow' }),
       ).toBeVisible();
+      await expect(page.getByRole('main').getByRole('status')).toHaveText(
+        `API: OK, Version ${apiVersion}`,
+      );
+      expect(errors).toEqual([]);
     });
   });
 
@@ -117,9 +117,9 @@ test.describe('SignFlow smoke', () => {
       await page.goto('/');
 
       await expect(page.locator('html')).toHaveAttribute('lang', 'ru');
-      await expect(page.getByRole('status')).toHaveText(
-        `API: OK, версия ${apiVersion}`,
-      );
+      await expect(
+        page.getByRole('heading', { level: 1, name: 'Вход' }),
+      ).toBeVisible();
       // The browser adds its own "Failed to load resource: 404" line.
       expect(errors).toEqual(
         expect.arrayContaining([
@@ -133,17 +133,17 @@ test.describe('SignFlow smoke', () => {
     }) => {
       await page.route('**/i18n/ru.json', async (route) => {
         const ru = (await (await route.fetch()).json()) as {
-          apiStatus: Record<string, string>;
+          auth: Record<string, string>;
         };
-        delete ru.apiStatus['ok'];
+        delete ru.auth['title'];
         await route.fulfill({ json: ru });
       });
       await page.goto('/');
 
       await expect(page.locator('html')).toHaveAttribute('lang', 'ru');
-      await expect(page.getByRole('status')).toHaveText(
-        `API: OK, Version ${apiVersion}`,
-      );
+      await expect(
+        page.getByRole('heading', { level: 1, name: 'Anmelden' }),
+      ).toBeVisible();
     });
 
     test('404 for ru.json: the app still starts, in German, and logs the reason', async ({
@@ -258,8 +258,10 @@ test.describe('SignFlow smoke', () => {
     }
   });
 
-  test('has no WCAG 2.1 A/AA violations (axe)', async ({ page }) => {
-    await page.goto('/');
+  test('start page (signed in) has no WCAG 2.1 A/AA violations (axe)', async ({
+    page,
+  }) => {
+    await signIn(page);
 
     const results = await new AxeBuilder({ page })
       .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])

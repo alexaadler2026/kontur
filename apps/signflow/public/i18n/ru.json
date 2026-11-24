@@ -1,4 +1,18 @@
 {
+  "app": {
+    "language": "Язык"
+  },
+  "auth": {
+    "title": "Вход",
+    "subtitle": "Войдите в свою учётную запись SignFlow.",
+    "email": "E-mail",
+    "password": "Пароль",
+    "submit": "Войти",
+    "inviteOnly": "Учётные записи выдаются только по приглашению.",
+    "sessionExpired": "Сеанс истёк. Войдите снова.",
+    "signedInAs": "Вы вошли как {email}",
+    "signOut": "Выйти"
+  },
   "apiStatus": {
     "loading": "Проверяем API…",
     "ok": "API: OK, версия {version}",

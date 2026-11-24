@@ -1,0 +1,104 @@
+<div class="sf-sign-in">
+  <header class="sf-sign-in-header">
+    <!-- Narrow screens: the logo sits in the header (AnmeldenMobil). -->
+    <span class="sf-brand sf-brand--header">
+      <img src="signflow-mark.svg" alt="" width="32" height="32" />
+      <span class="h3">SignFlow</span>
+    </span>
+    <sf-language-switch />
+  </header>
+
+  <main class="sf-sign-in-main">
+    <!-- Wide screens: the logo sits above the card (Anmelden). -->
+    <span class="sf-brand sf-brand--main">
+      <img src="signflow-mark.svg" alt="" width="36" height="36" />
+      <span class="h3">SignFlow</span>
+    </span>
+
+    <div class="sf-sign-in-card">
+      @if (sessionExpired) {
+      <!-- Not live: it is there when the page opens, not a reaction to an action. -->
+      <k-alert tone="info">{{ 'auth.sessionExpired' | transloco }}</k-alert>
+      }
+
+      <div>
+        <h1 id="sf-sign-in-title" class="h2 sf-sign-in-title">
+          {{ 'auth.title' | transloco }}
+        </h1>
+        <p class="k-caption sf-sign-in-subtitle">
+          {{ 'auth.subtitle' | transloco }}
+        </p>
+      </div>
+
+      <form
+        class="sf-sign-in-form"
+        novalidate
+        aria-labelledby="sf-sign-in-title"
+        (submit)="onSubmit($event)"
+      >
+        <!-- No asterisks: both fields are required, the error text states it (Anmelden.md). -->
+        <k-form-field
+          class="sf-sign-in-field"
+          [label]="'auth.email' | transloco"
+          [error]="
+            fieldError(emailDisplay.visible())
+              ? (fieldError(emailDisplay.visible())! | transloco)
+              : null
+          "
+        >
+          <input
+            k-input
+            type="email"
+            autocomplete="username"
+            [size]="narrow() ? 'touch' : 'md'"
+            [formField]="signInForm.email"
+            (blur)="emailDisplay.record()"
+          />
+        </k-form-field>
+
+        <!-- "Passwort vergessen?" comes with task 11; until then it is not in the DOM. -->
+        <k-form-field
+          class="sf-sign-in-field"
+          [label]="'auth.password' | transloco"
+          [error]="
+            fieldError(passwordDisplay.visible())
+              ? (fieldError(passwordDisplay.visible())! | transloco)
+              : null
+          "
+        >
+          <input
+            k-input
+            type="password"
+            autocomplete="current-password"
+            [size]="narrow() ? 'touch' : 'md'"
+            [formField]="signInForm.password"
+            (blur)="passwordDisplay.record()"
+          />
+        </k-form-field>
+
+        <!-- Above the button (AnmeldenDunkel). onSubmit clears the message first, and the
+             request is always asynchronous: so each failure inserts a NEW element, and a
+             screen reader announces the same text again (Alert.md). -->
+        @if (message(); as message) {
+        <k-alert [tone]="message.tone" live>
+          {{ message.key | transloco: message.params }}
+        </k-alert>
+        }
+
+        <button
+          k-button
+          variant="primary"
+          type="submit"
+          class="sf-sign-in-submit"
+          [size]="narrow() ? 'touch' : 'md'"
+          [loading]="signInForm().submitting()"
+        >
+          {{ 'auth.submit' | transloco }}
+        </button>
+      </form>
+    </div>
+
+    <p class="k-caption sf-sign-in-note">{{ 'auth.inviteOnly' | transloco }}</p>
+  </main>
+  <!-- Datenschutz / Impressum: only once the pages exist (tasks 23, 52); no dead links. -->
+</div>

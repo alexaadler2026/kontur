@@ -1,4 +1,18 @@
 {
+  "app": {
+    "language": "Sprache"
+  },
+  "auth": {
+    "title": "Anmelden",
+    "subtitle": "Melden Sie sich mit Ihrem SignFlow-Konto an.",
+    "email": "E-Mail-Adresse",
+    "password": "Passwort",
+    "submit": "Anmelden",
+    "inviteOnly": "Konten werden nur per Einladung vergeben.",
+    "sessionExpired": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.",
+    "signedInAs": "Angemeldet als {email}",
+    "signOut": "Abmelden"
+  },
   "apiStatus": {
     "loading": "API wird geprüft …",
     "ok": "API: OK, Version {version}",
