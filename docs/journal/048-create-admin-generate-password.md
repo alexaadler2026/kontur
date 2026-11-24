@@ -120,6 +120,13 @@ Windows).** Скопированная строка часто уже закан
   «да/нет». «Created», пометка и пароль видны; ручной ввод «вставка плюс Enter» тоже
   проходит. В Windows Terminal я не проверял: открыть окно значит занять экран владельца.
 
+**Дополнение 2: `nx serve signflow-api` не запускался** («'env' is not found in schema»).
+У исполнителя `@nx/js:node` нет опции `env`. Её добавили вместе с базой (`b522933`), и с
+тех пор `serve` не стартовал. e2e этого не замечали, потому что у них своя цель
+`serve-e2e`. Теперь `serve` устроен так же: сборка, затем `node dist/…/main.js`, а
+готовность Nx определяет по ответу `/api/v1/health/live`. Цена: при изменении кода сервер
+не перезапускается сам, его нужно остановить и запустить заново. Коммит `9cbc631`.
+
 **Вопрос с собеседования.**
 
 - В: Почему CLI показывает секрет через `/dev/tty`, а не через stdout?
@@ -322,6 +329,10 @@ was Nx's own pseudo-terminal. My check looked at the exit code and the database,
 screen. Now `pnpm signflow:create-admin` runs `node` directly; the nx target is gone. A
 screen-reading check shows "Created", the note and the password. Windows Terminal itself
 was not tested: opening it would take over the owner's screen.
+
+**Addendum 2:** `nx serve signflow-api` failed ("'env' is not found in schema"): the
+@nx/js:node executor has no env option. Serve now runs like serve-e2e (build, node main.js,
+ready on health). No auto-restart on change. Commit `9cbc631`.
 
 **Interview question.** Q: Why show a secret on `/dev/tty` instead of stdout? A: stdout can
 be redirected or captured by wrappers and CI; the tty is the person's screen.
