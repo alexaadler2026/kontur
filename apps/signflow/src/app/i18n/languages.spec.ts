@@ -37,5 +37,15 @@ describe('languages', () => {
       expect(startLang(['fr-FR'])).toBe('de');
       expect(startLang([])).toBe('de');
     });
+
+    // Task 8-3: the choice of the language switch, saved in localStorage, comes first.
+    it('a saved choice comes before the browser languages', () => {
+      expect(startLang(['ru-RU'], 'en')).toBe('en');
+    });
+
+    it('a saved value the app does not have (old or edited) is ignored', () => {
+      expect(startLang(['ru-RU'], 'fr')).toBe('ru');
+      expect(startLang(['ru-RU'], null)).toBe('ru');
+    });
   });
 });

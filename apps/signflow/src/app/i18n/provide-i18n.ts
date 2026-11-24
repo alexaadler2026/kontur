@@ -28,6 +28,7 @@ import { firstValueFrom, timeout } from 'rxjs';
 import { STARTUP_TIMEOUT_MS } from '../startup-timeout';
 import { TranslocoKonturIntl } from './kontur-intl';
 import { LANGS, SOURCE_LANG, startLang } from './languages';
+import { readSavedLang } from './saved-language';
 
 /** Fetches public/i18n/<lang>.json, one small file per language, only when needed. */
 @Injectable({ providedIn: 'root' })
@@ -105,8 +106,11 @@ async function tryLoad(
  */
 async function loadStartLanguage(): Promise<void> {
   const transloco = inject(TranslocoService);
+  const view = inject(DOCUMENT).defaultView;
   const lang = startLang(
-    inject(DOCUMENT).defaultView?.navigator.languages ?? [],
+    view?.navigator.languages ?? [],
+    // A getter: in private mode even reading window.localStorage throws.
+    view ? readSavedLang(() => view.localStorage) : null,
   );
 
   // Both files are requested at once, with the same STARTUP_TIMEOUT_MS: one deadline,

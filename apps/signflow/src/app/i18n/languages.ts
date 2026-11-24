@@ -23,11 +23,17 @@ export function localeOf(lang: string): string {
 }
 
 /**
- * Start language (ADR-0006): the first browser language the app has, else German.
+ * Start language (ADR-0006): the saved choice of the language switch (task 8-3), else the
+ * first browser language the app has, else German.
  * Only the language part counts: "ru-RU" → "ru", "en-US" → "en" (our en is en-GB).
- * The saved choice comes first once the app has a language switcher.
  */
-export function startLang(browserLangs: readonly string[]): string {
+export function startLang(
+  browserLangs: readonly string[],
+  saved: string | null = null,
+): string {
+  if (saved !== null && LANGS.includes(saved)) {
+    return saved;
+  }
   for (const browserLang of browserLangs) {
     const code = browserLang.toLowerCase().split('-')[0];
     if (LANGS.includes(code)) {

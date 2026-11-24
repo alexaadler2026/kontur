@@ -89,6 +89,29 @@ describe('provideI18n (Transloco in SignFlow, ADR-0006)', () => {
     expect(consoleError).not.toHaveBeenCalled();
   });
 
+  // Task 8-3: the language switch saves the choice; it wins over the browser languages.
+  it('starts in the saved language when there is one', async () => {
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation((key) =>
+      key === 'signflow.lang' ? 'en' : null,
+    );
+    setUp(['ru-RU']);
+    await startWith({ 'i18n/en.json': EN, 'i18n/de.json': DE });
+
+    expect(TestBed.inject(TranslocoService).getActiveLang()).toBe('en');
+  });
+
+  // Owner, 2026-11-23: localStorage throws (private mode) → the app starts, browser language.
+  it('localStorage throws → starts in the browser language, without an error', async () => {
+    vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => {
+      throw new DOMException('The operation is insecure.', 'SecurityError');
+    });
+    setUp(['ru-RU']);
+    await startWith({ 'i18n/ru.json': RU, 'i18n/de.json': DE });
+
+    expect(TestBed.inject(TranslocoService).getActiveLang()).toBe('ru');
+    expect(consoleError).not.toHaveBeenCalled();
+  });
+
   it('gives libs/ui its built-in strings from the app translations', async () => {
     setUp(['ru-RU']);
     await startWith({ 'i18n/ru.json': RU, 'i18n/de.json': DE });
