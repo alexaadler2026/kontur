@@ -1,0 +1,7 @@
+/* Kontur — native Select (task 8-3). The shared .k-select rules (size md/touch, hover,
+   invalid, disabled) and .k-field-wrap / .k-ico live in form-field.css (ported from
+   docs/design/components.css, section "Form field"); <k-select-wrap> loads both files.
+   Ported verbatim from docs/design/components.css, section "Contract completion (v2)": */
+
+/* Select size sm (contract: SelectProps.size "md" | "sm" | "touch") */
+.k-select--sm { height: var(--control-sm); }

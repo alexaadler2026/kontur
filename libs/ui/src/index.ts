@@ -11,6 +11,11 @@ export {
 } from './lib/button/icon-button';
 export { FormFieldComponent } from './lib/form-field/form-field';
 export { InputDirective, type InputSize } from './lib/form-field/input';
+export {
+  NativeSelectDirective,
+  type NativeSelectSize,
+  SelectWrapComponent,
+} from './lib/native-select/native-select';
 export { CheckboxComponent } from './lib/choice/checkbox';
 export { RadioGroupComponent } from './lib/choice/radio-group';
 export { RadioComponent } from './lib/choice/radio';
