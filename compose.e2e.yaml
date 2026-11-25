@@ -1,0 +1,27 @@
+# The database of the SignFlow e2e tests only (owner, 2026-11-24). Started fresh for every
+# run by `nx run signflow-api:e2e-database` (src/e2e-database.ts: leftover removed, port
+# checked, migrations, test account); removed by Playwright's globalTeardown.
+# Data on tmpfs: nothing survives the container. Port 5433 on 127.0.0.1 only; the values
+# below are harmless throw-away e2e values, used only by the e2e configuration of serve.
+
+name: kontur-e2e
+
+services:
+  postgres:
+    # The project's one PostgreSQL image (src/database/postgres-image.ts, checked by a test).
+    image: postgres:18.7-trixie
+    environment:
+      POSTGRES_USER: e2e
+      POSTGRES_PASSWORD: e2e-local
+      POSTGRES_DB: signflow_e2e
+    ports:
+      - '127.0.0.1:5433:5432'
+    tmpfs:
+      - /var/lib/postgresql
+    healthcheck:
+      # Over TCP (-h): on first start the image runs a temporary server on the unix socket
+      # only; a socket check said "healthy" before migrations could connect (2026-11-25).
+      test: ['CMD-SHELL', 'pg_isready -h 127.0.0.1 -U e2e -d signflow_e2e']
+      interval: 1s
+      timeout: 3s
+      retries: 60

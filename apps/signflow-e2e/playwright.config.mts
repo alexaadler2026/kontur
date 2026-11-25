@@ -38,33 +38,37 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },
-  // reuseExistingServer true: when run via `nx e2e`, Nx has already started both on the
-  // e2e ports. Nothing else listens there — the dev servers use 4200 and 3333.
+  // Playwright alone starts the servers (owner, 2026-11-24). Run it as `nx e2e signflow-e2e`:
+  // the e2e target first builds both apps and prepares the e2e database (project.json
+  // dependsOn) — outside the timeouts below. Each server is then ONE `nx run` without
+  // task dependencies: with CI=true Nx has no daemon and spends up to ~1 min on the
+  // project graph per call (measured 2026-11-25). reuseExistingServer only outside CI.
   // Hard limits (owner, 2026-11-24): a hang becomes a quick red run, not a 65-minute wait.
-  // The whole run: the suites take 0.5–3 min. Each webServer below: 2 minutes, the same as
-  // the readyWhen timeout of its Nx target.
   globalTimeout: 10 * 60_000,
+  // Removes the e2e database (compose.e2e.yaml) after the run.
+  globalTeardown: './src/support/global-teardown.ts',
   webServer: [
     {
-      // The built signflow-api (task 1d) on a real PostgreSQL in Docker with the test
-      // account (task 8-1, src/e2e-server.ts): e2e run against the real API, not a stub.
-      command: 'pnpm exec nx run signflow-api:serve-e2e',
+      // The API through THE serve target (owner, 2026-11-24: one way to start it, so a
+      // broken serve is a red e2e), configuration e2e: port 4310 on the e2e database
+      // (compose.e2e.yaml, prepared by the e2e target's dependsOn).
+      command:
+        'pnpm exec nx run signflow-api:serve:e2e --exclude-task-dependencies',
       url: `http://localhost:${apiPort}/api/v1/health/live`,
-      reuseExistingServer: true,
-      name: 'signflow-api (PostgreSQL in Docker + API)',
-      // Docker start + migrations take ~10 s; 2 min also covers the first image pull on a
-      // normal connection. A timeout says "Timed out waiting 120000ms from config.webServer"
-      // with this name: check that Docker Desktop runs.
-      timeout: 120_000,
+      reuseExistingServer: !process.env['CI'],
+      name: 'signflow-api (serve:e2e)',
+      // Nx start (~1 min without daemon) + API start (~10 s), measured 2026-11-25.
+      timeout: 180_000,
       cwd: workspaceRoot,
     },
     {
       // Static build + /api proxy to the API (apps/signflow-e2e/static-server.mjs).
       name: 'signflow static build',
-      command: 'pnpm exec nx run signflow:serve-static',
+      command:
+        'pnpm exec nx run signflow:serve-static --exclude-task-dependencies',
       url: baseURL,
-      timeout: 120_000,
-      reuseExistingServer: true,
+      timeout: 180_000,
+      reuseExistingServer: !process.env['CI'],
       cwd: workspaceRoot,
     },
   ],

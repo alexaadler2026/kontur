@@ -2,7 +2,7 @@ import { expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-/** The test account of the e2e database (task 8-1, src/e2e-server.ts of signflow-api). */
+/** The test account of the e2e database (compose.e2e.yaml, src/e2e-database.ts of signflow-api). */
 export const e2eUser = JSON.parse(
   readFileSync(join(__dirname, 'e2e-user.json'), 'utf8'),
 ) as { email: string; password: string };

@@ -56,15 +56,14 @@
       "readyWhen": {
         "url": "http://localhost:3333/api/v1/health/live",
         "timeout": 120000
-      }
-    },
-    "serve-e2e": {
-      "continuous": true,
-      "dependsOn": ["build"],
-      "command": "node dist/apps/signflow-api/src/e2e-server.js",
-      "readyWhen": {
-        "url": "http://localhost:4310/api/v1/health/live",
-        "timeout": 120000
+      },
+      "configurations": {
+        "e2e": {
+          "env": {
+            "DATABASE_URL": "postgresql://e2e:e2e-local@127.0.0.1:5433/signflow_e2e",
+            "PORT": "4310"
+          }
+        }
       }
     },
     "prisma-migrate-dev": {
@@ -130,6 +129,16 @@
         "^production",
         "{workspaceRoot}/libs/signflow/api-contract/openapi.json"
       ]
+    },
+    "e2e-database": {
+      "dependsOn": ["build"],
+      "command": "node dist/apps/signflow-api/src/e2e-database.js",
+      "options": {
+        "env": {
+          "DATABASE_URL": "postgresql://e2e:e2e-local@127.0.0.1:5433/signflow_e2e"
+        }
+      },
+      "cache": false
     }
   }
 }
