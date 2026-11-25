@@ -71,7 +71,8 @@ test('the chosen language survives a reload', async ({ page }) => {
   await page.goto('/login');
   await page
     .getByRole('combobox', { name: 'Sprache' })
-    .selectOption({ label: 'English (en-GB)' });
+    // Owner, 2026-11-24: self-names without the region code (was "English (en-GB)").
+    .selectOption({ label: 'English' });
 
   await expect(
     page.getByRole('heading', { level: 1, name: 'Sign in' }),

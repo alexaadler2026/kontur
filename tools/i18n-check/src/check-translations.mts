@@ -14,7 +14,13 @@ export interface LanguageConfig {
   /** The language every other file is compared with (de). */
   source: string;
   /** code = file name and Transloco language; locale = Intl locale and CLDR plural rules. */
-  languages: { code: string; locale: string; name: string }[];
+  // The display name (nativeName in SignFlow, name in Storybook) is not checked here.
+  languages: {
+    code: string;
+    locale: string;
+    name?: string;
+    nativeName?: string;
+  }[];
 }
 
 /** Nested JSON → dotted keys: { list: { title: "…" } } → "list.title". */
