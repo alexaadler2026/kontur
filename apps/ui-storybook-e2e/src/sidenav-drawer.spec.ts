@@ -63,13 +63,24 @@ test.describe('SideNav drawer (real Chromium)', () => {
   });
 
   test('a click on the backdrop closes it', async ({ page }) => {
+    await page.setViewportSize({ width: 800, height: 600 });
     await open(page);
-    const { width, height } = page.viewportSize() ?? { width: 0, height: 0 };
 
     // Right of the 232px panel = the ::backdrop.
-    await page.mouse.click(width - 10, height / 2);
+    await page.mouse.click(790, 300);
 
     await expect(page.getByRole('dialog')).toBeHidden();
+  });
+
+  test('a click on an empty spot inside the panel does not close it', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 800, height: 600 });
+    const dialog = await open(page);
+
+    await page.mouse.click(116, 400); // inside the 232px panel, below the items
+
+    await expect(dialog).toBeVisible();
   });
 
   test('a click on an item closes it', async ({ page }) => {

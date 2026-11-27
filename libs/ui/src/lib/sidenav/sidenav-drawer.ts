@@ -101,8 +101,21 @@ export class SidenavDrawerComponent {
 
   protected onClick(event: MouseEvent): void {
     const target = event.target as Element;
-    // The panel fills the dialog box, so only a click on ::backdrop targets <dialog>.
-    if (target === this.dialog().nativeElement) this.open.set(false);
+    const dialog = this.dialog().nativeElement;
+    // ::backdrop clicks target <dialog>; the position check makes sure the click is
+    // really outside the panel (not on an empty spot of the dialog box itself).
+    if (target === dialog && this.isOutside(event, dialog))
+      this.open.set(false);
     else if (target.closest('a[k-sidenav-item]')) this.open.set(false);
+  }
+
+  private isOutside(event: MouseEvent, dialog: HTMLDialogElement): boolean {
+    const box = dialog.getBoundingClientRect();
+    return (
+      event.clientX < box.left ||
+      event.clientX > box.right ||
+      event.clientY < box.top ||
+      event.clientY > box.bottom
+    );
   }
 }

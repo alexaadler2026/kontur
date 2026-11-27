@@ -148,3 +148,30 @@ dem letzten Element in die Browser-Leiste gehen, aber nie auf die Seite darunter
 | die Fokusrückgabe          | focus return    | возврат фокуса           |
 | das Scrollen sperren       | scroll lock     | блокировка прокрутки     |
 | die Zwei-Wege-Bindung      | two-way binding | двусторонняя привязка    |
+
+## Поправка 2026-11-27 · Correction · Korrektur
+
+**RU.** Клик по затемнению теперь проверяется двумя условиями: `target` — сам `<dialog>`
+**и** точка клика вне прямоугольника панели (`getBoundingClientRect`). Раньше хватало
+первого, и если бы у диалога появилось пустое место (например, отступ), клик по нему
+закрыл бы меню. Unit-тест «клик по `<dialog>` внутри прямоугольника не закрывает» был
+красным до исправления. В jsdom нет раскладки, поэтому прямоугольник там подставлен
+(232 × 640). Существующий тест клика по затемнению кликает правее панели — требование
+уточнено владельцем. В e2e добавлен тест «клик по пустому месту панели не закрывает» и
+убрано предупреждение lint (`??` в тесте): размер окна задаётся явно.
+Важная мелочь: закрытие идёт через `effect`, то есть после отрисовки. Без
+`await fixture.whenStable()` тест «не закрывает» проходил бы всегда, даже при ошибке.
+
+**EN.** Backdrop close now needs `target === <dialog>` **and** a click point outside the
+panel's `getBoundingClientRect()`. The unit test for a click on `<dialog>` inside the
+rectangle was red first (the rectangle is stubbed in jsdom). An e2e guard for an empty
+spot inside the panel was added, and the lint warning was removed by setting the
+viewport explicitly. Without `whenStable()` the "does not close" test would pass
+vacuously, because closing runs in an effect.
+
+**DE.** Ein Klick auf den Hintergrund schließt das Menü nur, wenn er außerhalb des
+Panel-Rechtecks liegt. Ein Klick auf eine leere Stelle im Panel schließt es nicht.
+
+| Deutsch                 | English            | Русский                      |
+| ----------------------- | ------------------ | ---------------------------- |
+| das Begrenzungsrechteck | bounding rectangle | ограничивающий прямоугольник |

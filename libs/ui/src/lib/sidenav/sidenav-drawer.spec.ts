@@ -98,15 +98,37 @@ describe('k-sidenav-drawer', () => {
     expect(state()).toBe('false');
   });
 
-  it('a click on the backdrop (target = the dialog itself) closes it; a click inside the panel does not', async () => {
-    const { user, dialog, state } = await setup();
-    await user.click(screen.getByRole('button', { name: 'Menü' }));
+  // Backdrop = a click on <dialog> OUTSIDE the panel's rectangle (owner, 2026-11-27).
+  // jsdom has no layout: the panel's rectangle is stubbed to 232 × 640 at the left edge.
+  const panelRect = { left: 0, top: 0, right: 232, bottom: 640 } as DOMRect;
+  const clickDialogAt = (dialog: HTMLDialogElement, clientX: number) =>
+    dialog.dispatchEvent(
+      new MouseEvent('click', { bubbles: true, clientX, clientY: 300 }),
+    );
 
-    await user.click(screen.getByText('Sprache'));
+  it('a click on the backdrop (on <dialog>, outside the panel rectangle) closes it', async () => {
+    const { user, dialog, state, fixture } = await setup();
+    await user.click(screen.getByRole('button', { name: 'Menü' }));
+    dialog().getBoundingClientRect = () => panelRect;
+
+    await user.click(screen.getByText('Sprache')); // inside the panel content
     expect(dialog().open).toBe(true);
 
-    await user.click(dialog());
+    clickDialogAt(dialog(), 300); // right of the panel
+    await fixture.whenStable();
     expect(dialog().open).toBe(false);
     expect(state()).toBe('false');
+  });
+
+  it('a click on <dialog> inside the panel rectangle (empty space) does not close it', async () => {
+    const { user, dialog, state, fixture } = await setup();
+    await user.click(screen.getByRole('button', { name: 'Menü' }));
+    dialog().getBoundingClientRect = () => panelRect;
+
+    clickDialogAt(dialog(), 100);
+    await fixture.whenStable(); // the close would run in an effect, after rendering
+
+    expect(dialog().open).toBe(true);
+    expect(state()).toBe('true');
   });
 });
