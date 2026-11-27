@@ -28,6 +28,8 @@ test('every story has no WCAG 2.1 A/AA violations (axe)', async ({ page }) => {
       'components-sidenav--default',
       'components-sidenav--focused',
       'components-sidenav--dark-theme',
+      'components-sidenav--drawer-open',
+      'components-sidenav--drawer-dark-theme',
       'forms-sign-in--prototype',
       'i18n-plural-and-date--prototype',
     ]),

@@ -28,3 +28,24 @@
    too: slot content (brand) must not inherit a colour meant for another background
    (as .k-btn--secondary does for the same surface). */
 .k-sidenav { color: var(--text-primary); }
+
+/* ---------- Drawer (mobile menu, UI-4b) — not in components.css, built from tokens ----------
+   Native modal <dialog> on the left edge. 232px, but always leaves 56px of backdrop
+   to tap on narrow screens. The panel fills the dialog box (padding 0), so a click on
+   ::backdrop is the only click whose target is the <dialog> itself. */
+.k-sidenav-drawer {
+  inset: 0 auto 0 0; margin: 0; padding: 0; border: 0;
+  width: min(232px, calc(100vw - 56px)); max-width: none;
+  height: 100dvh; max-height: none;
+  background: var(--bg-surface); color: var(--text-primary);
+  box-shadow: var(--shadow-overlay-md);
+}
+.k-sidenav-drawer::backdrop { background: var(--overlay-scrim); }
+.k-sidenav-drawer-panel { display: flex; flex-direction: column; height: 100%; }
+.k-sidenav-drawer-head { display: flex; justify-content: flex-end; padding: var(--space-2) var(--space-3) 0; }
+/* Inside the drawer the nav takes the drawer's width and the free height. */
+.k-sidenav-drawer-panel > k-sidenav { flex: 1; display: flex; flex-direction: column; }
+.k-sidenav-drawer .k-sidenav { width: auto; flex: 1; border-right: 0; }
+.k-sidenav-drawer-footer:not(:empty) { padding: var(--space-3); border-top: 1px solid var(--border-subtle); }
+/* The page behind an open drawer does not scroll. */
+html:has(.k-sidenav-drawer[open]) { overflow: hidden; }

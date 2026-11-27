@@ -52,3 +52,4 @@ export { provideKonturToast } from './lib/toast/provide-toast';
 export { SidenavComponent } from './lib/sidenav/sidenav';
 export { SidenavItemComponent } from './lib/sidenav/sidenav-item';
 export { SidenavGroupComponent } from './lib/sidenav/sidenav-group';
+export { SidenavDrawerComponent } from './lib/sidenav/sidenav-drawer';
