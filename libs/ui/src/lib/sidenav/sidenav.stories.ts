@@ -106,6 +106,6 @@ export const Focused: Story = {
 export const DarkTheme: Story = {
   name: 'Dark theme',
   render: () => ({
-    template: `<div data-theme="dark" style="background: var(--bg-page); color: var(--text-primary);">${full}</div>`,
+    template: `<div data-theme="dark" style="background: var(--bg-page);">${full}</div>`,
   }),
 };

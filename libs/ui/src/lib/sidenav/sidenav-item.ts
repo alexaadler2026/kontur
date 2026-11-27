@@ -21,7 +21,7 @@ import {
     <span class="k-sidenav-text"
       ><ng-content />
       @if (count() !== null) {
-        <span class="k-sidenav-sr">{{ ', ' + count() }}</span>
+        <span class="k-visually-hidden">{{ ', ' + count() }}</span>
       }
     </span>
     @if (count() !== null) {

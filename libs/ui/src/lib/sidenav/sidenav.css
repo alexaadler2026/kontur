@@ -24,7 +24,7 @@
 .k-sidenav-group-list { display: flex; flex-direction: column; gap: 2px; }
 /* Pushes the footer slot (profile) to the bottom, as in SideNav.html. */
 .k-sidenav-spacer { flex: 1; }
-/* ", 3" for screen readers, invisible on screen. Deliberately inline (no
-   position: absolute, unlike the usual "sr-only"): a block/absolute box makes the
-   browser insert a space into the link name → "Entwürfe , 3". */
-.k-sidenav-sr { font-size: 0; }
+/* The nav paints its own background (bg-surface), so it sets the matching text colour
+   too: slot content (brand) must not inherit a colour meant for another background
+   (as .k-btn--secondary does for the same surface). */
+.k-sidenav { color: var(--text-primary); }
