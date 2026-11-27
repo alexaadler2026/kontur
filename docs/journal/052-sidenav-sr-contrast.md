@@ -108,3 +108,24 @@ Kontrast zu schwach. Jetzt besteht die Story den axe-Test ohne Sonderlösung.
 | der Kontrast        | contrast        | контраст          |
 | die Textfarbe       | text colour     | цвет текста       |
 | der Hintergrund     | background      | фон               |
+
+## Поправка 2026-11-27 · Correction · Korrektur
+
+**RU.** Тесты проверяют требование, а не особенность браузера (решение владельца). Unit и
+e2e ищут ссылку по одному шаблону `/^Entwürfe\s*,\s*3$/`: название, запятая, число, а
+пробелы вокруг запятой свободны (Chromium ставит пробел перед ней, jsdom — нет). Без запятой
+(«Entwürfe3») шаблон не совпадёт, поэтому исходная ошибка по-прежнему ловится.
+Вопрос: почему не точная строка? Ответ: точная строка фиксирует алгоритм конкретного
+движка, и тест упадёт при обновлении браузера, хотя пользователь разницы не услышит.
+
+**EN.** Tests encode the requirement, not an engine quirk: unit and e2e share
+`/^Entwürfe\s*,\s*3$/` (name, comma, count; whitespace around the comma is free). A missing
+comma ("Entwürfe3") still fails.
+
+**DE.** Unit- und E2E-Test prüfen jetzt dasselbe Muster: Name, Komma, Zahl. Leerzeichen um
+das Komma sind egal, denn sie hängen vom Browser ab. Ohne Komma schlägt der Test fehl.
+
+| Deutsch               | English            | Русский              |
+| --------------------- | ------------------ | -------------------- |
+| der reguläre Ausdruck | regular expression | регулярное выражение |
+| die Anforderung       | requirement        | требование           |

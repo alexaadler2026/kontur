@@ -6,6 +6,10 @@ import { SidenavComponent } from './sidenav';
 
 const imports = [SidenavComponent, SidenavItemComponent, SidenavGroupComponent];
 
+// Requirement: name, comma, count. Spaces around the comma depend on the engine's
+// name computation (Chromium adds one before it, jsdom does not), so they are free.
+const draftsName = /^Entwürfe\s*,\s*3$/;
+
 // The app sets aria-current (routerLinkActive); the library only styles it.
 const template = `
   <k-sidenav ariaLabel="Hauptnavigation">
@@ -42,7 +46,7 @@ describe('k-sidenav', () => {
   it('the count is read with the item name, separated by a comma: "Entwürfe, 3"', async () => {
     await render(template, { imports });
 
-    const link = screen.getByRole('link', { name: 'Entwürfe, 3' });
+    const link = screen.getByRole('link', { name: draftsName });
     const count = link.querySelector('.k-count');
     expect(count).toHaveClass('k-num');
     expect(count).toHaveTextContent(/^3$/); // the comma is for screen readers only
@@ -92,7 +96,7 @@ describe('k-sidenav', () => {
     await user.tab();
     expect(screen.getByRole('link', { name: 'Übersicht' })).toHaveFocus();
     await user.tab();
-    expect(screen.getByRole('link', { name: 'Entwürfe, 3' })).toHaveFocus();
+    expect(screen.getByRole('link', { name: draftsName })).toHaveFocus();
     await user.tab();
     expect(screen.getByRole('link', { name: 'Vorlagen' })).toHaveFocus();
   });
